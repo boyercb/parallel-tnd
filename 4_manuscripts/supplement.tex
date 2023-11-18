@@ -15,5 +15,33 @@
 
     \section{Appendix}
     
+    \subsection{Proof}
+    Consider the conditional risk ratio for the effect of vaccination among the vaccinated, i.e.
+    \begin{equation*}
+        \psi(X) \equiv \dfrac{\Pr[I^1 = 2, T^1 = 1 | V = 1, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}
+    \end{equation*}
+    Under the consistency assumption (A1) the numerator is equal to $\Pr[I = 2, T = 1 | V = 1, X]$. Focusing on the denominator, under equi-confounding (A3)
+    \begin{equation*}
+    \Pr[I^0 = 2, T^0 = 1  | V = 1, X] = \frac{\Pr[I^0 = 1, T^0 = 1  | V = 1, X]}{\Pr[I^0 = 1, T^0 = 1  | V = 0, X]}\Pr[I^0 = 2, T^0 = 1 | V = 0, X]
+    \end{equation*}
+and then by (A1) and (A2) with (A4) ensuring overlap
+    \begin{equation*}
+     \Pr[I^0 = 2, T^0 = 1  | V = 1, X] = \frac{\Pr[I = 1, T = 1  | V = 1, X]}{\Pr[I = 1, T = 1  | V = 0, X]}\Pr[I = 2, T = 1 | V = 0, X]
+    \end{equation*}
+Plugging back into the expression for $\psi(X)$, we find the following identifying expression 
+    \begin{equation*}
+         \phi(X) \equiv \dfrac{\dfrac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 1, T = 1 | V = 1, X]}}{\dfrac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I = 1, T = 1 | V = 0, X]}}
+    \end{equation*}
+which is now strictly among the observables. A key insight is that $\frac{\Pr[I = 1, T =1  | V = 0, X]}{\Pr[I = 1, T = 1 | V = 1, X]}$ acts as a proxy for $\frac{\Pr[I^0 = 2, T =1  | V = 0, X]}{\Pr[I^0 = 2, T = 1 | V = 1, X]}$ essentially a ``parallel trend'' for $I=2$ in absence of vaccination.
+
+Recall that we only observe biased samples from $(X_i, V_i, S_i = 1, I^*_i)$ where $S = I(I \neq 0, T = 1)$, i.e. we only observe test results among the symptomatic and tested. However, we can show that 
+    \begin{equation}
+         \phi(X) = \dfrac{\dfrac{\Pr[I^* = 1 | S = 1, V = 1, X]}{\Pr[I^* = 0 | S = 1, V = 1, X]}}{\dfrac{\Pr[I^* = 1 | S = 1, V = 0, X]}{\Pr[I^* = 0 | S = 1, V = 0, X]}}
+    \end{equation}    
+which is the odds ratio comparing odds of testing positive for vaccinated and unvaccinated among the tested only.
+
+\begin{align*}
+    \psi_{rrv}(X) &=\underbrace{\frac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 2, T = 1 | V = 0, X]}}_{\text{observed risk ratio}} \times \underbrace{\frac{\Pr[I = 2 | V = 0, X]}{\Pr[I^0 = 2 | V = 1, X]}}_{\text{de-biasing confounding}} \times \underbrace{\frac{\Pr[T = 1 | I = 2, V = 0, X]}{\Pr[T^0 = 1 | I^0 = 2, V = 1, X]}}_{\text{de-biasing selection}} 
+\end{align*}
 \end{appendix}
 
