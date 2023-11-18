@@ -1,0 +1,187 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=1cm,right=1cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{natbib}
+\usepackage{amsmath,amsthm,amsfonts}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{bbm}
+\def\ll{\lambda}
+\def\LL{\Lambda}
+\def\arctanh{\mathrm{arctanh}}
+\def\tanh{\mathrm{tanh}}
+\def\indep{\!\perp\!\!\!\perp}
+\DeclareMathOperator{\E}{E}
+
+\newtheorem{example}{Example}
+\newtheorem{theorem}{Theorem}
+\title{EIF for VE based on a TND study}
+
+
+\begin{document}
+\maketitle
+
+
+Define the risk ratio of testing positive among the treated as:
+\begin{align*}
+    \Psi &= \dfrac{\Pr[I^1 = 2, T^1 = 1 | V = 1]}{\Pr[I^0 = 2, T^0 = 1 | V = 1]} \\
+         &= \dfrac{\Pr[I^1 = 2, T^1 = 1 | V = 1]}{\E[\Pr[I^0 = 2, T^0 = 1 | V = 1, X] | V = 1]}.
+\end{align*}
+By consistency the numerator is equal to $\Pr[I^1 = 2, T^1 = 1 | V = 1]$ and by the previous results we have that 
+\begin{equation*}
+    \Pr[I^0 = 2, T^0 = 1 | V = 1, X] = \dfrac{\Pr[I = 1, T = 1 | V = 1, X]}{\Pr[I = 1, T = 1 | V = 0, X]} \Pr[I = 2, T = 1 | V = 0, X]
+\end{equation*}
+which is equivalent to 
+\begin{equation*}
+    \Pr[I^0 = 2, T^0 = 1 | V = 1, X] = \dfrac{1}{\psi(X)} \Pr[I = 2, T = 1 | V = 1, X].
+\end{equation*}
+where $\psi(X)$ is the conditional odds ratio defined previously, i.e.
+\begin{equation*}
+    \psi(X) = \dfrac{\dfrac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 1, T = 1 | V = 1, X]}}{\dfrac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I = 1, T = 1 | V = 0, X]}}
+\end{equation*}
+Hence
+\begin{align*}
+    \Psi &= \dfrac{\Pr[I = 2, T = 1 | V = 1]}{\E\left[\dfrac{1}{\psi(X)} \Pr[I = 2, T = 1 | V = 1, X] | V = 1\right]} \\
+\end{align*}
+To show this is identified under the biased sampling design consider
+\begin{align*}
+    \Psi &= \dfrac{\Pr[I = 2, T = 1 | V = 1]}{\E\left[\dfrac{1}{\psi(X)} \Pr[I = 2, T = 1 | V = 1, X] | V = 1\right]} \\
+    &= \dfrac{\Pr[I = 2, T = 1 | V = 1]}{\int \dfrac{1}{\psi(X)} \Pr[I = 2, T = 1 | V = 1, X] f(x | V = 1) dx} \\
+    &= \dfrac{\Pr[I = 2 | T = 1, V = 1] \Pr[T = 1 | V = 1]}{\int \dfrac{1}{\psi(X)} \Pr[I = 2 | T = 1, V = 1, X] \Pr[T = 1 | V = 1, X]  f(x | V = 1) dx} \\
+    &= \dfrac{\Pr[I = 2 | T = 1, V = 1] \Pr[T = 1 | V = 1]}{\int \dfrac{1}{\psi(X)} \Pr[I = 2 | T = 1, V = 1, X] \Pr[T = 1 | V = 1]  f(x | T = 1, V = 1) dx} \\
+\end{align*}
+where the last line follows by Bayes theorem 
+\begin{equation*}
+    f(x | V = 1) = \dfrac{f(x | T = 1, V = 1)\Pr[T = 1 | V = 1]}{\Pr[T = 1 | V = 1, X]}
+\end{equation*}
+and further
+\begin{align*}
+    \Psi &= \dfrac{\Pr[I = 2 | T = 1, V = 1]}{\int \dfrac{1}{\psi(X)} \Pr[I = 2 | T = 1, V = 1, X] f(x | T = 1, V = 1) dx} \\
+    &= \dfrac{\Pr[I = 2 | T = 1, V = 1]}{\E\left[\dfrac{1}{\psi(X)} \Pr[I = 2 | T = 1, V = 1, X] \bigg| T = 1, V = 1\right]} \\
+    &= \dfrac{\Pr[I^* = 1 | S = 1, V = 1]}{\E\left[\dfrac{1}{\psi^*(X)} \Pr[I^* = 1 | S = 1, V = 1, X] \bigg| S = 1, V = 1\right]} \\
+\end{align*}
+where all elements are identified under biased sampling.
+
+
+We continue to derive the EIF of
+$$\Psi = \dfrac{E(I^*\mid S=1, V=1)}{E\left\{\dfrac{Pr(I^*=1\mid S=1, V=0, X)Pr(I^*=0\mid S=1, V=1, X)}{Pr(I^*=0\mid S=1, V=0, X)}\mid S=1, V=1\right\}}$$
+
+To derive the EIF for $\Psi$, we use the point-mass approach in Hines et al. 2019.
+
+
+We consider a one-dimensional parametric submodel
+
+$$f_\theta(i^*, s, v, x)=\theta \mathbbm 1_{\tilde i^*, \tilde s, \tilde v, \tilde x}(i^*, s, v, x) + (1-\theta)f(i^*, s, v,x),$$
+
+and let
+$$\Psi_\theta = \dfrac{E_\theta(I^*\mid S=1, V=1)}{\int \dfrac{E_\theta(I^*\mid S=1, V=0, X=x)E_\theta(1-I^*\mid S=1, V=1, X=x)}{E_\theta(1-I^*\mid S=1, V=0, X=x)}f_\theta(x\mid S=1, V=1)dx}$$
+
+
+We have
+\begin{align*}
+    \dfrac{\partial}{\partial\theta}E_\theta(I^*\mid S=1, V=1)\mid_{\theta=0} &= \int i^* \dfrac{\partial}{\partial\theta}f_\theta(i^*\mid S=1, V=1)\mathrm d i^*\mid_{\theta = 0}\\
+    &= \dfrac{\mathbbm 1_{\tilde s,\tilde v}(1, 1)}{f_{S, V}(1, 1)}\{\tilde i^* - E(I^*\mid S=1, V=1)\}\\
+    &= \dfrac{\tilde s\tilde v}{f_{S, V}(1, 1)}\{\tilde i^* - E(I^*\mid S=1, V=1)\}
+\end{align*}
+
+and Similarly,
+\begin{align*}
+    \dfrac{\partial}{\partial\theta}E_\theta(I^*\mid S=1, V=0, X=x)\mid_{\theta=0} &= \dfrac{\tilde s(1-\tilde v)\mathbbm 1_{\tilde x}(x)}{f_{S, V, X}(x)}\{\tilde i^* - E(I^*\mid S=1, V=0, X=x)\}\\
+     \dfrac{\partial}{\partial\theta}E_\theta(1-I^*\mid S=1, V=0, X=x)\mid_{\theta=0} &= -\dfrac{\tilde s(1-\tilde v)\mathbbm 1_{\tilde x}(x)}{f_{S, V, X}(1, 0, x)}\{\tilde i^* - E(I^*\mid S=1, V=0, X=x)\}\\
+     \dfrac{\partial}{\partial\theta}E_\theta(1-I^*\mid S=1, V=1, X=x)\mid_{\theta=0} &= -\dfrac{\tilde s\tilde v\mathbbm 1_{\tilde x}(x)}{f_{S, V, X}(1, 1, x)}\{\tilde i^* - E(I^*\mid S=1, V=1, X=x)\}.
+\end{align*}
+
+We also have
+$$\dfrac{\partial}{\partial\theta}f_\theta(x\mid S=1, V=1) = \dfrac{\tilde s \tilde v}{Pr(S=1, V=1)}\{\mathbbm 1_{\tilde x}(x)-f(x\mid S=1, V=1)\}$$
+
+
+
+\newpage
+The conditional odds ratio $\psi(x)$ at a fixed $x$ cannot be nonparametrically estimated at a $\sqrt n$-rate unless $x$ is discrete. One approach is to consider some sort of average for $\psi(x)$.
+
+
+One option is the marginal risk ratio of testing positive among the treated, analogous to the marginal risk ratio in~\citet{schnitzer2022estimands}:
+\begin{align*}
+    \Psi &= \dfrac{E\{Pr(I^1=2, T^1=1\mid V=1, X)\mid V=1\}}{E\{Pr(I^0=2, T^0=1\mid V=1, X)\mid V=1\}}\\
+    &=\dfrac{E\{Pr(I=2, T=1\mid V=1, X)\mid V=1\}}{E\{Pr(I^0=2, T^0=1\mid V=1, X)\mid V=1\}}
+\end{align*}
+
+By results in page 10, we have
+$$Pr(I^0=2, T^0=1\mid V=1, X)=\dfrac{Pr(I=1, T=1\mid V=1, X)}{Pr(I=1, T=1\mid V=0, X)}Pr(I=2, T=1\mid V=0, X)$$
+
+
+Hence 
+
+\begin{align*}
+    \Psi &= \dfrac{E\left\{Pr(I=2, T=1\mid V=1, X)\mid V=1\right\}}{E\left\{\dfrac{Pr(I=1, T=1\mid V=1, X)}{Pr(I=1, T=1\mid V=0, X)}Pr(I=2, T=1\mid V=0, X)\mid V=1\right\}}\\
+    &= \dfrac{\int Pr(I=2, T=1\mid V=1, X=x)f(x\mid V=1)dx}{\int \dfrac{Pr(I=1, T=1\mid V=1, X=x)}{Pr(I=1, T=1\mid V=0, X=x)}Pr(I=2, T=1\mid V=0, X=x)f(x\mid V=1)dx}\\
+    &=  \dfrac{\int Pr(I=2\mid  T=1, V=1, X=x)Pr(T=1\mid V=1, X=x)f(x\mid V=1)dx}{\int \dfrac{Pr(I=1\mid T=1, V=1, X=x)}{Pr(I=1\mid T=1, V=0, X=x)}Pr(I=2\mid T=1, V=0, X=x)Pr(T=1\mid V=1, X=x)f(x\mid V=1)dx}
+\end{align*}
+
+Note that $P(T=1\mid V=1, X=x)$, $f(x\mid V=1)$ cannot be estimated directly from the TND sample and may need to be estimated using external data.
+
+
+ To derive the EIF for $\Psi$, we use the point-mass approach in Hines et al. 2019.
+
+We write $J=\mathbbm{1}(I=2)$. We write $f_1(x)$ as an arbitrary density function defined on the support of $X$ and $\delta_v(x)=P(T=1\mid V=v, X=x)$ be a function with value in $[0,1]$. Suppose both are known or can be estimated from an external data source. 
+
+We consider a one-dimensional parametric submodel
+
+$$f_\theta(j, t, v, x)=\theta \mathbbm 1_{\tilde j, \tilde t, \tilde v, \tilde x}(j, t, v, x) + (1-\theta)f(j, t, v,x)$$
+where $\mathbbm 1$ indicates Dirac's Delta function at an arbitrary data point $(\tilde j, \tilde t, \tilde v, \tilde x)$. Let
+
+$$\Psi_\theta = \dfrac{\int E_\theta(J\mid T=1, V=1, X=x)\delta_1(x)f_1(x)dx}{\int \dfrac{E_\theta\{1-J\mid T=1, V=1, X=x\}}{E_\theta\{1-J\mid T=1, V=0, X=x\}} E_\theta(J\mid T=1, V=0, X=x)\delta_1(x)f_1(x)dx}.$$
+
+We have
+\begin{align*}
+    \dfrac{\partial}{\partial\theta}E_\theta(J\mid T=1, V=1, X=x)\mid_{\theta=0} &= \int j \dfrac{\partial}{\partial\theta}f_\theta(j\mid T=1, V=1, X=x)\mathrm d j\mid_{\theta = 0}\\
+    &= \dfrac{\mathbbm 1_{\tilde t,\tilde v, \tilde x}(1, 1, x)}{f(1, 1, x)}\{\tilde j - E(J\mid 1, 1, x)\}
+\end{align*}
+and similarly,
+\begin{align*}
+     \dfrac{\partial}{\partial\theta}E_\theta(J\mid T=1, V=0, X=x)\mid_{\theta=0} &= \dfrac{\mathbbm 1_{\tilde 1,\tilde v, \tilde x}(1, 0, x)}{f(1, 0, x)}\{\tilde j - E(J\mid 1, 0, x)\}\\
+      \dfrac{\partial}{\partial\theta}E_\theta(1-J\mid T=1, V=1, X=x)\mid_{\theta=0} &= \dfrac{\mathbbm 1_{\tilde t,\tilde v, \tilde x}(1, 1, x)}{f(1, 1, x)}\{(1-\tilde j) - E(1-J\mid 1, 1, x)\}\\
+        \dfrac{\partial}{\partial\theta}E_\theta(1-J\mid T=1, V=0, X=x\}\mid_{\theta=0} &= \dfrac{\mathbbm 1_{\tilde t,\tilde v, \tilde x}(1, 0, x)}{f(1, 0, x)}\{(1-\tilde j) - E(1-J\mid 1, 0, x)\}.
+\end{align*}
+
+We therefore have
+\begin{align*}
+    \dfrac{\partial}{\partial\theta}\Psi_\theta &= 
+    \dfrac{\int \dfrac{\mathbbm 1_{\tilde v, \tilde t, \tilde x}(1, 1, x)}{f(1, 1, x)}\{\tilde j - E(J\mid 1, 1, x)\}\delta_1(x)f_1(x)dx}{\int \dfrac{E(1-J\mid 1, 1, x)}{E(1-J\mid 1, 0, x)}E(J\mid 1, 0, x)\delta_1(x)f_1(x)dx} -\dfrac{\int E(J\mid 1, 1, x)\delta_1(x)f_1(x)dx}{(\int \dfrac{E(1-J\mid 1, 1, x)}{E(1-J\mid 1, 0, x)}E(J\mid 1, 0, x)\delta_1(x)f_1(x)dx)^2}\times\\
+    &\bigg[ \int \dfrac{\mathbbm 1_{\tilde t, \tilde v, \tilde x}(1, 1, x)}{f(1, 1, x)}\{1-\tilde j - E(1-J\mid 1, 1, x)\}\dfrac{E(J\mid 1, 0, x)}{E(1-J\mid 1, 0, x)}\delta_1(x)f_1(x)dx -\\
+    &\qquad \int \dfrac{\mathbbm 1_{\tilde t, \tilde v, \tilde x}(1, 0, x)}{f(1, 0, x)}\{1-\tilde j - E(1-J\mid 1, 0, x)\}\dfrac{E(1-J\mid 1, 1, x)E(J\mid 1, 0, x)}{E(1-J\mid 1, 0, x)^2}\delta_1(x)f_1(x)dx + \\
+    &\qquad \int \dfrac{\mathbbm 1_{\tilde t, \tilde v, \tilde x}(1, 0, x)}{f(1, 0, x)}\{\tilde j - E(J\mid 1, 0, x)\}\dfrac{E(1-J\mid 1, 1, x)}{E(1-J\mid 1, 0, x)}\delta_1(x)f_1(x)dx\bigg]\\
+    &= \dfrac{\dfrac{\tilde v\tilde t}{f(1, 1, \tilde x)}\{\tilde j - E(J\mid 1, 1, \tilde x)\}\delta_1(\tilde x)f_1(\tilde x)}{\int \dfrac{E(1-J\mid 1, 1, x)}{E(1-J\mid 1, 0, x)}E(J\mid 1, 0, x)\delta_1(x)f_1(x)dx} -\dfrac{\int E(J\mid 1, 1, x)\delta_1(x)f_1(x)dx}{(\int \dfrac{E(1-J\mid 1, 1, x)}{E(1-J\mid 1, 0, x)}E(J\mid 1, 0, x)\delta_1(x)f_1(x)dx)^2}\times\\
+    &\bigg[ \dfrac{\tilde v\tilde t}{f(1, 1, \tilde x)}\{1-\tilde j - E(1-J\mid 1, 1, \tilde x)\}\dfrac{E(J\mid 1, 0, \tilde x)}{E(1-J\mid 1, 0, \tilde x)}\delta_1(\tilde x)f_1(\tilde x) -\\
+    &\qquad  \dfrac{(1-\tilde v)\tilde t}{f(1, 0, \tilde x)}\{1-\tilde j - E(1-J\mid 1, 0, \tilde x)\}\dfrac{E(1-J\mid 1, 1, \tilde x)E(J\mid 1, 0, \tilde x)}{E(1-J\mid 1, 0, \tilde x)^2}\delta_1(\tilde x)f_1(\tilde x) + \\
+    &\qquad  \dfrac{(1-\tilde v)\tilde t}{f(1, 0, \tilde x)}\{\tilde j - E(J\mid 1, 0, \tilde x)\}\dfrac{E(1-J\mid 1, 1, \tilde x)}{E(1-J\mid 1, 0, \tilde x)}\delta_1(\tilde x)f_1(\tilde x)\bigg]
+\end{align*}
+
+Finally, write $\nu(x)=P(V=1\mid X=x)$. The EIF for $\Psi$ is 
+
+\begin{align*}
+    &EIF(V, T, J, X) \\&= \dfrac{\dfrac{VT}{f(X)\nu(X)\delta_1(X)}\{J - Pr(J=1\mid T=1, V=1, X)\}\delta_1(X)f_1(X)}{\int \dfrac{Pr(J=0\mid T=1, V=1, X=x)}{Pr(J=0\mid T=1, V=0, X=x)}Pr(J=1\mid T=1, V=0, X=x)\delta_1(x)f_1(x)dx}-\\&\qquad \dfrac{\Psi}{\int \dfrac{Pr(J=0\mid T=1, V=1, X=x)}{Pr(J=0\mid T=1, V=0, X=x)}Pr(J=1\mid T=1, V=0, X=x)\delta_1(x)f_1(x)dx}\times \\
+    &\bigg[\dfrac{VT}{\delta_1(X)\nu(X)f(X)}\{1 - J - Pr(J=0\mid T=1, V=1, X)\}\dfrac{Pr(J=1\mid T=1, V=0, X)}{Pr(J=0\mid T=1, V=0,X)}\delta_1(X)f_1(X)-\\
+    &\dfrac{(1-V)T}{\delta_0(X)\{1-\nu(X)\}f(X)}\{1 - J - Pr(J=0\mid T=1, V=0, X)\}\dfrac{Pr(J=0\mid T=1, V=1, X)Pr(J=1\mid T=1, V=0, X)}{\{Pr(J=0\mid T=1, V=0, X)\}^2}\delta_1(X)f_1(X) + \\
+    & \dfrac{(1-V)T}{\delta_0(X)\{1-\nu(X)\}f(X)}\{ J - Pr(J=1\mid T=1, V=0, X)\}\dfrac{Pr(J=0\mid T=1, V=1, X)}{Pr(J=0\mid T=1, V=0,X)}\delta_1(X)f_1(X)\\
+     &= \dfrac{\delta_1(X)f_1(X)}{f(X)\int \dfrac{Pr(J=0\mid T=1, V=1, X=x)}{Pr(J=0\mid T=1, V=0, X=x)}Pr(J=1\mid T=1, V=0, X=x)\delta_1(x)f_1(x)dx}\times \\
+       &\bigg[ \dfrac{VT}{\nu(X)\delta_1(X)}\{J - Pr(J=1\mid T=1, V=1, X)\} - \\&\qquad \dfrac{\Psi VT}{\delta_1(X)\nu(X)}\{1 - J - Pr(J=0\mid T=1, V=1, X)\}\dfrac{Pr(J=1\mid T=1, V=0, X)}{Pr(J=0\mid T=1, V=0,X)} +\\
+       &\qquad \dfrac{\Psi(1-V)T}{\delta_0(X)\{1-\nu(X)\}}\{1 - J - Pr(J=0\mid T=1, V=0, X)\}\dfrac{Pr(J=0\mid T=1, V=1, X)Pr(J=1\mid T=1, V=0, X)}{\{Pr(J=0\mid T=1, V=0, X)\}^2}-\\
+       &\qquad \dfrac{(1-V)T}{\delta_0(X)\{1-\nu(X)\}}\{ J - Pr(J=1\mid T=1, V=0, X)\}\dfrac{Pr(J=0\mid T=1, V=1, X)}{Pr(J=0\mid T=1, V=0,X)}\bigg]
+\end{align*}
+
+In the EIF, the probabilities $Pr(I=i\mid T=1, V=v, X=x)$ can be estimated from the TND data, but the nuisance functions $f(x)$, $\nu(x)$, $\delta_v(x)$ and $f_1(x)$ need to be estimated from an external data source.
+
+
+\bibliographystyle{plainnat}
+\bibliography{sample}
+
+\end{document}
