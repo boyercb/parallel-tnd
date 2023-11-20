@@ -43,5 +43,19 @@ which is the odds ratio comparing odds of testing positive for vaccinated and un
 \begin{align*}
     \psi_{rrv}(X) &=\underbrace{\frac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 2, T = 1 | V = 0, X]}}_{\text{observed risk ratio}} \times \underbrace{\frac{\Pr[I = 2 | V = 0, X]}{\Pr[I^0 = 2 | V = 1, X]}}_{\text{de-biasing confounding}} \times \underbrace{\frac{\Pr[T = 1 | I = 2, V = 0, X]}{\Pr[T^0 = 1 | I^0 = 2, V = 1, X]}}_{\text{de-biasing selection}} 
 \end{align*}
+
+\subsection{What if mutual exclusivity is violated?}
+Define $I_1$ as the event that an individual is infected with an alternative pathogen and $I_2$ as the event that an individual is infected with the test-positive pathogen. 
+
+\subsection{What if symptom screen is imperfect?}
+
+\subsection{What if there is a direct effect of vaccination on testing behavior?}
+
+\subsection{What if test is imperfect?}
+Recall that 
+
+$$\Pr[I^* = 1 | S = 1, V = 1, X] = \Pr[I = 2 | S = 1, V = 1, X]$$
+
+$I^* = \lambda_{sens} \cdot \mathbb{I}(I = 2) + (1 - \lambda_{spec}) \cdot \mathbb{I}(I \neq 2)$
 \end{appendix}
 
