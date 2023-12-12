@@ -7,7 +7,7 @@
 \begin{document}
 
 \begin{titlepage}
-\title{Identifying vaccine effectiveness in the test-negative design under an equi-confounding assumption \thanks{abc}}
+\title{Identifying vaccine effectiveness in the test-negative design under an equi-confounding assumption\thanks{abc}}
 \author[1]{ }
 % \author[1]{Christopher Boyer\thanks{email: \href{mailto:cboyer@hsph.harvard.edu}{cboyer@hsph.harvard.edu}}}
 % \affil[1]{Department of Epidemiology, Harvard T.H. Chan School of Public Health, Boston, MA.}
@@ -29,17 +29,13 @@
 \doublespacing
 
 \section{Introduction} \label{sec:introduction}
-Observational data are frequently used for post-market evaluation of vaccine effectiveness. Monitoring the effectiveness of vaccines is important particularly as changes in population immunity as well as antigenic changes to the pathogen of interest occur that may render estimates from pre-market randomized trials irrelevant. Investigators may also be interested in the performance of the vaccine in key populations that were not eligible or underrepresented in the clinical trial population or may want to compare vaccine formulations against one another or against other therapeutics not considered in the original trial. Under these circumstances, a quick and relatively cheap study design for monitoring vaccine effectiveness is the so-called test-negative design (TND). 
+Observational data are frequently used for post-market evaluation of vaccine effectiveness. Monitoring the effectiveness of vaccines is important particularly as changes in population immunity as well as antigenic changes to the pathogen of interest occur that may render estimates from pre-market randomized trials irrelevant. Investigators may also be interested in the performance of the vaccine in key populations that were ineligible or underrepresented in the clinical trial population; or they may want to compare vaccine formulations against one another or against other therapeutics not considered in the original trial. Under these circumstances, a quick and relatively cheap study design for estimating vaccine effectiveness is the so-called test-negative design (TND). 
  
-Historically, the term ``test-negative design'' has been used  broadly to refer to any design in which individuals who test positive for a pathogen of interest are compared with those who test negative. However, there are important methodological differences between approaches. Here, we focus on designs that meet the following criteria: patients with acute respiratory illness are prospectively recruited using a unified symptom screen through hospitals or other care facilities, consented, and a laboratory test for the pathogen of interest is preformed. Detailed information about their demographic, medical, and vaccination history is collected via a questionnaire at enrollment or through linked medical and vaccination records. Those who test positive form the ``cases'' and those who test negative are the comparison group. 
+Historically, the term ``test-negative design'' has been used broadly to refer to any design in which individuals who test positive for a pathogen of interest are compared with those who test negative. However, there are important methodological differences between approaches. Here, we focus on designs that meet the following criteria: patients with acute respiratory illness are prospectively recruited using a unified symptom screen through hospitals or other care facilities, consented, and a laboratory test for the pathogen of interest is preformed. Detailed information about their demographic, medical, and vaccination history is collected via a questionnaire at enrollment or through linked medical and vaccination records. Those who test positive form the ``cases'' and those who test negative are the comparison group. 
 
-The TND has been justified under Subsequent work has shown that the TND may be alternatively justified under the strong assumption of no unmeasured confounding. s
+The TND for estimating vaccine effectiveness against medically attended illness was originally justified under the assumption that (unmeasured) binary healthcare-seeking behavior is effectively adjusted for by limiting to those screened and tested at a health facility, provided that the vaccine has no effect on the incidence of other respiratory illnesses. It was also suggested that, by limiting to individuals who actually received a test, the TND may be less subject to measurement error. Subsequent work pointed out that the TND (1) is subject to residual confounding when healthcare-seeking is nonbinary, (2) is subject to possible selection bias due to conditioning on the post exposure outcome of receiving a test, and (3) is biased when vaccination has a direct effect on testing behavior. More recently, Schnitzer suggested a formal framework for TND estimands and sampling design and showed that the marginal risk ratio is identified provided that observed covariates are sufficient to ensure no unmeasured confounding or selection bias. 
 
-In this paper we show that 
-
-By selecting individuals with the same symptom set, who may be unaware of their case status, and who exhibit similar care-seeking behavior. 
-
-An appealing aspect of the test-negative design is that, prior to the test, individuals are likely unaware of the pathogenic cause of their infection, rather they just notice the onset of symptoms and seek treatment.
+However, a question remains as to whether the TND is formally identified under weaker assumptions. In this article, we return to the original motivation for the TND and show that it may be alternatively justified under an assumption that unmeasured confounding is equivalent for test-positive cases and test-negative controls on the odds ratio scale. This assumption builds on the insight that infection with another respiratory illness, if plausibly unaffected by vaccination, is a negative outcome control in the population underlying the TND. Therefore any observed differences in the incidence of other respiratory illnesses likely reflect unobserved confounding. If we assume the confounding structure is the same for the target and alternative respiratory illnesses, which could be justified given the causative pathogen is presumably unknown to individuals prior to receiving a test, then we can use the negative outcome control to de-bias our estimate of vaccine effectiveness. This is similar in spirit to the parallel trends concept in the difference-in-differences literature. We show this holds even under the biased sampling design of the TND. We discuss the implications of this assumption for the design of TNDs and provide proofs of our results as well as simulations to illustrate the consequences when our assumptions are violated.
 
 \section{Setup and observed data} \label{sec:setup}
 Let $X$ be a vector of baseline (pre-vaccination) covariates, $V$ an indicator of vaccination status, and $I$ a categorical indicator of symptomatic illness where
@@ -48,7 +44,7 @@ Let $X$ be a vector of baseline (pre-vaccination) covariates, $V$ an indicator o
         I = 1 & \text{when infected by something else with same symptoms} \\
         I = 0 & \text{when no symptoms and/or uninfected}
         \end{cases}$$
-Implicit in this assumption is that the infection events represented by $I = 1$ and $I = 2$ are mutually exclusive. Let $T$ be an indicator of receiving a test for the pathogen of interest (0/1), and $I^*$ the result of the test. For now, assume that we have access to a perfect test such that, for all individuals, $I^*_i = \mathbb{I}(I_i = 2, T_i = 1)$, where $\mathbb{I}(\cdot)$ is the indicator function. Throughout we denote by $I^v$ the potential outcome under an intervention that sets vaccination to $V=v$. 
+Implicit in this assumption is that the infection events represented by $I = 1$ and $I = 2$ are mutually exclusive. Let $T$ be an indicator of receiving a test for the pathogen of interest (0/1), and $I^*$ the result of the test. For now, assume that we have access to a perfect test such that, for all individuals, $I^*_i = \mathbb{I}(I_i = 2, T_i = 1)$, where $\mathbb{I}(\cdot)$ is the indicator function. Extensions to cases where the test is imperfect are covered X. Throughout we denote by $I^v$ the potential outcome under an intervention that sets vaccination to $V=v$. 
     
 In a test-negative design, we assume the data are independent realizations of 
 $$O = \{(X_i, V_i, S_i = 1, I^*_i) : i = 1, \ldots, n\}$$
@@ -68,7 +64,7 @@ Note, this would be the implied estimand, for instance, in a randomized trial in
     \psi_{rr}(X) \equiv \dfrac{\Pr[I^1 = 2, T^1 = 1 | X]}{\Pr[I^0 = 2, T^0 = 1 | X]}.
 \end{equation*}
 
-Here, we relax the typical no-unmeasured confounding assumption, but to do so we must focus on the causal risk ratio \textit{among the vaccinated}, i.e.
+Here, we relax the typical no-unmeasured confounding assumption, but to do so requires that we focus instead on the causal risk ratio \textit{among the vaccinated}, i.e.
 \begin{equation*}
     \psi_{rrv} \equiv \dfrac{\Pr[I^1 = 2 | V = 1]}{\Pr[I^0 = 2 | V = 1]} = \dfrac{\Pr[I^1 = 2, T^1 = 1 | V = 1]}{\Pr[I^0 = 2, T^0 = 1 | V = 1]}.
 \end{equation*}
@@ -76,7 +72,7 @@ rather than the risk ratio in the full population. When vaccination provides con
 
 \section{Identification} \label{sec:identification}
 \subsection{Identifiability conditions} \label{sec:conditions}
-We consider the identification of the causal risk raio among the vaccinated, $\psi_{rrv}$, under the following conditions
+We consider the identification of the causal risk ratio among the vaccinated, $\psi_{rrv}$, under the following conditions
 \begin{itemize}
     \item[(A1)] Consistency of potential outcomes. For all individuals $i$ and for $v \in \{0, 1\}$, we have $I_i^v = I_i$ and $T_i^v = T_i$ when $V_i = v$.
     \item[(A2)] No effect of vaccination on symptomatic illness for non-target pathogen ($I = 1$) among the vaccinated. That is, $\Pr[I^0 = 1 | V = 1, X] = \Pr[I^1 = 1 | V = 1, X].$
@@ -85,12 +81,11 @@ We consider the identification of the causal risk raio among the vaccinated, $\p
     $$OR_2(X) = OR_1(X), $$
     $$ \text{where } OR_i(X) = \frac{\Pr[I^0 = i, T^0 = 1 | V = 1, X]\Pr[I^0 = 0, T^0 = 1 | V = 0, X]}{\Pr[I^0 = 0, T^0 = 1 | V = 1, X]\Pr[I^0 = i, T^0 = 1| V = 0, X]}.$$
     \item[(A5)] Overlap of vaccination among test-positives and test-negatives. Define $\mathcal{S}_i(v)$ as the support of the law of $(I^v = i, T^v = 1, V = v, X)$, then for $v$ in $\{0,1\}$, then it must be that $\mathcal{S}_2(1) \subseteq \mathcal{S}_2(0)$ and $\mathcal{S}_2(v) \subseteq \mathcal{S}_1(v).$
-   
 \end{itemize}
 
-Assumptions (A1) and (A5) are well-known conditions discussed in more detail elsewhere. Assumption (A2) implies that the vaccine does not provide any cross-protection against other types of infection which may cause the same symptoms. It may also be violated if vaccination provides short-term nonspecific protection through activation of the immune system. Assumption (A3) requires that an individual's decision to seek care and get tested is not affected by their vaccination status (although it can depend on other measured and unmeasured characteristics). This assumption is commonly made in the previous literature on the test-negative design. In a placebo-controlled trial, it is ensured through the blinding of the participant to their vaccination status. 
+Assumptions (A1) and (A5) are well-known identifiability conditions discussed in more detail elsewhere. Assumption (A2) implies that the vaccine does not provide any cross-protection against other types of infection which may cause the same symptoms.   It may be violated if vaccination provides short-term nonspecific protection through activation of the immune system. In principle, this assumption could be evaluated in a randomized vaccine trial by measuring incidence of other respiratory illnesses, although in practice trials may not be adequately powered to rule out small effects. Assumption (A3) requires that an individual's decision to seek care and get tested is not affected by their vaccination status (although it can depend on other measured and unmeasured characteristics). In a placebo-controlled trial, it is ensured through the blinding of the participant to their vaccination status. Both (A2) and (A3) have been invoked in the previous literature formalizing the test-negative design. 
 
-Assumption (A4) is the key assumption of this paper and states that the degree of unmeasured confounding on the odds ratio scale is the same for illnesses with the same symptom set regardless if $I=2$ or $I=1$ is cause. It is similar, in spirit, to recently suggested alternative scale-independent parallel trend assumption in the difference-in-differences literature. Note that, as $I = 1$ and $I = 2$ are mutually exclusive, we can simplify (A3) to
+Assumption (A4) is the key assumption of this paper and is the alternative to the conditional exchangeability conditions suggested previously. It states that the degree of unmeasured confounding on the odds ratio scale is the same for illnesses with the same symptom set regardless if $I=2$ or $I=1$ is the cause. It is similar, in spirit, to recently suggested alternative scale-independent parallel trend assumption in the difference-in-differences literature. Note that, as $I = 1$ and $I = 2$ are mutually exclusive, we can simplify (A3) to
 \begin{equation}
     \frac{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 0, X]} =\frac{\Pr[I^0 = 1, T^0 = 1 | V = 1, X]}{\Pr[I^0 = 1, T^0 = 1 | V = 0, X]}
 \end{equation}
@@ -101,85 +96,159 @@ Furthermore, using a simple factorization we can split (A4) into alternative ass
     \item[(A4b)] Odds ratio equi-selection. Degree of unmeasured selection bias, e.g. receiving a test, on the odds ratio scale is the same for all symptomatic illness regardless if $I=1$ or $I=2$ is cause, i.e. 
     $$\frac{\Pr[T^0 = 1 | I^0 = 2, V = 1, X]}{\Pr[T^0 = 1 | I^0 = 2, V = 0, X]} =\frac{\Pr[T^0 = 1 | I^0 = 1, V = 1, X]}{\Pr[T^0 = 1 | I^0 = 1, V = 0, X]}.$$
 \end{itemize}
+In section X of the Appendix, we provide example data generation mechanisms that satisfy the odds ratio equi-confounding assumptions as well as those in which the assumptions are violated to provide further intuition.
 
 \subsection{Graphical criteria} \label{sec:graphical}
-% These assumptions are encoded in the causal directed acyclic graphs in Figure \ref{fig:dags}. Assumption (A2) implies the direct arrows $V \rightarrow \mathbb{I}(I = 1)$ and $V \rightarrow T$ do not exist.
+The causal directed acyclic graphs (DAGs) in Figure 1 represent possible data generating mechanism underlying the test-negative design. The DAG in Figure 1a is a modified version of the DAG in X, where the assumption of no unmeasured confounding or selection bias is shown by the lack of an arrow from $U$ to $V$. Assumption (A3) is also shown by the lack of a direct arrow from $V$ to $T$, implying no direct effect of vaccination on testing behavior. The DAG in Figure 1b shows a possible mechanism satisfying the identifiability conditions in this study. It includes the possibility of unmeasured confounding and selection bias, as there is now an arrow from $U$ to $V$; however, as shown by the bold arrows $U$ is assumed to act equivalently, on the odds scale, for the test positive and test negative illnesses. This condition imposes a parametric restriction on the allowable data generation mechanisms implied by the DAG and as such requires nonstandard notation. The DAGs in Figures 1c and 1d depict alternative mechanisms in which only equi-confounding, Assumption (A4a), or equi-selection, Assumption (A4b), are assumed. An alternative DAG in Figure 2 splits the $I$ node into $I_1 = \mathbb{I}(I = 1)$ and $I_2 = \mathbb{I}(I = 2)$ with the arrow between them representing the deterministic relationship since they are assumed to be mutually exclusive. This graph allows us to show assumption (A2) by the lack of a direct arrow between $V$ and $I_1$. 
 
- \begin{landscape}
-\begin{figure}[p]
-    \centering
-    \begin{subfigure}{0.49\linewidth}
+\subsection{Using test-negative controls as proxies for unmeasured confounding} \label{sec:effect_among_vaccinated}
+To build intuition about Assumption A4, consider the conditional risk ratio for the effect of vaccination among the vaccinated, i.e.
+\begin{equation*}
+    \psi_{rrv}(X) \equiv \frac{\Pr[I^1 = 2, T^1 = 1 | V = 1, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}.
+\end{equation*}
+Multiplying by the constant $\frac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I = 2, T = 1 | V = 0, X]}$ and applying consistency assumption (A1) for the numerator, we find that $\psi_{rrv}(X)$ satisfies:
+\begin{align*}
+    \psi_{rrv}(X) &=\underbrace{\frac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 2, T = 1 | V = 0, X]}}_{\text{observed risk ratio}} \times \underbrace{\frac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}}_{\text{de-biasing term}} 
+\end{align*}
+where this expression relates the (crude) observed risk ratio and a de-biasing term quantifying the difference in vaccination-free outcome of testing positive with symptomatic infection between those who were vaccinated and those who were not (In appendix section X, we show that this term can be further de-composed into a term de-biasing confounding of symptomatic illness and a term de-biasing selection on testing as in 4a and 4b above). If there is no unmeasured confounding for either symptomatic infection or testing, then the de-biasing term is equal to one and the observed risk ratio is equal to the causal risk ratio among the vaccinated. If there is unmeasured confounding, then the de-biasing term is the quantity that would be necessary to remove the bias from the observed risk ratio but it depends crucially on the unobserved quantity $\Pr[I^0 = 2, T^0 = 1 | V = 1, X]$, i.e. the counterfactual probability of infection and testing for the vaccinated if, contrary to the fact, they had not been vaccinated. 
+
+The logic behind the equi-confounding assumption, therefore, is to use the test-negative controls as a proxy for the unobservable quantity $\Pr[I^0 = 2, T^0 = 1 | V = 1, X]$. This could be justified on the grounds that they exhibit a similar joint propensity for illness and health-seeking, but the incidence of the test-negative infection should not be affected by the vaccine (as the vaccine is assumed to have no effect on symptomatic illness arising from other pathogens). Thus any association that remains between vaccination and non-vaccine illness after conditioning on covariates must reflect unmeasured confounding. Under equi-confounding it is assumed that these unmeasured factors act equivalently on infection and testing for $I=1$ and $I=2$ on the odds ratio scale and therefore the ratio of $I=1$ among vaccinated and unvaccinated may be used to recalibrate the observed risk ratio for $I = 2$. More specifically, as we show in the Appendix, by combining the equi-confounding assumption with the other assumptions in section, we have
+    \begin{equation}\label{eqn:proxy}
+     \Pr[I^0 = 2, T^0 = 1  | V = 1, X] = \frac{\Pr[I = 1, T = 1  | V = 1, X]}{\Pr[I = 1, T = 1  | V = 0, X]}\Pr[I = 2, T = 1 | V = 0, X],
+    \end{equation}
+where we note that $\frac{\Pr[I = 1, T =1  | V = 0, X]}{\Pr[I = 1, T = 1 | V = 1, X]}$ acts as a proxy for $\frac{\Pr[I^0 = 2, T =1  | V = 0, X]}{\Pr[I^0 = 2, T = 1 | V = 1, X]}$ or, borrowing from the difference-in-differences literature, essentially a ``parallel trend'' for $I=2$ in absence of vaccination. This is similar in spirit to the intuitive motivation for the test-negative design, i.e. that those who test-negative are, for a variety of reasons related to care-seeking etc, a useful proxy for the test-positives.
+
+\subsection{Identification under biased sampling}
+Plugging the result in equation \ref{eqn:proxy} back into the definition of $\psi_{rrv}(X)$, we find the following identifying expression 
+    \begin{equation*}
+         \phi(X) \equiv \dfrac{\dfrac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 1, T = 1 | V = 1, X]}}{\dfrac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I = 1, T = 1 | V = 0, X]}}
+    \end{equation*}
+which is now strictly in terms of the observables. However, recall that in a TND we observe biased samples among the tested, i.e. samples from $(X_i, V_i, S_i = 1, I^*_i)$ for $i = 1, \ldots, n$ where $S_i = \mathbb{I}(I_i \neq 0, T-i = 1)$. Yet, as we show in Appendix X, $\phi(X)$ is equivalent to 
+    \begin{equation}
+         \phi(X) = \dfrac{\dfrac{\Pr[I^* = 1 | S = 1, V = 1, X]}{\Pr[I^* = 0 | S = 1, V = 1, X]}}{\dfrac{\Pr[I^* = 1 | S = 1, V = 0, X]}{\Pr[I^* = 0 | S = 1, V = 0, X]}}
+    \end{equation}    
+which is the odds ratio comparing odds of testing positive for vaccinated and unvaccinated \textit{among the tested} and is identified under the biased sampling design of the TND.
+
+\subsection{Identification of the risk ratio among the vaccinated}
+In practice, the effectiveness of the vaccine may vary across important subgroups in the population. For instance, effectiveness against symptomatic infection may be lower for those in older age groups or among those with weakened immune systems or other comorbidities. Although the risk ratio is collapsible, in principle, in the full population, the biased sample of the TND requires special attention. In Appendix X, we show that under the same idenfitiability conditions we can identify the marginal risk ratio among the vaccinated via
+\begin{equation*}
+    \psi_{rrv} =  \dfrac{\Pr[I = 2 | T = 1, V = 1]}{\E\left[\dfrac{1}{\phi(X)} \Pr[I = 2 | T = 1, V = 1, X] \bigg| T = 1, V = 1\right]},
+\end{equation*}
+where $\phi(X)$ is defined as previously. Furthermore, we also show that this expression is identified under biased sampling as
+\begin{equation}
+    \phi \equiv \dfrac{\Pr[I^* = 1 | S = 1, V = 1]}{\E\left[\dfrac{1}{\phi(X)} \Pr[I^* = 1 | S = 1, V = 1, X] \bigg| S = 1, V = 1\right]}.
+\end{equation}
+
+% \subsection{Extended propensity score}
+% Using the invariance property of the odds ratio an alternative expression for Assumption (A3) is
+% $$\frac{\Pr[V = 1 | I^0 = 2, T^0 = 1, X]}{\Pr[ V = 0 | I^0 = 2, T^0 = 1, X]} =\frac{\Pr[V = 1 | I^0 = 1, T^0 = 1, X]}{\Pr[V = 0 | I^0 = 1, T^0 = 1, X]}$$
+% which implies the odds of vaccination in the test-negative controls are a proxy for the Define $\pi(X) = \Pr[V = 1 | I^0 = 2, T^0 = 1, X]$ is the so-called \textit{extended propensity score} function
+
+% $$\log \dfrac{\pi(X)}{1 - \pi(X)} =  \frac{\Pr[V = 1 | I^* = 0, S = 1, X]}{\Pr[V = 0 | I^* = 0, S = 1, X]}$$
+\section{Estimation}
+
+Logistic regression 
+
+\section{Sensitivity analysis}
+In practice, the odds ratio equi-confounding assumption may not hold such that
+$$OR_2(X) \neq OR_1(X).$$ 
+However, the decomposition in expression Z suggests a sensitivity analysis which allows for a straightforward departure from equi-confounding as follows. Consider the case that the odds ratio function $OR_2(X)$ is, instead, equal to
+$$ OR_2(X) = e^{\eta q(X)} OR_1(X) $$
+where $\eta$ is a scalar and $q(X)$ is user-specified a monotone sensitivity function which, when combined, parameterize the departure from equi-confounding on the odds ratio scale. This is an example of the well-known exponential tilt model. Setting $\eta = 0$ corresponds to the case where equi-confounding holds and values of $\eta$ further from zero represent larger violations. For instance, one might specify $q(X) = 1$, which suggests that confounding occurs equally across levels of $X$, and then vary $\eta$ over a grid of values in the interval $(-\omega, \omega)$. For each value of $\eta$, the analysis is repeated and updated estimates of $\psi$ are obtained. The resulting set of estimates can be used to construct a confidence interval for $\psi$ that is robust to violations of the equi-confounding assumption.
+
+\section{Simulation}
+
+To illustrate data generation processes where our assumptions hold and to verify the empirical performance of the proposed estimators when they do not, we perform a simulation study mimicking a TND with binary vaccination, testing, and, infection. We
+consider the following data generation process:
+    \begin{align*}
+        U &\sim N(0,1)\\
+        X &\sim N(0,1)\\
+        V &\sim \text{Bernoulli}(\text{expit}\{-1 + 0.125 X + \alpha U\})\\
+        I &\sim \text{Multinomial}([1 - p_1(X,U,V) - p_2(X,U,V), p_1(X, U,V), p_2(X,U,V)])\\
+        T &\sim \text{Bernoulli}(\text{expit}\{0.5 + 0.5 X + 0.5 U + \delta U \mathbb{I}(I = 2) + \theta V \}) \\
+        I^* &= \mathbb{I}(I = 2, T = 1)
+    \end{align*}
+where $U$ is an unmeasured confounder and
+    \begin{align*}
+        p_1(X,U,V) &= \text{expit}\{-2.75 + 0.135 X + \beta U + \gamma V\} \\
+        p_2(X,U,V) & = \text{expit}\{-2.75 + 0.125 X + 0.4 U - V\}.
+    \end{align*}
+In this setup, $\alpha$ controls whether equi-confounding (A4a) holds, i.e. when $\alpha = 0.4$ equi-confounding holds because the association between $U$ and $I=1$ and $I=2$ is the same on the odds ratio scale; $\gamma$ controls whether equi-selection (A4b) holds; $\beta$ controls whether there is a direct effect of vaccination on $I = 1$ (A2); and $\delta$ controls whether there is a direct effect of vaccination on $T$ (A3).
+
+We generate a target population of $N = $ resulting in TND samples of test-positive cases and test-negative controls of between X and Y. We consider seven scenarios: (1) no unmeasured confounding; (2) unmeasured confounding but assumptions (A1)-(A5) hold; (2) equi-confounding holds but equi-selection does not; (3) equi-selection holds but equi-confounding does not; (4) neither equi-confounding nor equi-selection hold; (5) equi-confounding and equi-selection hold but there is a direct effect of vaccination on $I = 1$; and (6) equi-confounding and equi-selection hold but there is a direct effect of vaccination on $T$. For each scenario, we generate 1000 samples and estimate the causal risk ratio among the vaccinated using the proposed estimator and calculate the bias and coverage of 95\% confidence intervals based on the true value. For comparison, we also estimate the causal risk ratio among the vaccinated assuming one had access to the full sample in the target population, as in a cohort study. We consider both the more typical case that the covariate $U$ is unmeasured and unavailable and the hypothetical case that $U$ is available and therefore the a sufficient adjustment set can therefore be conditioned on. 
+
+The results are reported in Figure 3. When there is no unmeasured confounding, all estimators are unbiased. When there is unmeasured confounding but assumptions (A1)-(A5) hold, the TND estimator is unbiased and has good coverage while the cohort estimator without $U$ is biased. When there is unmeasured confounding and equi-confounding holds but equi-selection does not, the proposed estimator is biased but has good coverage. When there is unmeasured confounding and equi-selection holds but equi-confounding does not, the proposed estimator is unbiased but has poor coverage. When there is unmeasured confounding and neither equi-confounding nor equi-selection hold, the proposed estimator is biased and has poor coverage. When there is unmeasured confounding and equi-confounding and equi-selection hold but there is a direct effect of vaccination on $I = 1$, the proposed estimator is biased and has poor coverage. When there is unmeasured confounding and equi-confounding and equi-selection hold but there is a direct effect of vaccination on $T$, the proposed estimator is biased and has poor coverage.
+
+
+\section{Discussion} \label{sec:discussion}
+
+In this article, we have described alternative identifiability conditions under which the test-negative design produces an unbiased estimate of the vaccine effectiveness against symptomatic (or medically attended) illness. 
+
+Our results rely crucially on the
+
+Prior work on the TND suggests that the design could be biased when there is correlation in vaccination behavior for vaccines that target the test positive and test negative illnesses. As shown in the DAG in Figure X this would also violate our identifiability assumptions because it would imply the existence of a confounder that does not affect the test positive and test negative illnesses equally. However, this could be resolved by measuring and adjusting for vaccination for the test negative illness. This further highlights the need to carefully consider and, where possible, document the source of the test negative illnesses. Investigators should also regularly collect full vaccination history.
+
+%The key assumption is that the degree of unmeasured confounding on the odds ratio scale is the same for illnesses with the same symptom set regardless if $I=2$ or $I=1$ is cause. This assumption is similar, in spirit, to recently suggested alternative scale-independent parallel trend assumption in the difference-in-differences literature. We have shown that this assumption can be used to identify the causal risk ratio among the vaccinated and have proposed a simple estimator. We have also shown that the proposed estimator is robust to violations of the equi-confounding assumption and have proposed a sensitivity analysis to assess the robustness of the results to violations of the equi-confounding assumption.
+% \begin{itemize}
+%     \item Under these assumptions only the effect among the vaccinated is identified.
+%     \begin{itemize}
+%         \item Alternative 1: assume no effect modification between $V = 0$ and $V = 1$.
+%         \item Alternative 2: as in proximal inference, find a second proxy (an NCE or NCO). Good candidate vaccination history for $I = 1$?
+%     \end{itemize}
+%     \item Works best when who/what constitutes $I = 1$ (test negative sympotmatics) is clearly defined. Tight symptom screen is critical. Equi-confounding probably more plausible during a short time window.
+%     \begin{itemize}
+%         \item Need to be sure that pool of pathogens in $I = 1$ is unaffected by vaccination.
+%         \item Need to be careful about whether what constitutes $I = 1$ changes over the study period and whether that has implications for the assumptions. 
+%     \end{itemize}
+%     \item When $X$ is not low dimensional, requires correctly specified models. Estimators based on inverse-probability weighting as well as doubly-robust variants should be possible. 
+%     \item Getting estimates that aren't conditional on $X$ will probably require bespoke code. 
+% \end{itemize}
+
+
+% Potential violations:
+% \begin{itemize}
+%     \item Not mutually exclusive.
+%     \item Direct effect of vaccination on testing.
+%     \item What if symptom screen is imperfect?
+%     \item asymptomatic illness
+% \end{itemize}
+%\printbibliography
+
+\begin{landscape}
+    \begin{figure}[p]
         \centering
-        \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
-            \tikzstyle{every state}=[
-              draw = none,
-              fill = none
-            ]
-            \node[state] (x) {$X$};
-            \node[state] (v) [right of=x] {$V$};
-            \node[state] (i) [right of=v] {$I$};
-            \node[state] (t) [right of=i] {$T$};
-            \node[state] (is) [right of=t] {$I^*$};
-            \node[state] (u) [below of=v] {$U$};
-    
-            \path[->] (x) edge node {} (v);
-            \path[->] (x) edge [out=45, in=135] node {} (i);
-            \path[->] (x) edge [out=45, in=135] node {} (t);
-            
-            \path[->] (v) edge node {} (i);
-            
-            \path[->] (i) edge node {} (t);
-            \path[->] (i) edge [out=45, in=135] node {} (is);
-    
-            \path[->] (t) edge node {} (is);
-    
-            \path[->] (u) edge node {} (x);
-            \path[->] (u) edge node {} (i);
-            \path[->] (u) edge node {} (t);
-            \end{tikzpicture}
-        \caption{Standard unconfoundedness assumption}
-    \end{subfigure}
-    \begin{subfigure}{0.49\linewidth}
-    \centering
-    \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
-        \tikzstyle{every state}=[
-          draw = none,
-          fill = none
-        ]
-        \node[state] (x) {$X$};
-        \node[state] (v) [right of=x] {$V$};
-        \node[state] (i) [right of=v] {$I$};
-        \node[state] (t) [right of=i] {$T$};
-        \node[state] (is) [right of=t] {$I^*$};
-        \node[state] (u) [below of=v] {$U$};
-
-        \path[->] (x) edge node {} (v);
-        \path[->] (x) edge [out=45, in=135] node {} (i);
-        \path[->] (x) edge [out=45, in=135] node {} (t);
+        \begin{subfigure}{0.49\linewidth}
+            \centering
+            \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+                \tikzstyle{every state}=[
+                  draw = none,
+                  fill = none
+                ]
+                \node[state] (x) {$X$};
+                \node[state] (v) [right of=x] {$V$};
+                \node[state] (i) [right of=v] {$I$};
+                \node[state] (t) [right of=i] {$T$};
+                \node[state] (is) [right of=t] {$I^*$};
+                \node[state] (u) [below of=v] {$U$};
         
-        \path[->] (v) edge node {} (i);
+                \path[->] (x) edge node {} (v);
+                \path[->] (x) edge [out=45, in=135] node {} (i);
+                \path[->] (x) edge [out=45, in=135] node {} (t);
+                
+                \path[->] (v) edge node {} (i);
+                
+                \path[->] (i) edge node {} (t);
+                \path[->] (i) edge [out=45, in=135] node {} (is);
         
-        \path[->] (i) edge node {} (t);
-        \path[->] (i) edge [out=45, in=135] node {} (is);
-
-        \path[->] (t) edge node {} (is);
-
-        \path[->] (u) edge node {} (x);
-        \path[->] (u) edge node {} (v);
-        \path[->] (u) edge [line width=2pt] node {} (i);
-        \path[->] (u) edge [line width=2pt] node {} (t);
-
-
-        % \path[->] (x) edge [dashed] node {} (v);
-        % \path[->] (x) edge [dashed] node {} (e);
-        % \path[->] (x) edge [dashed] node {} (i);
-        % \path[->] (x) edge [dashed] node {} (h);
-        % \path[->] (x) edge [dashed] node {} (d);
+                \path[->] (t) edge node {} (is);
         
-        \end{tikzpicture}
-    \caption{Equi-confounding and equi-selection assumptions}
-    \end{subfigure}
-    \begin{subfigure}{0.49\linewidth}
+                \path[->] (u) edge node {} (x);
+                \path[->] (u) edge node {} (i);
+                \path[->] (u) edge node {} (t);
+                \end{tikzpicture}
+            \caption{Standard unconfoundedness assumption}
+        \end{subfigure}
+        \begin{subfigure}{0.49\linewidth}
         \centering
         \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
             \tikzstyle{every state}=[
@@ -207,7 +276,7 @@ Furthermore, using a simple factorization we can split (A4) into alternative ass
             \path[->] (u) edge node {} (x);
             \path[->] (u) edge node {} (v);
             \path[->] (u) edge [line width=2pt] node {} (i);
-            % \path[->] (u) edge [line width=2pt] node {} (t);
+            \path[->] (u) edge [line width=2pt] node {} (t);
     
     
             % \path[->] (x) edge [dashed] node {} (v);
@@ -217,314 +286,292 @@ Furthermore, using a simple factorization we can split (A4) into alternative ass
             % \path[->] (x) edge [dashed] node {} (d);
             
             \end{tikzpicture}
-        \caption{Equi-confounding only}
-    \end{subfigure}
-    \begin{subfigure}{0.49\linewidth}
+        \caption{Equi-confounding and equi-selection assumptions}
+        \end{subfigure}
+        \begin{subfigure}{0.49\linewidth}
+            \centering
+            \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+                \tikzstyle{every state}=[
+                  draw = none,
+                  fill = none
+                ]
+                \node[state] (x) {$X$};
+                \node[state] (v) [right of=x] {$V$};
+                \node[state] (i) [right of=v] {$I$};
+                \node[state] (t) [right of=i] {$T$};
+                \node[state] (is) [right of=t] {$I^*$};
+                \node[state] (u) [below of=v] {$U$};
+        
+                \path[->] (x) edge node {} (v);
+                \path[->] (x) edge [out=45, in=135] node {} (i);
+                \path[->] (x) edge [out=45, in=135] node {} (t);
+                
+                \path[->] (v) edge node {} (i);
+                
+                \path[->] (i) edge node {} (t);
+                \path[->] (i) edge [out=45, in=135] node {} (is);
+        
+                \path[->] (t) edge node {} (is);
+        
+                \path[->] (u) edge node {} (x);
+                \path[->] (u) edge node {} (v);
+                \path[->] (u) edge [line width=2pt] node {} (i);
+                % \path[->] (u) edge [line width=2pt] node {} (t);
+        
+        
+                % \path[->] (x) edge [dashed] node {} (v);
+                % \path[->] (x) edge [dashed] node {} (e);
+                % \path[->] (x) edge [dashed] node {} (i);
+                % \path[->] (x) edge [dashed] node {} (h);
+                % \path[->] (x) edge [dashed] node {} (d);
+                
+                \end{tikzpicture}
+            \caption{Equi-confounding only}
+        \end{subfigure}
+        \begin{subfigure}{0.49\linewidth}
+        \centering
+        \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+            \tikzstyle{every state}=[
+              draw = none,
+              fill = none
+            ]
+            \node[state] (x) {$X$};
+            \node[state] (v) [right of=x] {$V$};
+            \node[state] (i) [right of=v] {$I$};
+            \node[state] (t) [right of=i] {$T$};
+            \node[state] (is) [right of=t] {$I^*$};
+            \node[state] (u) [below of=v] {$U$};
+    
+            \path[->] (x) edge node {} (v);
+            \path[->] (x) edge [out=45, in=135] node {} (i);
+            \path[->] (x) edge [out=45, in=135] node {} (t);
+            
+            \path[->] (v) edge node {} (i);
+            
+            \path[->] (i) edge node {} (t);
+            \path[->] (i) edge [out=45, in=135] node {} (is);
+    
+            \path[->] (t) edge node {} (is);
+    
+            \path[->] (u) edge node {} (x);
+            \path[->] (u) edge node {} (v);
+            % \path[->] (u) edge [line width=2pt] node {} (i);
+            \path[->] (u) edge [line width=2pt] node {} (t);
+    
+    
+            % \path[->] (x) edge [dashed] node {} (v);
+            % \path[->] (x) edge [dashed] node {} (e);
+            % \path[->] (x) edge [dashed] node {} (i);
+            % \path[->] (x) edge [dashed] node {} (h);
+            % \path[->] (x) edge [dashed] node {} (d);
+            
+            \end{tikzpicture}
+        \caption{Equi-selection only}
+        \end{subfigure}
+        \caption{Causal directed acyclic graphs for the test-negative design under alternative assumption sets. Graph (a) shows the standard unconfoundedness assumption as, conditional on $X$, $V$ and $I$ and $T$ are d-separated. Graph (b) shows a possible data generation mechanism satisfying the identifiability conditions in Section 4.1. It includes the possibility of unmeasured confounding and selection bias, as there is now an arrow from $U$ to $V$; however, as shown by the bold arrows $U$ is assumed to act equivalently, on the odds scale, for the test positive and test negative illnesses. Graphs (c) and (d) show alternative mechanisms that satisfy equi-confounding or equi-selection only.}\label{fig:dags}
+    \end{figure}
+    \end{landscape}
+
+    \begin{figure}[p]
+        \centering
+        \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+            \tikzstyle{every state}=[
+              draw = none,
+              fill = none
+            ]
+            \node[state] (x) {$X$};
+            \node[state] (v) [right of=x] {$V$};
+            \node[state] (i) [right of=v] {$I_2$};
+            \node[state] (t) [right of=i] {$T$};
+            \node[state] (is) [right of=t] {$I^*$};
+            \node[state] (i1) [below of=i] {$I_1$};
+            \node[state] (u) [below of=v] {$U$};
+    
+            \path[->] (x) edge node {} (v);
+            \path[->] (x) edge [out=45, in=135] node {} (i);
+    
+            \path[->] (v) edge node {} (i);
+            
+            \path[->] (i) edge node {} (t);
+            \path[->] (i1) edge node {} (t);
+            \path[->] (i1) edge node {} (is);
+    
+            \path[->] (x) edge [out=45, in=135] node {} (t);
+    
+            \path[->] (t) edge node {} (is);
+    
+            \path[->] (i) edge [out=45, in=135] node {} (is);
+            \path[->] (i1) edge [dashed] node {} (i);
+    
+            \path[->] (u) edge node {} (x);
+            \path[->] (u) edge node {} (v);
+            \path[->] (u) edge [line width=2pt] node {} (i);
+            \path[->] (u) edge [line width=2pt] node {} (t);
+            \path[->] (u) edge [line width=2pt] node {} (i1);
+            \end{tikzpicture}
+        \caption{Splitting $I$ node to show how $I=1$ is a negative outcome control. Dashed line is deterministic relationship as $I = 1$ and $I = 2$ are mutually exclusive.}
+    \end{figure}
+    \clearpage
+
+\begin{figure}[p]
     \centering
-    \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
-        \tikzstyle{every state}=[
-          draw = none,
-          fill = none
-        ]
-        \node[state] (x) {$X$};
-        \node[state] (v) [right of=x] {$V$};
-        \node[state] (i) [right of=v] {$I$};
-        \node[state] (t) [right of=i] {$T$};
-        \node[state] (is) [right of=t] {$I^*$};
-        \node[state] (u) [below of=v] {$U$};
+    \begin{subfigure}{0.8\linewidth}
+        \centering
+        \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+            \tikzstyle{every state}=[
+              draw = none,
+              fill = none
+            ]
+            \node[state] (x) {$X$};
+            \node[state] (v) [right of=x] {$V$};
+            \node[state] (i) [right of=v] {$I_2$};
+            \node[state] (t) [right of=i] {$T$};
+            \node[state] (is) [right of=t] {$I^*$};
+            \node[state] (i1) [below of=i] {$I_1$};
+            \node[state] (u) [below of=x] {$U$};
+            \node[state] (v1) [below of=v] {$V_1$};
+   
+            \path[->] (x) edge node {} (v);
+            \path[->] (x) edge [out=45, in=135] node {} (i);
+    
+            \path[->] (v) edge node {} (i);
+            
+            \path[->] (i) edge node {} (t);
+            \path[->] (i1) edge node {} (t);
+            \path[->] (i1) edge node {} (is);
 
-        \path[->] (x) edge node {} (v);
-        \path[->] (x) edge [out=45, in=135] node {} (i);
-        \path[->] (x) edge [out=45, in=135] node {} (t);
+            \path[->] (x) edge [out=45, in=135] node {} (t);
+    
+            \path[->] (t) edge node {} (is);
+            \path[->] (v1) edge node {} (i1);
+
+            \path[->] (i) edge [out=45, in=135] node {} (is);
+            \path[->] (i1) edge [dashed] node {} (i);
+
+    
+            \path[->] (u) edge node {} (v1);
+            \path[->] (u) edge node {} (v);
+            % \path[->] (u) edge [line width=2pt] node {} (i);
+            % \path[->] (u) edge [line width=2pt] node {} (t);
+            % \path[->] (u) edge [line width=2pt] node {} (i1);
+            \end{tikzpicture}
+        \caption{Correlated vaccination behavior.}
+        \end{subfigure}
+        \begin{subfigure}{0.8\linewidth}
+            \centering
+            \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+                \tikzstyle{every state}=[
+                  draw = none,
+                  fill = none
+                ]
+                \node[state] (x) {$X$};
+                \node[state] (v) [right of=x] {$V$};
+                \node[state] (i) [right of=v] {$I_2$};
+                \node[state] (t) [right of=i] {$T$};
+                \node[state] (is) [right of=t] {$I^*$};
+                \node[state] (i1) [below of=i] {$I_1$};
+                \node[state] (u) [below of=v] {$U$};
+       
+                \path[->] (x) edge node {} (v);
+                \path[->] (x) edge [out=45, in=135] node {} (i);
         
-        \path[->] (v) edge node {} (i);
+                \path[->] (v) edge node {} (i);
+                
+                \path[->] (i) edge node {} (t);
+                \path[->] (i1) edge node {} (t);
+                \path[->] (i1) edge node {} (is);
+    
+                \path[->] (x) edge [out=45, in=135] node {} (t);
         
-        \path[->] (i) edge node {} (t);
-        \path[->] (i) edge [out=45, in=135] node {} (is);
-
-        \path[->] (t) edge node {} (is);
-
-        \path[->] (u) edge node {} (x);
-        \path[->] (u) edge node {} (v);
-        % \path[->] (u) edge [line width=2pt] node {} (i);
-        \path[->] (u) edge [line width=2pt] node {} (t);
-
-
-        % \path[->] (x) edge [dashed] node {} (v);
-        % \path[->] (x) edge [dashed] node {} (e);
-        % \path[->] (x) edge [dashed] node {} (i);
-        % \path[->] (x) edge [dashed] node {} (h);
-        % \path[->] (x) edge [dashed] node {} (d);
+                \path[->] (t) edge node {} (is);
+    
+                \path[->] (i) edge [out=45, in=135] node {} (is);    
         
-        \end{tikzpicture}
-    \caption{Equi-selection only}
-    \end{subfigure}
-    \caption{Causal directed acyclic graphs for the test-negative design under alternative assumption sets. Graph (a) shows the the standard unconfoundedness assumption as, conditional on $X$, $V$ and $I$ and $T$ are d-separated. Graph (b) shows }\label{fig:dags}
+                \path[->] (u) edge node {} (v);
+                \path[->] (u) edge node {} (i);
+                \path[->] (u) edge node {} (t);
+                \path[->] (u) edge node {} (i1);
+                \end{tikzpicture}
+            \caption{$I_1$ and $I_2$ are not mutually exclusive.}
+            \end{subfigure}
+    % \begin{subfigure}{0.8\linewidth}
+    %     \centering
+    %     \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+    %         \tikzstyle{every state}=[
+    %           draw = none,
+    %           fill = none
+    %         ]
+    %         \node[state] (x) {$X$};
+    %         \node[state] (v) [right of=x] {$V$};
+    %         \node[state] (i) [right of=v] {$\mathbb{I}(I = 2)$};
+    %         \node[state] (t) [right of=i] {$T$};
+    %         \node[state] (is) [right of=t] {$I^*$};
+    %         \node[state] (i1) [below of=i] {$\mathbb{I}(I = 1)$};
+    %         \node[state] (u) [below of=v] {$U$};
+    
+    %         \path[->] (x) edge node {} (v);
+    %         \path[->] (x) edge [out=45, in=135] node {} (i);
+    
+    %         \path[->] (v) edge node {} (i);
+            
+    %         \path[->] (i) edge node {} (t);
+    %         \path[->] (i1) edge node {} (t);
+    %         \path[->] (x) edge [out=45, in=135] node {} (t);
+    
+    %         \path[->] (t) edge node {} (is);
+    
+    %         \path[->] (i) edge [out=45, in=135] node {} (is);
+    
+    
+    %         \path[->] (i1) edge node {} (i);
+    
+    
+    %         \path[->] (u) edge node {} (x);
+    %         \path[->] (u) edge node {} (v);
+    %         \path[->] (u) edge node {} (i);
+    %         \path[->] (u) edge node {} (t);
+    %         \path[->] (u) edge node {} (i1);
+            
+    %         \end{tikzpicture}
+    %     \caption{Splitting $I$ node to show how $I=1$ is a negative outcome control. Solid line is deterministic relationship as $I = 1$ and $I = 2$ are mutually exclusive.}
+    %     \end{subfigure}
+    %     \begin{subfigure}{0.8\linewidth}
+    %         \centering
+    %         \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+    %             \tikzstyle{every state}=[
+    %               draw = none,
+    %               fill = none
+    %             ]
+    %             \node[state] (x) {$X$};
+    %             \node[state] (v) [right of=x] {$V$};
+    %             \node[state] (i) [right of=v] {$I$};
+    %             \node[state] (z) [right of=i] {$Z$};
+
+    %             \node[state] (t) [right of=z] {$T$};
+    %             \node[state] (is) [right of=t] {$I^*$};
+    %             \node[state] (u) [below of=v] {$U$};
+        
+    %             \path[->] (x) edge node {} (v);
+    %             \path[->] (x) edge [out=45, in=135] node {} (i);
+    %             \path[->] (x) edge [out=45, in=135] node {} (t);
+                
+    %             \path[->] (v) edge node {} (i);
+                
+    %             \path[->] (i) edge node {} (z);
+    %             \path[->] (i) edge [out=45, in=135] node {} (is);
+        
+    %             \path[->] (t) edge node {} (is);
+        
+    %             \path[->] (u) edge node {} (x);
+    %             \path[->] (u) edge node {} (v);
+    %             \path[->] (u) edge node {} (i);
+    %             \path[->] (u) edge node {} (t);
+                
+    %             \end{tikzpicture}
+    %         \caption{Causal directed-acyclic graph for the test-negative design}
+    %     \end{subfigure}
+    \caption{A}\label{fig:dags}
 \end{figure}
-\end{landscape}
-
-\clearpage
-% \begin{figure}[p]
-%     \centering
-%     \begin{subfigure}{0.8\linewidth}
-%         \centering
-%         \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
-%             \tikzstyle{every state}=[
-%               draw = none,
-%               fill = none
-%             ]
-%             \node[state] (x) {$X$};
-%             \node[state] (v) [right of=x] {$V$};
-%             \node[state] (i) [right of=v] {$I$};
-%             \node[state] (t) [right of=i] {$T$};
-%             \node[state] (is) [right of=t] {$I^*$};
-%             \node[state] (u) [below of=v] {$U$};
-%             \node[state] (s) [below of=t] {$S$};
-    
-%             \path[->] (x) edge node {} (v);
-%             \path[->] (x) edge [out=45, in=135] node {} (i);
-%             \path[->] (x) edge [out=45, in=135] node {} (t);
-            
-%             \path[->] (v) edge node {} (i);
-            
-%             \path[->] (i) edge node {} (t);
-%             \path[->] (i) edge node {} (s);
-%             \path[->] (i) edge [out=45, in=135] node {} (is);
-    
-%             \path[->] (t) edge node {} (is);
-%             \path[->] (t) edge node {} (s);
-    
-%             \path[->] (u) edge node {} (x);
-%             \path[->] (u) edge node {} (v);
-%             \path[->] (u) edge node {} (i);
-%             \path[->] (u) edge node {} (t);
-%             \path[->] (u) edge node {} (s);
-    
-    
-%             % \path[->] (x) edge [dashed] node {} (v);
-%             % \path[->] (x) edge [dashed] node {} (e);
-%             % \path[->] (x) edge [dashed] node {} (i);
-%             % \path[->] (x) edge [dashed] node {} (h);
-%             % \path[->] (x) edge [dashed] node {} (d);
-            
-%             \end{tikzpicture}
-%         \caption{Causal directed-acyclic graph for the test-negative design}
-%     \end{subfigure}
-%     \begin{subfigure}{0.8\linewidth}
-%     \centering
-%     \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
-%         \tikzstyle{every state}=[
-%           draw = none,
-%           fill = none
-%         ]
-%         \node[state] (x) {$X$};
-%         \node[state] (v) [right of=x] {$V$};
-%         \node[state] (i) [right of=v] {$I_2$};
-%         \node[state] (t) [right of=i] {$T$};
-%         \node[state] (is) [right of=t] {$I^*$};
-%         \node[state] (i1) [below of=i] {$I_1$};
-%         \node[state] (u) [below of=v] {$U$};
-
-%         \path[->] (x) edge node {} (v);
-%         \path[->] (x) edge [out=45, in=135] node {} (i);
-
-%         \path[->] (v) edge node {} (i);
-        
-%         \path[->] (i) edge node {} (t);
-%         \path[->] (i1) edge node {} (t);
-%         \path[->] (x) edge [out=45, in=135] node {} (t);
-
-%         \path[->] (t) edge node {} (is);
-
-%         \path[->] (i) edge [out=45, in=135] node {} (is);
-
-
-%         \path[->] (u) edge node {} (x);
-%         \path[->] (u) edge node {} (v);
-%         \path[->] (u) edge node {} (i);
-%         \path[->] (u) edge node {} (t);
-%         \path[->] (u) edge node {} (i1);
-%         \end{tikzpicture}
-%     \caption{Splitting $I$ node to show how $I=1$ is a negative outcome control. Solid line is deterministic relationship as $I = 1$ and $I = 2$ are mutually exclusive.}
-%     \end{subfigure}
-%     \begin{subfigure}{0.8\linewidth}
-%         \centering
-%         \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
-%             \tikzstyle{every state}=[
-%               draw = none,
-%               fill = none
-%             ]
-%             \node[state] (x) {$X$};
-%             \node[state] (v) [right of=x] {$V$};
-%             \node[state] (i) [right of=v] {$\mathbb{I}(I = 2)$};
-%             \node[state] (t) [right of=i] {$T$};
-%             \node[state] (is) [right of=t] {$I^*$};
-%             \node[state] (i1) [below of=i] {$\mathbb{I}(I = 1)$};
-%             \node[state] (u) [below of=v] {$U$};
-    
-%             \path[->] (x) edge node {} (v);
-%             \path[->] (x) edge [out=45, in=135] node {} (i);
-    
-%             \path[->] (v) edge node {} (i);
-            
-%             \path[->] (i) edge node {} (t);
-%             \path[->] (i1) edge node {} (t);
-%             \path[->] (x) edge [out=45, in=135] node {} (t);
-    
-%             \path[->] (t) edge node {} (is);
-    
-%             \path[->] (i) edge [out=45, in=135] node {} (is);
-    
-    
-%             \path[->] (i1) edge node {} (i);
-    
-    
-%             \path[->] (u) edge node {} (x);
-%             \path[->] (u) edge node {} (v);
-%             \path[->] (u) edge node {} (i);
-%             \path[->] (u) edge node {} (t);
-%             \path[->] (u) edge node {} (i1);
-            
-%             \end{tikzpicture}
-%         \caption{Splitting $I$ node to show how $I=1$ is a negative outcome control. Solid line is deterministic relationship as $I = 1$ and $I = 2$ are mutually exclusive.}
-%         \end{subfigure}
-%         \begin{subfigure}{0.8\linewidth}
-%             \centering
-%             \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
-%                 \tikzstyle{every state}=[
-%                   draw = none,
-%                   fill = none
-%                 ]
-%                 \node[state] (x) {$X$};
-%                 \node[state] (v) [right of=x] {$V$};
-%                 \node[state] (i) [right of=v] {$I$};
-%                 \node[state] (z) [right of=i] {$Z$};
-
-%                 \node[state] (t) [right of=z] {$T$};
-%                 \node[state] (is) [right of=t] {$I^*$};
-%                 \node[state] (u) [below of=v] {$U$};
-        
-%                 \path[->] (x) edge node {} (v);
-%                 \path[->] (x) edge [out=45, in=135] node {} (i);
-%                 \path[->] (x) edge [out=45, in=135] node {} (t);
-                
-%                 \path[->] (v) edge node {} (i);
-                
-%                 \path[->] (i) edge node {} (z);
-%                 \path[->] (i) edge [out=45, in=135] node {} (is);
-        
-%                 \path[->] (t) edge node {} (is);
-        
-%                 \path[->] (u) edge node {} (x);
-%                 \path[->] (u) edge node {} (v);
-%                 \path[->] (u) edge node {} (i);
-%                 \path[->] (u) edge node {} (t);
-                
-%                 \end{tikzpicture}
-%             \caption{Causal directed-acyclic graph for the test-negative design}
-%         \end{subfigure}
-%     \caption{A}\label{fig:dags}
-% \end{figure}
-
-\subsection{Using test-negative controls as proxies for unmeasured confounding} \label{sec:effect_among_vaccinated}
-To build intuition about the role of the equi-confounding assumption (A4), consider the conditional risk ratio for the effect of vaccination among the vaccinated, i.e.
-\begin{equation*}
-    \psi_{rrv}(X) \equiv \frac{\Pr[I^1 = 2, T^1 = 1 | V = 1, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}.
-\end{equation*}
-Multiplying by the constant $\frac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I = 2, T = 1 | V = 0, X]}$ and applying consistency assumption (A1) for the numerator, we find that $\psi_{rrv}(X)$ satisfies:
-\begin{align*}
-    \psi_{rrv}(X) &=\underbrace{\frac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 2, T = 1 | V = 0, X]}}_{\text{observed risk ratio}} \times \underbrace{\frac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}}_{\text{de-biasing term}} 
-\end{align*}
-where this expression relates the (crude) observed risk ratio and a de-biasing term quantifying the difference in vaccination-free outcome of testing positive with symptomatic infection between those who were vaccinated and those who were not (Note, in appendix section X, we show that this term can be further de-composed into a term de-biasing confounding of symptomatic illness and a term de-biasing selection on testing). If there is no unmeasured confounding for either symptomatic infection or testing, then the de-biasing term is equal to one and the observed risk ratio is equal to the causal risk ratio among the vaccinated. If there is unmeasured confounding, then the de-biasing term is the quantity that would be necessary to remove the bias from the observed risk ratio but it depends crucially on the unobserved quantity $\Pr[I^0 = 2, T^0 = 1 | V = 1, X]$, i.e. the counterfactual probability of infection and testing for the vaccinated if, contrary to the fact, they had not been vaccinated. 
-
-The logic behind the equi-confouding assumption, therefore, is to use the test-negative controls as a proxy for the unobservable quantity $\Pr[I^0 = 2, T^0 = 1 | V = 1, X]$ based on the fact that they have exhibited a similar joint propensity for illness and health-seeking, but should not be affected by the vaccine (as the vaccine is assumed to have no effect on symptomatic illness arising from other pathogens). Thus any association that remains between vaccination and non-vaccine illness after conditioning on covariates must reflect unmeasured confounding. Under equi-confounding it is assumed that these unmeasured factors act equivalently on infection and testing for $I=1$ and $I=2$ on the odds ratio scale and therefore the ratio of $I=1$ among vaccinated and unvaccinated may be used to recalibrate the observed risk ratio for $I = 2$. More specificially, as we show in the Appendix, by combining the equi-confounding assumption with the other assumptions in section, we have
-    \begin{equation}\label{eqn:proxy}
-     \Pr[I^0 = 2, T^0 = 1  | V = 1, X] = \frac{\Pr[I = 1, T = 1  | V = 1, X]}{\Pr[I = 1, T = 1  | V = 0, X]}\Pr[I = 2, T = 1 | V = 0, X],
-    \end{equation}
-where we note that $\frac{\Pr[I = 1, T =1  | V = 0, X]}{\Pr[I = 1, T = 1 | V = 1, X]}$ acts as a proxy for $\frac{\Pr[I^0 = 2, T =1  | V = 0, X]}{\Pr[I^0 = 2, T = 1 | V = 1, X]}$ or, borrowing from the difference-in-differences literature, essentially a ``parallel trend'' for $I=2$ in absence of vaccination. Are confounders the same for $I=1$ and $I=2$ and is testing behavior the same for $I=1$ and $I=2$? This is similar in spirit to the intuitive motivation for the test-negative design, i.e. that those who test-negative are, for a variety of reasons related to care-seeking etc, a useful proxy for the test-positives.
-
-\subsection{Identification under biased sampling}
-Plugging the result in equation \ref{eqn:proxy} back into the definition of $\psi_{rrv}(X)$, we find the following identifying expression 
-    \begin{equation*}
-         \phi(X) \equiv \dfrac{\dfrac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 1, T = 1 | V = 1, X]}}{\dfrac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I = 1, T = 1 | V = 0, X]}}
-    \end{equation*}
-which is now strictly among the observables. However, recall that in a TND we only observe biased samples among the tested, i.e. we observe $(X_i, V_i, S_i = 1, I^*_i)$ for $i = 1, \ldots, n$ where $S_i = \mathbb{I}(I_i \neq 0, T-i = 1)$. However, we can show that this is equivalent to 
-    \begin{equation}
-         \phi(X) = \dfrac{\dfrac{\Pr[I^* = 1 | S = 1, V = 1, X]}{\Pr[I^* = 0 | S = 1, V = 1, X]}}{\dfrac{\Pr[I^* = 1 | S = 1, V = 0, X]}{\Pr[I^* = 0 | S = 1, V = 0, X]}}
-    \end{equation}    
-which is the odds ratio comparing odds of testing positive for vaccinated and unvaccinated among the tested only.
-
-As shown in the Appendix, using similar logic we can also identify the marginal risk ratio among the vaccinated, i.e.
-\begin{equation*}
-    \phi =  \dfrac{\Pr[I = 2 | T = 1, V = 1]}{\E\left[\dfrac{1}{\phi(X)} \Pr[I = 2 | T = 1, V = 1, X] \bigg| T = 1, V = 1\right]} 
-\end{equation*}
-
-% \subsection{Extended propensity score}
-% Using the invariance property of the odds ratio an alternative expression for Assumption (A3) is
-% $$\frac{\Pr[V = 1 | I^0 = 2, T^0 = 1, X]}{\Pr[ V = 0 | I^0 = 2, T^0 = 1, X]} =\frac{\Pr[V = 1 | I^0 = 1, T^0 = 1, X]}{\Pr[V = 0 | I^0 = 1, T^0 = 1, X]}$$
-% which implies the odds of vaccination in the test-negative controls are a proxy for the Define $\pi(X) = \Pr[V = 1 | I^0 = 2, T^0 = 1, X]$ is the so-called \textit{extended propensity score} function
-
-% $$\log \dfrac{\pi(X)}{1 - \pi(X)} =  \frac{\Pr[V = 1 | I^* = 0, S = 1, X]}{\Pr[V = 0 | I^* = 0, S = 1, X]}$$
-\section{Estimation}
-
-Logistic regression 
-
-\section{Sensitivity analysis}
-In practice, the odds ratio equi-confounding assumption may not hold such that
-$$OR_2(X) \neq OR_1(X).$$ 
-However, using the same setup, we can conduct a sensitivity analysis which allows for departure from this assumption as follows. Consider the case that the odds ratio function $OR_2(X)$ is set equal to
-$$ OR_2(X) = e^{\eta q(X)} OR_1(X) $$
-where $\eta$ is a scalar and $q(X)$ is user-specified a monotone sensitivity function. This is an example of the well-known exponential tilt model parameterizing the departure from equi-confounding on the odds ratio scale. Setting $\eta = 0$ corresponds to the case where equi-confounding holds and values of $\eta$ further from zero represent larger violations. For instance, one might specify $q(X) = 1$, which suggests that confounding occurs equally across levels of $X$, and then vary $\eta$ over a grid of values in the interval $(-\omega, \omega)$. For each value of $\eta$, the analysis is repeated and updated estimates of $\psi$ are obtained. The resulting set of estimates can be used to construct a confidence interval for $\psi$ that is robust to violations of the equi-confounding assumption.
-
-\section{Simulation}
-
-To illustrate data generation processes where our assumptions hold and to verify the empirical performance of the proposed estimators when they do not, we perform a simulation study mimicking a TND with binary vaccination, testing, and, infection. We
-consider the following data generation process:
-    \begin{align*}
-        U &\sim N(0,1)\\
-        X &\sim N(0,1)\\
-        V &\sim \text{Bernoulli}(\text{expit}\{-1 + 0.125 X + \alpha U\})\\
-        I &\sim \text{Multinomial}([1 - p_1(X,U,V) - p_2(X,U,V), p_1(X, U,V), p_2(X,U,V)])\\
-        T &\sim \text{Bernoulli}(\text{expit}\{0.5 + 0.5 X + 0.5 U + \delta U \mathbb{I}(I = 2) + \theta V \}) \\
-        I^* &= \mathbb{I}(I = 2, T = 1)
-    \end{align*}
-where $U$ is an unmeasured confounder and
-    \begin{align*}
-        p_1(X,U,V) &= \text{expit}\{-2.75 + 0.135 X + \beta U + \gamma V\} \\
-        p_2(X,U,V) & = \text{expit}\{-2.75 + 0.125 X + 0.4 U - V\}.
-    \end{align*}
-In this setup, $\alpha$ controls whether equi-confounding (A4a) holds, i.e. when $\alpha = 0.4$ equi-confounding holds because the association between $U$ and $I=1$ and $I=2$ is the same on the odds ratio scale; $\gamma$ controls whether equi-selection (A4b) holds; $\beta$ controls whether there is a direct effect of vaccination on $I = 1$ (A2); and $\delta$ controls whether there is a direct effect of vaccination on $T$ (A3).
-
-We generate a target population of $N = $ resulting in TND samples of test-positive cases and test-negative controls of between X and Y. We consider seven scenarios: (1) no unmeasured confounding; (2) unmeasured confounding but assumptions (A1)-(A5) hold; (2) equi-confounding holds but equi-selection does not; (3) equi-selection holds but equi-confounding does not; (4) neither equi-confounding nor equi-selection hold; (5) equi-confounding and equi-selection hold but there is a direct effect of vaccination on $I = 1$; and (6) equi-confounding and equi-selection hold but there is a direct effect of vaccination on $T$. For each scenario, we generate 1000 samples and estimate the causal risk ratio among the vaccinated using the proposed estimator and calculate the bias and coverage of 95\% confidence intervals based on the true value. For comparison, we also estimate the causal risk ratio among the vaccinated assuming one had access to the full sample in the target population, as in a cohort study, both with and without adjustment for $U$.
-
-\section{Discussion} \label{sec:discussion}
-
-\begin{itemize}
-    \item Under these assumptions only the effect among the vaccinated is identified.
-    \begin{itemize}
-        \item Alternative 1: assume no effect modification between $V = 0$ and $V = 1$.
-        \item Alternative 2: as in proximal inference, find a second proxy (an NCE or NCO). Good candidate vaccination history for $I = 1$?
-    \end{itemize}
-    \item Works best when who/what constitutes $I = 1$ (test negative sympotmatics) is clearly defined. Tight symptom screen is critical. Equi-confounding probably more plausible during a short time window.
-    \begin{itemize}
-        \item Need to be sure that pool of pathogens in $I = 1$ is unaffected by vaccination.
-        \item Need to be careful about whether what constitutes $I = 1$ changes over the study period and whether that has implications for the assumptions. 
-    \end{itemize}
-    \item When $X$ is not low dimensional, requires correctly specified models. Estimators based on inverse-probability weighting as well as doubly-robust variants should be possible. 
-    \item Getting estimates that aren't conditional on $X$ will probably require bespoke code. 
-\end{itemize}
-
-
-Potential violations:
-\begin{itemize}
-    \item Not mutually exclusive.
-    \item Direct effect of vaccination on testing.
-    \item What if symptom screen is imperfect?
-    \item asymptomatic illness
-\end{itemize}
-%\printbibliography
-
-
 
 \input{supplement.tex}
 

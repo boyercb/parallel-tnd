@@ -15,10 +15,10 @@
 
     \section{Appendix}
     
-    \subsection{Proof}
+    \subsection{Proof: identification of the conditional risk ratio among the vaccinated}
     Consider the conditional risk ratio for the effect of vaccination among the vaccinated, i.e.
     \begin{equation*}
-        \psi(X) \equiv \dfrac{\Pr[I^1 = 2, T^1 = 1 | V = 1, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}
+        \psi_{rrv}(X) \equiv \dfrac{\Pr[I^1 = 2, T^1 = 1 | V = 1, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}
     \end{equation*}
     Under the consistency assumption (A1) the numerator is equal to $\Pr[I = 2, T = 1 | V = 1, X]$. Focusing on the denominator, under equi-confounding (A3)
     \begin{equation*}
@@ -28,21 +28,66 @@ and then by (A1) and (A2) with (A4) ensuring overlap
     \begin{equation*}
      \Pr[I^0 = 2, T^0 = 1  | V = 1, X] = \frac{\Pr[I = 1, T = 1  | V = 1, X]}{\Pr[I = 1, T = 1  | V = 0, X]}\Pr[I = 2, T = 1 | V = 0, X]
     \end{equation*}
-Plugging back into the expression for $\psi(X)$, we find the following identifying expression 
+Plugging back into the expression for $\psi_{rrv}(X)$, we find the following identifying expression 
     \begin{equation*}
          \phi(X) \equiv \dfrac{\dfrac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 1, T = 1 | V = 1, X]}}{\dfrac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I = 1, T = 1 | V = 0, X]}}
     \end{equation*}
-which is now strictly among the observables. A key insight is that $\frac{\Pr[I = 1, T =1  | V = 0, X]}{\Pr[I = 1, T = 1 | V = 1, X]}$ acts as a proxy for $\frac{\Pr[I^0 = 2, T =1  | V = 0, X]}{\Pr[I^0 = 2, T = 1 | V = 1, X]}$ essentially a ``parallel trend'' for $I=2$ in absence of vaccination.
+which is the ratio of the odds of symptomatic infection with the vaccine pathogen versus symptomatic infection with another pathogen in the vaccinated and unvaccinated. It is also strictly written in terms of the observables. A key insight is that $\frac{\Pr[I = 1, T =1  | V = 0, X]}{\Pr[I = 1, T = 1 | V = 1, X]}$ acts as a proxy for $\frac{\Pr[I^0 = 2, T =1  | V = 0, X]}{\Pr[I^0 = 2, T = 1 | V = 1, X]}$ essentially a ``parallel trend'' for $I=2$ in absence of vaccination.
 
-Recall that we only observe biased samples from $(X_i, V_i, S_i = 1, I^*_i)$ where $S = I(I \neq 0, T = 1)$, i.e. we only observe test results among the symptomatic and tested. However, we can show that 
-    \begin{equation}
-         \phi(X) = \dfrac{\dfrac{\Pr[I^* = 1 | S = 1, V = 1, X]}{\Pr[I^* = 0 | S = 1, V = 1, X]}}{\dfrac{\Pr[I^* = 1 | S = 1, V = 0, X]}{\Pr[I^* = 0 | S = 1, V = 0, X]}}
-    \end{equation}    
+Recall that, in a test-negative study, we only observe test results among the symptomatic and tested, i.e. samples $\{(X_i, V_i, S_i = 1, I^*_i) : i = 1, \ldots, n\}$ where $S = \mathbb{I}(I \neq 0, T = 1)$. However, we can show that 
+    \begin{align*}
+         \phi(X) &= \dfrac{\dfrac{\Pr[I^* = 1 | S = 1, V = 1, X]}{\Pr[I^* = 0 | S = 1, V = 1, X]}}{\dfrac{\Pr[I^* = 1 | S = 1, V = 0, X]}{\Pr[I^* = 0 | S = 1, V = 0, X]}}
+    \end{align*}    
 which is the odds ratio comparing odds of testing positive for vaccinated and unvaccinated among the tested only.
 
+\subsection{Proof: identification of the risk ratio among the vaccinated}
+Define the risk ratio of testing positive among the treated as:
+\begin{equation*}
+    \psi_{rrv} = \dfrac{\Pr[I^1 = 2, T^1 = 1 | V = 1]}{\Pr[I^0 = 2, T^0 = 1 | V = 1]}
+\end{equation*}
+Applying iterated expectations to the denominator we have
+\begin{equation*}
+    \psi_{rrv} = \dfrac{\Pr[I^1 = 2, T^1 = 1 | V = 1]}{\E[\Pr[I^0 = 2, T^0 = 1 | V = 1, X] | V = 1]}.
+\end{equation*}
+By consistency the numerator is equal to $\Pr[I = 2, T = 1 | V = 1]$ and by the previous results from section A.1 we have that 
+\begin{equation*}
+    \Pr[I^0 = 2, T^0 = 1 | V = 1, X] = \dfrac{\Pr[I = 1, T = 1 | V = 1, X]}{\Pr[I = 1, T = 1 | V = 0, X]} \Pr[I = 2, T = 1 | V = 0, X]
+\end{equation*}
+which is equivalent to 
+\begin{equation*}
+    \Pr[I^0 = 2, T^0 = 1 | V = 1, X] = \dfrac{1}{\phi(X)} \Pr[I = 2, T = 1 | V = 1, X].
+\end{equation*}
+where $\phi(X)$ is the conditional odds ratio defined previously, i.e.
+\begin{equation*}
+    \phi(X) = \dfrac{\dfrac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 1, T = 1 | V = 1, X]}}{\dfrac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I = 1, T = 1 | V = 0, X]}}
+\end{equation*}
+Hence
+\begin{equation*}
+    \psi_{rrv} = \dfrac{\Pr[I = 2, T = 1 | V = 1]}{\E\left[\dfrac{1}{\phi(X)} \Pr[I = 2, T = 1 | V = 1, X] | V = 1\right]} 
+\end{equation*}
+To show this is identified under the biased sampling design consider
+\begin{align*}
+    \psi_{rrv} &= \dfrac{\Pr[I = 2, T = 1 | V = 1]}{\E\left[\dfrac{1}{\phi(X)} \Pr[I = 2, T = 1 | V = 1, X] | V = 1\right]} \\
+    &= \dfrac{\Pr[I = 2, T = 1 | V = 1]}{\int \dfrac{1}{\phi(X)} \Pr[I = 2, T = 1 | V = 1, X] f(x | V = 1) dx} \\
+    &= \dfrac{\Pr[I = 2 | T = 1, V = 1] \Pr[T = 1 | V = 1]}{\int \dfrac{1}{\phi(X)} \Pr[I = 2 | T = 1, V = 1, X] \Pr[T = 1 | V = 1, X]  f(x | V = 1) dx} \\
+    &= \dfrac{\Pr[I = 2 | T = 1, V = 1] \Pr[T = 1 | V = 1]}{\int \dfrac{1}{\phi(X)} \Pr[I = 2 | T = 1, V = 1, X] \Pr[T = 1 | V = 1]  f(x | T = 1, V = 1) dx} 
+\end{align*}
+where the last line follows by Bayes theorem 
+\begin{equation*}
+    f(x | V = 1) = \dfrac{f(x | T = 1, V = 1)\Pr[T = 1 | V = 1]}{\Pr[T = 1 | V = 1, X]}
+\end{equation*}
+and further
+\begin{align*}
+    \psi_{rrv} &= \dfrac{\Pr[I = 2 | T = 1, V = 1]}{\int \dfrac{1}{\phi(X)} \Pr[I = 2 | T = 1, V = 1, X] f(x | T = 1, V = 1) dx} \\
+    &= \dfrac{\Pr[I = 2 | T = 1, V = 1]}{\E\left[\dfrac{1}{\phi(X)} \Pr[I = 2 | T = 1, V = 1, X] \bigg| T = 1, V = 1\right]} \\
+    &= \dfrac{\Pr[I^* = 1 | S = 1, V = 1]}{\E\left[\dfrac{1}{\phi^*(X)} \Pr[I^* = 1 | S = 1, V = 1, X] \bigg| S = 1, V = 1\right]} 
+\end{align*}
+where all elements are identified under biased sampling.
 \begin{align*}
     \psi_{rrv}(X) &=\underbrace{\frac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 2, T = 1 | V = 0, X]}}_{\text{observed risk ratio}} \times \underbrace{\frac{\Pr[I = 2 | V = 0, X]}{\Pr[I^0 = 2 | V = 1, X]}}_{\text{de-biasing confounding}} \times \underbrace{\frac{\Pr[T = 1 | I = 2, V = 0, X]}{\Pr[T^0 = 1 | I^0 = 2, V = 1, X]}}_{\text{de-biasing selection}} 
 \end{align*}
+
+\subsection{Example data generation mechanisms satisfying equi-confounding}
 
 \subsection{What if mutual exclusivity is violated?}
 Define $I_1$ as the event that an individual is infected with an alternative pathogen and $I_2$ as the event that an individual is infected with the test-positive pathogen. 
@@ -54,7 +99,7 @@ Define $I_1$ as the event that an individual is infected with an alternative pat
 \subsection{What if test is imperfect?}
 Recall that 
 
-$$\Pr[I^* = 1 | S = 1, V = 1, X] = \Pr[I = 2 | S = 1, V = 1, X]$$
+$$\Pr[I^* = 1 | S = 1, V = 1, X] = \Pr[I = 2 | S = 1, V = 1, X] \Pr[I^* = 1]$$
 
 $I^* = \lambda_{sens} \cdot \mathbb{I}(I = 2) + (1 - \lambda_{spec}) \cdot \mathbb{I}(I \neq 2)$
 \end{appendix}
