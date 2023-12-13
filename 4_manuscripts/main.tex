@@ -96,7 +96,7 @@ Furthermore, using a simple factorization we can split (A4) into alternative ass
     \item[(A4b)] Odds ratio equi-selection. Degree of unmeasured selection bias, e.g. receiving a test, on the odds ratio scale is the same for all symptomatic illness regardless if $I=1$ or $I=2$ is cause, i.e. 
     $$\frac{\Pr[T^0 = 1 | I^0 = 2, V = 1, X]}{\Pr[T^0 = 1 | I^0 = 2, V = 0, X]} =\frac{\Pr[T^0 = 1 | I^0 = 1, V = 1, X]}{\Pr[T^0 = 1 | I^0 = 1, V = 0, X]}.$$
 \end{itemize}
-\ken{(This assumption is not easy to understand and hard to justify, since it conditions on a conterfactual. May as well just consider A4 as a whole)}
+
 In section X of the Appendix, we provide example data generation mechanisms that satisfy the odds ratio equi-confounding assumptions as well as those in which the assumptions are violated to provide further intuition.
 
 \subsection{Graphical criteria} \label{sec:graphical}
@@ -161,7 +161,7 @@ where $\eta$ is a scalar and $q(X)$ is user-specified a monotone sensitivity fun
 \section{Simulation}
 
 To illustrate data generation processes where our assumptions hold and to verify the empirical performance of the proposed estimators when they do not, we perform a simulation study mimicking a TND with binary vaccination, testing, and, infection. We
-consider the following data generation process: \ken{(This is not the same as the TND described in the introduction; subjects with no illnesses can also be tested / logistic regression model does not hold. I added a document for an alternative simulation setting)}
+consider the following data generation process:
     \begin{align*}
         U &\sim N(0,1)\\
         X &\sim N(0,1)\\
@@ -175,11 +175,6 @@ where $U$ is an unmeasured confounder and
         p_1(X,U,V) &= \text{expit}\{-2.75 + 0.135 X + \beta U + \gamma V\} \\
         p_2(X,U,V) & = \text{expit}\{-2.75 + 0.125 X + 0.4 U - V\}.
     \end{align*}
-
-\ken{An alternative data generating mechanism:}
-\begin{align*}
-    X,U &\sim Uniform(0,1)
-\end{align*}
 
 
     
