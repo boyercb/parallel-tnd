@@ -15,7 +15,7 @@
 \maketitle
 
 \begin{abstract}
-    The test-negative design (TND) is frequently used to monitor the effectiveness of vaccines under real-world conditions. In a TND study, individuals who develop the same symptoms and seek care are tested for the infectious disease of interest and effectiveness is estimated by comparing the vaccination history of test-positive and test-negative controls. Traditional approaches have justified the TND under the assumption that either a) receipt of a test is a perfect proxy for unmeasured (binary) health-seeking behavior or b) vaccination is unconfounded conditional on measured covariates, both of which are likely to be violated in practice. Here, we return to original motivation for TND and show that the design may alternatively be justified under an assumption that unmeasured confounder(s) act equivalently for test positive and test negative controls on the odds ratio scale, i.e. odds ratio equi-confounding. We discuss the implications of this assumption for the design of TNDs and provide proofs of our results as well as simulations to illustrate the consequences when our assumptions are violated.
+   The test-negative design (TND) is frequently used to monitor the effectiveness of vaccines under real-world conditions. In a TND study, individuals who develop the same symptoms and seek care are tested for the infectious disease of interest and effectiveness is estimated by comparing the vaccination history of test-positive and test-negative controls. Traditional approaches have justified the TND under the assumption that either a) receipt of a test is a perfect proxy for unmeasured (binary) health-seeking behavior or b) vaccination is unconfounded conditional on measured covariates, both of which are likely to be violated in practice. Here, we return to original motivation for TND and show that the design may alternatively be justified under an assumption that unmeasured confounder(s) act equivalently for test positive and test negative controls on the odds ratio scale, i.e. odds ratio equi-confounding. We discuss the implications of this assumption for the design of TNDs and provide proofs of our results as well as simulations to illustrate the consequences when our assumptions are violated.
 \noindent \\
 \vspace{0in} \\
 \noindent\textbf{Keywords:} test-negative design, vaccine effectiveness, causal inference, observational studies, unmeasured confounding, equi-confounding, odds ratios, selection bias
@@ -134,9 +134,9 @@ In practice, the effectiveness of the vaccine may vary across important subgroup
 \begin{equation*}
     \psi_{rrv} =  \dfrac{\Pr[I = 2 | T = 1, V = 1]}{\E\left[\dfrac{1}{\phi(X)} \Pr[I = 2 | T = 1, V = 1, X] \bigg| T = 1, V = 1\right]},
 \end{equation*}
-where $\phi(X)$ is defined as previously. Furthermore, we also show that this expression is identified under biased sampling as
+where $\phi(X)$ is defined as previously. This is analogous to the average treatment effect in the treated (ATT) in the causal inference literature. (add interpretation) Furthermore, we also show that this expression is identified under biased sampling as
 \begin{equation}
-    \phi \equiv \dfrac{\Pr[I^* = 1 | S = 1, V = 1]}{\E\left[\dfrac{1}{\phi(X)} \Pr[I^* = 1 | S = 1, V = 1, X] \bigg| S = 1, V = 1\right]}.
+    \phi \equiv \dfrac{\Pr[I=2 | S = 1, V = 1]}{\E\left[\dfrac{1}{\phi(X)} \Pr[I = 2 | S = 1, V = 1, X] \bigg| S = 1, V = 1\right]}.
 \end{equation}
 
 % \subsection{Extended propensity score}
@@ -146,8 +146,9 @@ where $\phi(X)$ is defined as previously. Furthermore, we also show that this ex
 
 % $$\log \dfrac{\pi(X)}{1 - \pi(X)} =  \frac{\Pr[V = 1 | I^* = 0, S = 1, X]}{\Pr[V = 0 | I^* = 0, S = 1, X]}$$
 \section{Estimation}
-
-Logistic regression 
+Logistic regression
+\subsection{Estimation of RRV}
+ Plug-in estimation / doubly-robust estimation
 
 \section{Sensitivity analysis}
 In practice, the odds ratio equi-confounding assumption may not hold such that
@@ -158,8 +159,7 @@ where $\eta$ is a scalar and $q(X)$ is user-specified a monotone sensitivity fun
 
 \section{Simulation}
 
-To illustrate data generation processes where our assumptions hold and to verify the empirical performance of the proposed estimators when they do not, we perform a simulation study mimicking a TND with binary vaccination, testing, and, infection. We
-consider the following data generation process:
+To illustrate data generation processes where our assumptions hold and to verify the empirical performance of the proposed estimators when they do not, we perform a simulation study mimicking a TND with binary vaccination, testing, and, infection. We consider the following data generation process:
 \begin{align*}
     X, U &\sim \text{Unif}(0,1)\\
     V\mid U, X & \sim \text{Bernoulli}(\expit(\alpha_0 + \alpha_U U + \alpha_X X))\\
