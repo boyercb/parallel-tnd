@@ -114,7 +114,7 @@ The pathwise derivative of $\Psi_\theta$ wrt $\theta$ is
    &= \dfrac{\tilde s\tilde v\tilde i^*}{\sigma\mu E\left\{\dfrac{\pi_0(X)\{1 - \pi_1(X)\}}{1 - \pi_0(X)}\mid S=1, V=1\right\}} - \dfrac{Pr(I^*=1\mid S=1, V=1)}{\left[E\left\{\dfrac{\pi_0(X)\{1 - \pi_1(X)\}}{1 - \pi_0(X)}\mid S=1, V=1\right\}\right]^2}\times \\
     &\bigg[ \dfrac{\tilde s(1 - \tilde v)}{\sigma\mu}\{\tilde i^* - \pi_0(\tilde x)\}\dfrac{\mu(\tilde x)\{1 - \pi_1(\tilde x)\}}{\{1 - \mu(\tilde x)\}\{1 - \pi_0(\tilde x)\}^2} + \dfrac{\tilde s\tilde v}{\sigma\mu}\{1-\tilde i^*\}\dfrac{\pi_0(\tilde x)}{1-\pi_0(\tilde x)}\bigg]
 \end{align*}
-where $\sigma=P(S=1)$, $\mu(x) = Pr(V=1\mid S=1, X=x)$, $\mu=Pr(V=1\mid S=1)$, $f_s(x)=f(x\mid S=1)$ and $\pi_v(x)=Pr(I^*=1\mid V=v, S=1, X=x)$.
+where $\sigma=P(S=1)$, $\pi(x) = Pr(V=1\mid S=1, X=x)$, $\pi=Pr(V=1\mid S=1)$, $f_s(x)=f(x\mid S=1)$ and $\mu_v(x)=Pr(I^*=1\mid V=v, S=1, X=x)$.
 
 By Hines et al. 2019, the efficient influence function for $\Psi$ is
 \begin{align*}
@@ -124,62 +124,62 @@ By Hines et al. 2019, the efficient influence function for $\Psi$ is
 
 \section{One-step correction estimator}
 \begin{enumerate}
-    \item Specify the propensity score model $\mu(x;\alpha)$ and the outcome regression model $\pi_v(x;\beta)$. The nuisance parameters may be estimated by solving estimating equations
+    \item Specify the propensity score model $\pi(x;\alpha)$ and the outcome regression model $\mu_v(x;\beta)$. The nuisance parameters may be estimated by solving estimating equations
     \begin{align*}
-        \sum_{j=1}^n X_j\{V_j - \mu(X_j;\alpha)\} &= 0;\\
+        \sum_{j=1}^n X_j\{V_j - \pi(X_j;\alpha)\} &= 0;\\
         \sum_{j=1}^n \begin{pmatrix}
             X_j\\V_j
-        \end{pmatrix}\{I^*_j - \pi_{V_j}(X_j;\beta)\}=0.
+        \end{pmatrix}\{I^*_j - \mu_{V_j}(X_j;\beta)\}=0.
     \end{align*}
     Denote the resulting estimators as $\hat\alpha$, $\hat\beta$.
-    \item Let $\hat \Pi$ be an estimator for $\Pi\equiv \int \dfrac{\pi_0(x)\{1 - \pi_1(x)\}}{1 - \pi_0(x)}\mu(x)f_s(x)dx$, for example,
-    $$\hat\Pi = \dfrac{1}{n}\sum_{j=1}^n \dfrac{\pi_0(X_j;\hat\beta)\{1 - \pi_1(X_j;\hat\beta)\}}{1 - \pi_0(X_j;\hat\beta)}\mu(X_j;\hat \alpha).$$
+    \item Let $\hat \Pi$ be an estimator for $\Pi\equiv \int \dfrac{\mu_0(x)\{1 - \mu_1(x)\}}{1 - \mu_0(x)}\pi(x)f_s(x)dx$, for example,
+    $$\hat\Pi = \dfrac{1}{n}\sum_{j=1}^n \dfrac{\mu_0(X_j;\hat\beta)\{1 - \mu_1(X_j;\hat\beta)\}}{1 - \mu_0(X_j;\hat\beta)}\pi(X_j;\hat \alpha).$$
 
     The initial estimator of $\Psi$ is
     $$\hat\Psi_0 = \dfrac{\dfrac{1}{n}\sum_{j=1}^n I^*_jV_j}{\hat\Pi}.$$
     \item The one-step corrected estimator is
     \begin{align*}
-        \hat\Psi_1 &= \hat\Psi_0 +\dfrac{1}{n}\sum_{i=1}^n \bigg\{\dfrac{V_jI^*_j}{\hat\Pi}-\\&\qquad \dfrac{\dfrac{1}{n}\sum_{k=1}^n I^*_kV_k}{\hat\Pi^2}\bigg[S_j(1 - V_j)\{I^*_j - \pi_0(X_j;\hat\beta)\}\dfrac{\mu(X_j;\hat\alpha)\{1 - \pi_1(X_j;\hat\beta)\}}{\{1 - \mu(X_j;\hat\alpha)\}\{1 - \pi_0(X_j;\hat\beta)\}^2} + S_jV_j\{1-I^*_j\}\dfrac{\pi_0(X_j;\hat\beta)}{1-\pi_0(X_j;\hat\beta)}\bigg]\bigg\}\\
-        &= 2\hat\Psi_0-\dfrac{\hat\Psi_0}{\hat\Pi}\dfrac{1}{n}\sum_{j=1}^n\bigg[S_j(1 - V_j)\{I^*_j - \pi_0(X_j;\hat\beta)\}\dfrac{\mu(X_j;\hat\alpha)\{1 - \pi_1(X_j;\hat\beta)\}}{\{1 - \mu(X_j;\hat\alpha)\}\{1 - \pi_0(X_j;\hat\beta)\}^2} + S_jV_j\{1-I^*_j\}\dfrac{\pi_0(X_j;\hat\beta)}{1-\pi_0(X_j;\hat\beta)}\bigg]
+        \hat\Psi_1 &= \hat\Psi_0 +\dfrac{1}{n}\sum_{i=1}^n \bigg\{\dfrac{V_jI^*_j}{\hat\Pi}-\\&\qquad \dfrac{\dfrac{1}{n}\sum_{k=1}^n I^*_kV_k}{\hat\Pi^2}\bigg[S_j(1 - V_j)\{I^*_j - \mu_0(X_j;\hat\beta)\}\dfrac{\pi(X_j;\hat\alpha)\{1 - \mu_1(X_j;\hat\beta)\}}{\{1 - \pi(X_j;\hat\alpha)\}\{1 - \mu_0(X_j;\hat\beta)\}^2} + S_jV_j\{1-I^*_j\}\dfrac{\mu_0(X_j;\hat\beta)}{1-\mu_0(X_j;\hat\beta)}\bigg]\bigg\}\\
+        &= 2\hat\Psi_0-\dfrac{\hat\Psi_0}{\hat\Pi}\dfrac{1}{n}\sum_{j=1}^n\bigg[S_j(1 - V_j)\{I^*_j - \mu_0(X_j;\hat\beta)\}\dfrac{\pi(X_j;\hat\alpha)\{1 - \mu_1(X_j;\hat\beta)\}}{\{1 - \pi(X_j;\hat\alpha)\}\{1 - \mu_0(X_j;\hat\beta)\}^2} + S_jV_j\{1-I^*_j\}\dfrac{\mu_0(X_j;\hat\beta)}{1-\mu_0(X_j;\hat\beta)}\bigg]
     \end{align*}
 \end{enumerate}
 
 \section{Doubly robust estimator}
 Note that
 \begin{align*}
-    EIF(O_j) &=\dfrac{S_jV_j I^*_j}{\sigma \Pi} - \dfrac{\Psi}{\Pi}\bigg[ \dfrac{S_j(1 - V_j)}{\sigma}\{I^*_j - \pi_0(X_j)\}\dfrac{\mu(X_j)\{1 - \pi_1(X_j)\}}{\{1 - \mu(X_j)\}\{1 - \pi_0(X_j)\}^2} + \dfrac{S_jV_j}{\sigma}\{1-I^*_j\}\dfrac{\pi_0(X_j)}{1-\pi_0(X_j)}\bigg] 
+    EIF(O_j) &=\dfrac{S_jV_j I^*_j}{\sigma \Pi} - \dfrac{\Psi}{\Pi}\bigg[ \dfrac{S_j(1 - V_j)}{\sigma}\{I^*_j - \mu_0(X_j)\}\dfrac{\pi(X_j)\{1 - \mu_1(X_j)\}}{\{1 - \pi(X_j)\}\{1 - \mu_0(X_j)\}^2} + \dfrac{S_jV_j}{\sigma}\{1-I^*_j\}\dfrac{\mu_0(X_j)}{1-\mu_0(X_j)}\bigg] 
 \end{align*}
 
 Solve
-$$\dfrac{1}{n}\sum_{j=1}^n \dfrac{V_jI^*_j}{\Pi}-\dfrac{\Psi}{\Pi}\dfrac{1}{n}\sum_{j=1}^n\bigg[ (1-V_j)\{I^*_j - \pi_0(X_j)\}\dfrac{\mu(X_j)\{1 - \pi_1(X_j)\}}{\{1 - \mu(X_j)\}\{1 - \pi_0(X_j)\}^2} + V_j\{1-I^*_j\}\dfrac{\pi_0(X_j)}{1-\pi_0(X_j)}\bigg]=0,$$
+$$\dfrac{1}{n}\sum_{j=1}^n \dfrac{V_jI^*_j}{\Pi}-\dfrac{\Psi}{\Pi}\dfrac{1}{n}\sum_{j=1}^n\bigg[ (1-V_j)\{I^*_j - \mu_0(X_j)\}\dfrac{\pi(X_j)\{1 - \mu_1(X_j)\}}{\{1 - \pi(X_j)\}\{1 - \mu_0(X_j)\}^2} + V_j\{1-I^*_j\}\dfrac{\mu_0(X_j)}{1-\mu_0(X_j)}\bigg]=0,$$
 we obtain the estimator 
 \begin{align*}
-\hat\Psi_2&= \dfrac{\sum_{i=1}^n V_jI_j^*}{\sum_{j=1}^n\bigg[ (1-V_j)\{I^*_j - \pi_0(X_j;\hat\beta)\}\dfrac{\mu(X_j;\hat\alpha)\{1 - \pi_1(X_j;\hat\beta)\}}{\{1 - \mu(X_j;\hat\alpha)\}\{1 - \pi_0(X_j;\hat\beta)\}^2} + V_j\{1-I^*_j\}\dfrac{\pi_0(X_j;\hat\beta)}{1-\pi_0(X_j;\hat\beta)}\bigg]}
+\hat\Psi_2&= \dfrac{\sum_{i=1}^n V_jI_j^*}{\sum_{j=1}^n\bigg[ (1-V_j)\{I^*_j - \mu_0(X_j;\hat\beta)\}\dfrac{\pi(X_j;\hat\alpha)\{1 - \mu_1(X_j;\hat\beta)\}}{\{1 - \pi(X_j;\hat\alpha)\}\{1 - \mu_0(X_j;\hat\beta)\}^2} + V_j\{1-I^*_j\}\dfrac{\mu_0(X_j;\hat\beta)}{1-\mu_0(X_j;\hat\beta)}\bigg]}
 \end{align*}
 
-We can show that $\hat\Psi_2$ is consistent if $\pi_0(\cdot;\beta)$ is correctly specified, and either $\mu(\cdot;\alpha)$ or $\pi_1(\cdot;\beta)$ is correctly specified. 
+We can show that $\hat\Psi_2$ is consistent if $\mu_0(\cdot;\beta)$ is correctly specified, and either $\pi(\cdot;\alpha)$ or $\mu_1(\cdot;\beta)$ is correctly specified. 
 
 \begin{proof}
 To prove the doubly-robustness of $\hat\Psi_2$, it suffices to show that 
 \begin{align*}
-    E\bigg[ (1-V)\{I^* - \dot \pi_0(X)\}\dfrac{\dot\mu(X)\{1 - \dot\pi_1(X)\}}{\{1 - \dot\mu(X)\}\{1 - \dot\pi_0(X)\}^2} + V\{1-I^*\}\dfrac{\dot\pi_0(X)}{1-\dot\pi_0(X)}\mid S=1\bigg] = \Pi
+    E\bigg[ (1-V)\{I^* - \dot \mu_0(X)\}\dfrac{\dot\pi(X)\{1 - \dot\mu_1(X)\}}{\{1 - \dot\pi(X)\}\{1 - \dot\mu_0(X)\}^2} + V\{1-I^*\}\dfrac{\dot\mu_0(X)}{1-\dot\mu_0(X)}\mid S=1\bigg] = \Pi
 \end{align*}
-if (1) $\dot\pi_v(\cdot)=\pi_v(\cdot)$ a.s. for $v=0,1$, or (2) $\dot \mu(\cdot)=\mu(\cdot)$ and $\dot\pi_0(\cdot)=\pi_0(\cdot)$  a.s.
+if (1) $\dot\mu_v(\cdot)=\mu_v(\cdot)$ a.s. for $v=0,1$, or (2) $\dot \pi(\cdot)=\pi(\cdot)$ and $\dot\mu_0(\cdot)=\mu_0(\cdot)$  a.s.
 
     \begin{enumerate}
-        \item If $\dot\pi_v(\cdot)=\pi_v(\cdot)$ a.s. for $v=0,1$, then
+        \item If $\dot\mu_v(\cdot)=\mu_v(\cdot)$ a.s. for $v=0,1$, then
         \begin{align*}
-            &E\bigg[ (1-V)\{I^* -  \pi_0(X)\}\dfrac{\dot\mu(X)\{1 - \pi_1(X)\}}{\{1 - \dot\mu(X)\}\{1 - \pi_0(X)\}^2} + V\{1-I^*\}\dfrac{\pi_0(X)}{1-\pi_0(X)}\mid S=1\bigg]\\
-            =& E\bigg[ \{I^* -  \pi_0(X)\}\dfrac{\dot\mu(X)\{1 - \pi_1(X)\}}{\{1 - \dot\mu(X)\}\{1 - \pi_0(X)\}^2} \mid V=0, S=1\bigg]Pr(V=0\mid  S=1) + \\
-            &\qquad E\bigg[E\{V(1-I^*)\mid X\}\dfrac{\pi_0(X)}{1-\pi_0(X)}\mid  S=1\bigg]\\
-            =& E\bigg[E \{I^* -  \pi_0(X)\mid V=0, S=1, X\}\dfrac{\dot\mu(X)\{1 - \pi_1(X)\}}{\{1 - \dot\mu(X)\}\{1 - \pi_0(X)\}^2} \mid V=0, S=1\bigg]Pr(V=0\mid  S=1) + \\
-            &\qquad E\bigg[\mu(X)\{1-\pi_1(X)\}\dfrac{\pi_0(X)}{1-\pi_0(X)}\mid  S=1\bigg]\\
+            &E\bigg[ (1-V)\{I^* -  \mu_0(X)\}\dfrac{\dot\pi(X)\{1 - \mu_1(X)\}}{\{1 - \dot\pi(X)\}\{1 - \mu_0(X)\}^2} + V\{1-I^*\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid S=1\bigg]\\
+            =& E\bigg[ \{I^* -  \mu_0(X)\}\dfrac{\dot\pi(X)\{1 - \mu_1(X)\}}{\{1 - \dot\pi(X)\}\{1 - \mu_0(X)\}^2} \mid V=0, S=1\bigg]Pr(V=0\mid  S=1) + \\
+            &\qquad E\bigg[E\{V(1-I^*)\mid X\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid  S=1\bigg]\\
+            =& E\bigg[E \{I^* -  \mu_0(X)\mid V=0, S=1, X\}\dfrac{\dot\pi(X)\{1 - \mu_1(X)\}}{\{1 - \dot\pi(X)\}\{1 - \mu_0(X)\}^2} \mid V=0, S=1\bigg]Pr(V=0\mid  S=1) + \\
+            &\qquad E\bigg[\pi(X)\{1-\mu_1(X)\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid  S=1\bigg]\\
             &= 0 + \Pi = \Pi
         \end{align*}
-    \item If $\dot\mu(\cdot)=\mu(\cdot)$ and $\dot\pi_0(\cdot)=\pi_0(\cdot)$ a.s., then 
+    \item If $\dot\pi(\cdot)=\pi(\cdot)$ and $\dot\mu_0(\cdot)=\mu_0(\cdot)$ a.s., then 
 \begin{align*}
-    &E\bigg[ (1-V)\{I^* -  \pi_0(X)\}\dfrac{\mu(X)\{1 - \dot\pi_1(X)\}}{\{1 - \mu(X)\}\{1 - \pi_0(X)\}^2} + V\{1-I^*\}\dfrac{\pi_0(X)}{1-\pi_0(X)}\mid S=1\bigg]\\
-    =& E\bigg[ \{1 - \mu(X)\}\{\pi_0(X) -  \pi_0(X)\}\dfrac{\mu(X)\{1 - \dot\pi_1(X)\}}{\{1 - \mu(X)\}\{1 - \pi_0(X)\}^2} + \mu(X)\{1-\pi_1(X)\}\dfrac{\pi_0(X)}{1-\pi_0(X)}\mid S=1\bigg]\\
+    &E\bigg[ (1-V)\{I^* -  \mu_0(X)\}\dfrac{\pi(X)\{1 - \dot\mu_1(X)\}}{\{1 - \pi(X)\}\{1 - \mu_0(X)\}^2} + V\{1-I^*\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid S=1\bigg]\\
+    =& E\bigg[ \{1 - \pi(X)\}\{\mu_0(X) -  \mu_0(X)\}\dfrac{\pi(X)\{1 - \dot\mu_1(X)\}}{\{1 - \pi(X)\}\{1 - \mu_0(X)\}^2} + \pi(X)\{1-\mu_1(X)\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid S=1\bigg]\\
     &= \Pi
 \end{align*}
 
