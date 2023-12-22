@@ -5,10 +5,9 @@ gendata <- function(
     N = 1000,                                  # population size
     sims = 1,                                  # number of simulations
     fV = function(X, U) plogis(X),             # function for generating V
-    fI1 = function(X, V, U) plogis(X + U),     # function for generating I1
-    fI2 = function(X, V, U) plogis(X - V + U), # function for generating I2
-    fT1 = function(X, V, U) plogis(X + U),     # function for generating T among I1 == 1
-    fT2 = function(X, V, U) plogis(X + U),     # function for generating T among I2 == 1
+    fI1 = function(V, X, U) plogis(X + U),     # function for generating I1
+    fI2 = function(V, X, U) plogis(X - V + U), # function for generating I2
+    fT  = function(I, V, X, U) plogis(X + U),  # function for generating T 
     exclusive = TRUE,                          # are I1 and I2 mutually exclusive?
     sens = 1,                                  # test sensitivity
     spec = 1                                   # test specificity
@@ -19,18 +18,19 @@ gendata <- function(
   X <- runif(n, 0, 5)
   V <- rbinom(n, 1, fV(X, U))
   
-  I1 <- rbinom(n, 1, fI1(X, V, U))
+  I1 <- rbinom(n, 1, fI1(V, X, U))
   
   if (exclusive) {
-    I2 <- (1 - I1) * rbinom(n, 1, fI2(X, V, U) / (1 - fI1(X, V, U)))
+    I2 <- (1 - I1) * rbinom(n, 1, fI2(V, X, U) / (1 - fI1(V, X, U)))
     
   } else {
-    I2 <- rbinom(n, 1, fI2(X, V, U))
+    I2 <- rbinom(n, 1, fI2(V, X, U))
     
   }
   
-  T <- I(I1 == 1) * rbinom(n, 1, fT1(X, V, U)) +
-    I(I2 == 1) * rbinom(n, 1, fT2(X, V, U))
+  I <- I1 + 2 * I2
+  
+  T <- I(I > 0) * rbinom(n, 1, fT(I, V, X, U)) 
   
   S <- T
   
@@ -42,7 +42,7 @@ gendata <- function(
     U = U,
     X = X,
     V = V,
-    I = I1 + 2 * I2,
+    I = I,
     T = T,
     S = S,
     Istar = Istar
@@ -68,9 +68,7 @@ runsim <- function(dt, p, effect_modification = FALSE) {
   d0 <- transform(d[d$V == 1, ], V = 0)
   dt1 <- dt[dt$V == 1, ]
   dt0 <- transform(dt[dt$V == 1, ], V = 0)
-  # dt1 <- transform(dt[dt$V == 1], V = 1)
-  # dt0 <- transform(dt[dt$V == 1], V = 0)
-
+  
   # fit conditional odds ratio estimator
   fit_om <-
     glm(
@@ -94,15 +92,7 @@ runsim <- function(dt, p, effect_modification = FALSE) {
 
   pV <- predict(fit_ipw, newdata = d, type = "response")
   oV <- exp(predict(fit_ipw, newdata = d))
-  # fit_ipw2 <- 
-  #   glm(
-  #     formula = V ~ X + W + X:W,
-  #     family = binomial(link = "logit"),
-  #     data = d
-  #   )
-  # 
-  # Vor <- 1 / exp(predict(fit_ipw2, newdata = d))
-  # 
+  
   # fit cohort
   fit_cohort <-
     glm(
@@ -124,24 +114,15 @@ runsim <- function(dt, p, effect_modification = FALSE) {
 
   r1_truth <- predict(fit_truth, newdata = dt1, type = 'response')
   r0_truth <- predict(fit_truth, newdata = dt0, type = 'response')
-  # print(head(p1))
-  # print(head(p0))
-  # a <- o1 / o0
-  # b <- p0
-  # print(summary(a))
 
   c(
     mean(d1$Istar) / mean(o0 / o1 * p1),
-
-    #mean((a * b) / (a * b + 1 - b)),
-    # mean(d1$Istar) / mean((o0 / o1 * p1) / (o0 / o1 * p1 + 1 - p1)),
-    # mean(d1$Istar) / mean((1 - p1) / (1 - p0) * p0),
-    mean(d$V / pV * d$Istar) /
-      mean((1 - d$V) / (1 - pV) * d$Istar),
-    # exp(coef(fit_om)[2]),
-    # mean(d1$Istar) / (mean((1 - d$V) * oV * d$Istar) / mean((1 - d$V) * oV)),
+    mean(o1 / o0),
+    # mean(d$V / pV * d$Istar) /
+    #   mean((1 - d$V) / (1 - pV) * d$Istar),
     mean(r1_cohort) / mean(r0_cohort),
-    mean(r1_truth) / mean(r0_truth)
+    mean(r1_truth) / mean(r0_truth),
+    exp(coef(fit_truth)[2])
   )
   
 }
