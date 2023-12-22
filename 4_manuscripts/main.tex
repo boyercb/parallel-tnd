@@ -83,9 +83,9 @@ We consider the identification of the causal risk ratio among the vaccinated, $\
     \item[(A5)] Overlap of vaccination among test-positives and test-negatives. Define $\mathcal{S}_i(v)$ as the support of the law of $(I^v = i, T^v = 1, V = v, X)$, then for $v$ in $\{0,1\}$, then it must be that $\mathcal{S}_2(1) \subseteq \mathcal{S}_2(0)$ and $\mathcal{S}_2(v) \subseteq \mathcal{S}_1(v).$
 \end{itemize}
 
-Assumptions (A1) and (A5) are well-known identifiability conditions discussed in more detail elsewhere. Assumption (A2) implies that the vaccine does not provide any cross-protection against other types of infection which may cause the same symptoms.   It may be violated if vaccination provides short-term nonspecific protection through activation of the immune system. In principle, this assumption could be evaluated in a randomized vaccine trial by measuring incidence of other respiratory illnesses, although in practice trials may not be adequately powered to rule out small effects. Assumption (A3) requires that an individual's decision to seek care and get tested is not affected by their vaccination status (although it can depend on other measured and unmeasured characteristics). In a placebo-controlled trial, it is ensured through the blinding of the participant to their vaccination status. Both (A2) and (A3) have been invoked in the previous literature formalizing the test-negative design. 
+Assumptions (A1) and (A5) are well-known identifiability conditions discussed in more detail elsewhere. Assumption (A2) implies that the vaccine does not provide any cross-protection against other types of infection which may cause the same symptoms. It may be violated if vaccination provides short-term nonspecific protection through activation of the immune system. In principle, this assumption could be evaluated in a randomized vaccine trial by measuring incidence of other respiratory illnesses, although in practice trials may not be adequately powered to rule out small effects. Assumption (A3) requires that an individual's decision to seek care and get tested is not affected by their vaccination status (although it can depend on other measured and unmeasured characteristics). In a placebo-controlled trial, it is ensured through the blinding of the participant to their vaccination status. Both (A2) and (A3) have been invoked in the previous literature formalizing the test-negative design. 
 
-Assumption (A4) is the key assumption of this paper and is the alternative to the conditional exchangeability conditions suggested previously. It states that the degree of unmeasured confounding on the odds ratio scale is the same for illnesses with the same symptom set regardless if $I=2$ or $I=1$ is the cause. It is similar, in spirit, to recently suggested alternative scale-independent parallel trend assumption in the difference-in-differences literature \cite{park_universal_2023,tchetgen_universal_2023}. Note that, as $I = 1$ and $I = 2$ are mutually exclusive, we can simplify (A3) to
+Assumption (A4) is the key assumption of this paper and is the alternative to the conditional independence conditions suggested previously. It states that the degree of unmeasured confounding on the odds ratio scale is the same for illnesses with the same symptom set regardless if $I=2$ or $I=1$ is the cause. It is also similar, in spirit, to a recently suggested  scale-independent parallel trend assumption in the difference-in-differences literature \cite{park_universal_2023,tchetgen_universal_2023}. Note that, as $I = 1$ and $I = 2$ are mutually exclusive, we can simplify (A3) to
 \begin{equation}
     \frac{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 0, X]} =\frac{\Pr[I^0 = 1, T^0 = 1 | V = 1, X]}{\Pr[I^0 = 1, T^0 = 1 | V = 0, X]}
 \end{equation}
@@ -158,28 +158,34 @@ where $\eta$ is a scalar and $q(X)$ is user-specified a monotone sensitivity fun
 
 \section{Simulation}
 
-To illustrate data generation processes where our assumptions hold and to verify the empirical performance of the proposed estimators when they do not, we perform a simulation study mimicking a TND with binary vaccination, testing, and, infection. We consider the following data generation process:
-
+To illustrate a data generation process where our assumptions hold and to verify the empirical performance of the proposed estimators when they do not, we perform a simulation study mimicking a TND with binary vaccination, testing, and, infection. We consider the following data generation process:
 \begin{align*}
     X, U &\sim \text{Unif}(0,1)\\
-    V\mid U, X & \sim \text{Bernoulli}(\expit(\alpha_0 + \alpha_U U + \alpha_X X))\\
-    I \mid V, U, X &\sim \text{Multinomial}(1-p_1(X, U, V), p_1(X, U, V), p_2(X, U, V))\\
-    T\mid I, V,  U, X &\sim \text{Bernoulli}(\mathbbm 1(I>0)\exp\{\tau_{1}\mathbbm 1(I=1) + \tau_{2}\mathbbm 1(I=2)+\tau_V V + \tau_U U + \tau_X X\})
+    V\mid X, U & \sim \text{Bernoulli}(\expit(\alpha_0 + \alpha_X X + \alpha_U U))\\
+    I \mid V, X, U &\sim \text{Multinomial}(1-p_1(V, X, U), p_1(V, X, U), p_2(V, X, U))\\
+    T\mid I, V, X, U &\sim \text{Bernoulli}(\mathbbm 1(I>0)\exp\{\tau_{1}\mathbbm 1(I=1) + \tau_{2}\mathbbm 1(I=2) + \tau_V V + \tau_X X \\&\qquad \qquad\qquad + \tau_U U + \tau_{2U} U \mathbbm 1(I=2) + \tau_{2V} V \mathbbm 1(I=2) \})
 \end{align*}
 where $U$ is an unmeasured confounder and
-    \begin{align*}
-        p_1(X,U,V) & = \Pr[I = 1 | X, U, V] = \exp(\beta_{10} + \beta_{1V}V + \beta_{1X}X + \beta_{1U}U) \\
-        p_2(X,U,V) & = \Pr[I = 2 | X, U, V] = \exp(\beta_{20} + \beta_{2V}V + \beta_{2X}X + \beta_{2U}U).
-    \end{align*}
-Note that under this setup 
 \begin{align*}
-    \dfrac{\Pr[I^0=2, T^0=1 \mid V=1,X]}{\Pr[I^0=2, T^0=1\mid V=0,X]}=\dfrac{\E[\exp(\tau_U U+\beta_{2U}U)\mid V=1, X]}{\E[\exp(\tau_U U+\beta_{2U}U)\mid V=0, X]}
+    p_1(V, X, U) & = \Pr[I = 1 | V, X, U] = \exp(\beta_{10} + \beta_{1V}V + \beta_{1X}X + \beta_{1U}U) \\
+    p_2(V, X, U) & = \Pr[I = 2 | V, X, U] = \exp(\beta_{20} + \beta_{2V}V + \beta_{2X}X + \beta_{2U}U).
+\end{align*}
+This setup means the potential outcomes $(I^v, T^v)$ for $v=0,1$ and $i=1, 2$ are generated from
+\begin{align*}
+    \Pr[I^v=0, T^v=1\mid V, X, U] &= 0\\
+    \Pr[I^v=i, T^v=1\mid V, X, U] &= p_i(v, X, U)\exp\{\tau_i + \tau_V v + \tau_X X + \tau_U U \\&\qquad \qquad\qquad + \tau_{2U}U\mathbbm 1(I^v=2) + \tau_{2V} v \mathbbm 1(I^v=2) \}.
+\end{align*}
+which implies the conditional independence $I^v, T^v\indep V\mid X, U$ holds for $v=0,1$, i.e. conditioning on $U$ and $X$ would be sufficient to control confounding. Furthermore, 
+\begin{align*}
+    \dfrac{\Pr[I^0=2, T^0=1 \mid V=1,X]}{\Pr[I^0=2, T^0=1\mid V=0,X]}=\dfrac{\E[\exp\{(\tau_U  + \tau_{2U}+\beta_{2U})U\}\mid V=1, X]}{\E[\exp\{(\tau_U  + \tau_{2U}+\beta_{2U})U\}\mid V=0, X]}
 \end{align*}
 and 
 \begin{align*}
-    \dfrac{\Pr[I^0=1, T^0=1 \mid V=1,X]}{\Pr[I^0=1, T^0=1\mid V=0,X]}=\dfrac{\E[\exp(\tau_U U+\beta_{1U}U)\mid V=1, X]}{\E[\exp(\tau_U U+\beta_{1U}U)\mid V=0, X]}
+    \dfrac{\Pr[I^0=1, T^0=1 \mid V=1,X]}{\Pr[I^0=1, T^0=1\mid V=0,X]}=\dfrac{\E[\exp\{(\tau_U  +\beta_{1U})U\}\mid V=1, X]}{\E[\exp\{(\tau_U +\beta_{1U})U\}\mid V=0, X]}
 \end{align*}
-implying that Assumtion (A4) holds when $\beta_{2U}=\beta_{1U}$. Furthermore, $\beta_{1V}=0$ controls whether there is a direct effect of vaccination on $I = 1$, i.e. Assumption (A2); and $\tau_V$ controls whether there is a direct effect of vaccination on $T$, i.e. Assumption (A3).
+implying that Assumtion (A4) holds when $\beta_{2U}=\beta_{1U}$ and $\tau_{2U}=0$. We note that in our setting, Assumption (A4) can be viewed as composed of two conditions: the unmeasured confounding bias for two illness outcomes have equal size ($\beta_{1U}=\beta_{2U}$), and there is no interaction between unmeasured confounder and illness outcome in the risk of testing on a multiplicative scale ($\tau_{2U}=0$).
+
+Furthermore, $\beta_{1V}=0$ controls whether there is a direct effect of vaccination on $I = 1$, i.e. Assumption (A2). Without this assumption, we may at best identify the difference of vaccine effects on the two illness outcomes, i.e. $\beta_{2V}-\beta_{1V}$. The parameter $\tau_V$ controls whether there is a direct effect of vaccination on $T$, i.e. Assumption (A3).\textcolor{red}{TODO: Is (A3) necessary?}
 
 We generate a target population of $N = $ resulting in TND samples of test-positive cases and test-negative controls of between X and Y. We consider seven scenarios: (1) no unmeasured confounding; (2) unmeasured confounding but assumptions (A1)-(A5) hold; (2) equi-confounding holds but equi-selection does not; (3) equi-selection holds but equi-confounding does not; (4) neither equi-confounding nor equi-selection hold; (5) equi-confounding and equi-selection hold but there is a direct effect of vaccination on $I = 1$; and (6) equi-confounding and equi-selection hold but there is a direct effect of vaccination on $T$. For each scenario, we generate 1000 samples and estimate the causal risk ratio among the vaccinated using the proposed estimator and calculate the bias and coverage of 95\% confidence intervals based on the true value. For comparison, we also estimate the causal risk ratio among the vaccinated assuming one had access to the full sample in the target population, as in a cohort study. We consider both the more typical case that the covariate $U$ is unmeasured and unavailable and the hypothetical case that $U$ is available and therefore the a sufficient adjustment set can therefore be conditioned on. 
 
