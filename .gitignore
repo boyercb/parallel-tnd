@@ -40,18 +40,18 @@ vignettes/*.pdf
 
 .DS_Store
 
-*.aux
-*.bbl
-*.bcf
-*.blg
-*.fdb_latexmk
-*.fls
-*.log
-*.out
-*.run.xml
-*.synctex.gz
-*.pdf
-*.docx
+4_manuscripts/*.aux
+4_manuscripts/*.bbl
+4_manuscripts/*.bcf
+4_manuscripts/*.blg
+4_manuscripts/*.fdb_latexmk
+4_manuscripts/*.fls
+4_manuscripts/*.log
+4_manuscripts/*.out
+4_manuscripts/*.run.xml
+4_manuscripts/*.synctex.gz
+4_manuscripts/*.pdf
+4_manuscripts/*.docx
 
 katherine.*
 
