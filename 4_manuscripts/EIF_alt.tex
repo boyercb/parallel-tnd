@@ -1,0 +1,300 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage{geometry}
+
+% Useful packages
+\usepackage{natbib}
+\usepackage{amsmath,amsthm,amsfonts}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{bbm}
+\def\ll{\lambda}
+\def\LL{\Lambda}
+\def\arctanh{\mathrm{arctanh}}
+\def\tanh{\mathrm{tanh}}
+\def\indep{\!\perp\!\!\!\perp}
+\DeclareMathOperator{\E}{E}
+
+\newtheorem{example}{Example}
+\newtheorem{theorem}{Theorem}
+\title{EIF for VE based on a TND study}
+
+
+\begin{document}
+\maketitle
+
+
+Let $\Psi(P)$ be the target parameter under true law of the observed data $P$. From the identifiability results in Theorem 1, we have that 
+% $$\Psi(P) = \dfrac{E(I^*\mid S=1, V=1)}{E\left\{\dfrac{\Pr(I^*=1\mid S=1, V=0, X)\Pr(V=1\mid S=1, I^*=0, X)}{\Pr(V=0\mid S=1, I^*=0, X)}\mid S=1, V=1\right\}}.$$ 
+$$\Psi(P) = E\left\{\dfrac{\Pr(I^*=1\mid S=1, V=0, X)\Pr(V=1\mid S=1, I^*=0, X)}{\Pr(V=0\mid S=1, I^*=0, X)}\mid S=1, V=1\right\}.$$ 
+For convenience, let
+\begin{align*}
+    \pi(X) &= \Pr(V=1\mid S=1, I^*=0, X) \\
+    \mu_v(X) &= \Pr(I^*=1\mid S=1, V=v, X).
+\end{align*}
+Define $P_t$ as a parametric submodel indexed by $t \in [0,1]$ such that
+$$P_t = t \widetilde{P} + (1 - t)P$$
+where $\widetilde{P}$ is smoothed parametric estimate of $P$ and note that $P_0 = P$. To find the influence function we will use the fact that if we perturb the target in direction of a point mass $\widetilde{o} = (\widetilde{i}^*, \widetilde{s}, \widetilde{v}, \widetilde{x})$ of $\widetilde{P}$
+$$ \chi(P, \widetilde{o}) = \frac{d}{dt} \Psi(P_t)\bigg\vert_{t=0}$$
+where the right-hand side is the so-called the G\^{a}teaux derivative. Note that 
+\begin{align*}
+    \Psi(P_t) &= \int \dfrac{\int i^* f_t(i^* | s=1,v=0,x)di^* \int v f_t(v | s=1, i^*=0, x)dv}{\int(1 - v) f_t(v | s=1, i^*=0, x)dv}f_t(x|s=1,v=1)dx \\
+    &= \int \dfrac{1}{f_{S,V}(1, 1)} \dfrac{\int i^* f_t(i^*, s=1,v=0,x)di^* \int v f_t(v, s=1, i^*=0, x)dv}{\int(1 - v) f_t(v, s=1, i^*=0, x)dv}\dfrac{f_t(x, s=1, v=1)}{f_t(x, s=1, v=0)}dx 
+\end{align*}
+Then the pathwise derivative of $\Psi_t$ wrt $t$ is
+\begin{align*}
+   &\frac{d}{dt} \Psi(P_t)\bigg\vert_{t=0} \\
+   &= \int \dfrac{1}{f_{S,V}(1, 1)} \frac{d}{dt} \left\{\dfrac{\int i^* f_t(i^*, s=1,v=0,x)di^* \int v f_t(v, s=1, i^*=0, x)dv}{\int(1 - v) f_t(v, s=1, i^*=0, x)dv} \dfrac{f_t(x, s=1, v=1)}{f_t(x, s=1, v=0)} \right\} \bigg\vert_{t=0}dx \\
+   &= \int \dfrac{1}{f_{S,V}(1, 1)}\bigg\{ \dfrac{\pi(x)}{1-\pi(x)} \dfrac{f(x, s=1, v=1)}{f(x, s=1, v=0)}\int i^* \frac{d}{dt} f_t(i^*, s=1,v=0,x) \bigg\vert_{t=0} di^* \\
+   &\qquad + \dfrac{\mu_0(x)}{\int(1 - v) f(v, s=1, i^*=0, x)dv}f(x, s=1, v=1) \int v \frac{d}{dt}f_t(v, s=1, i^*=0, x) \bigg\vert_{t=0} dv \\ 
+   &\qquad - \dfrac{\mu_0(x)\pi(x)}{\{1 - \pi(x)\}\int(1 - v) f_t(v, s=1, i^*=0, x)dv} f(x, s=1, v=1) \int (1-v) \frac{d}{dt}f_t(v, s=1, i^*=0, x) \bigg\vert_{t=0} dv \\
+   &\qquad + \dfrac{\mu_0(x)\pi(x)}{1-\pi(x)} \frac{d}{dt} f_t(x, s=1, v=1) \bigg\vert_{t=0} \\
+   &\qquad - \dfrac{\mu_0(x)\pi(x)}{1-\pi(x)} \dfrac{f(x, s=1, v=1)}{f(x, s=1, v=0)} \frac{d}{dt} f_t(x, s=1, v=0) \bigg\vert_{t=0} \bigg\}dx \\
+   &= \int \dfrac{1}{f_{S,V}(1, 1)}\bigg\{ \dfrac{\pi(x)}{1-\pi(x)} \dfrac{f(x, s=1, v=1)}{f(x, s=1, v=0)}\int i^* \{ \mathbbm 1_{\widetilde i^*, \widetilde s, \widetilde v, \widetilde x}(i^*, 1, 0, x) - f(i^*, s=1,v=0,x) \} di^* \\
+   &\qquad + \dfrac{\mu_0(x)}{1-\pi(x)} \dfrac{f(x, s=1, v=1)}{f(x, i^*=0, s=1)} \int v \{\mathbbm 1_{\widetilde i^*, \widetilde s, \widetilde v, \widetilde x}(0, 1, v, x) - f(v, s=1, i^*=0, x) \} dv \\ 
+   &\qquad -\dfrac{\mu_0(x)\pi(x)}{\{1 - \pi(x)\}^2} \dfrac{f(x, s=1, v=1)}{f(x, i^*=0, s=1)} \int (1 - v) \{\mathbbm 1_{\widetilde i^*, \widetilde s, \widetilde v, \widetilde x}(0, 1, v, x) - f(v, s=1, i^*=0, x) \} dv  \\
+   & \qquad + \dfrac{\mu_0(x)\pi(x)}{1-\pi(x)} \left\{\mathbbm 1_{\widetilde s, \widetilde v, \widetilde x}(1,1,x) - f_t(x, s=1, v=1) \right\} \\
+   & \qquad - \dfrac{\mu_0(x)\pi(x)}{1-\pi(x)} \dfrac{f(x, s=1, v=1)}{f(x, s=1, v=0)} \left\{\mathbbm 1_{\widetilde s, \widetilde v, \widetilde x}(1,0,x) - f_t(x, s=1, v=0) \right\}  \bigg\}dx\\
+    %&= \int \dfrac{1}{f_{S,V}(1, 1)}\bigg\{ \dfrac{\pi(\widetilde x)}{1-\pi(\widetilde x)} \widetilde i^* \widetilde s(1 - \widetilde v) - \Psi(P) + \dfrac{\mu_0(\widetilde x)}{1-\pi(\widetilde x)}(1-\widetilde i^*) \widetilde s \widetilde v  - \Psi(P) - \dfrac{\mu_0(x)\pi(x)}{\{1 - \pi(x)\}^2} (1-\widetilde i^*) \widetilde s (1-\widetilde v) - \Psi(P) +  \bigg\}dx \\ 
+   &= \int \dfrac{1}{f_{S,V}(1, 1)} \dfrac{\mu_0(x)\pi(x)}{1 - \pi(x)}f(x, s=1, v=1) \bigg\{\dfrac{\widetilde{i}^*\widetilde{s}(1-\widetilde{v})\mathbbm 1_{\widetilde{x}}(x)}{\mu_0(x)} + \dfrac{(1-\widetilde{i}^*)\widetilde{s}\widetilde{v}\mathbbm 1_{\widetilde{x}}(x)}{\pi(x) f_{I^*,S,X}(0, 1, x)} \\
+   &\qquad - \dfrac{(1-\widetilde{i}^*)\widetilde{s}(1-\widetilde{v})\mathbbm 1_{\widetilde{x}}(x)}{\{1 - \pi(x)\} f_{I^*,S,X}(0, 1, x)} + \widetilde s \widetilde v \mathbbm 1_{\widetilde x}(x) - \widetilde s (1-\widetilde v) \mathbbm 1_{\widetilde x}(x)\bigg\} dx - \Psi(P) \\
+   &=\dfrac{\widetilde s}{f_{S,V}(1, 1)}  \bigg\{(1 - \widetilde v)\{\widetilde i^* - \mu_0(\widetilde x)\}\dfrac{\pi(\widetilde x)}{1 - \pi(\widetilde x)} + \widetilde v (1 - \widetilde i^*) \dfrac{\mu_0(\widetilde x)}{1 - \pi(\widetilde x)} -  (1 - \widetilde v) (1 - \widetilde i^*)\dfrac{\mu_0(\widetilde x)\pi(\widetilde x)}{\{1 - \pi(\widetilde x)\}^2}  \bigg\}  - \Psi(P) \\
+   &=\dfrac{\widetilde s}{f_{S,V}(1, 1)}  \bigg\{(1 - \widetilde v) \widetilde i^*\dfrac{\pi(\widetilde x)}{1 - \pi(\widetilde x)} + (1 - \widetilde i^*)\dfrac{\mu_0(\widetilde x)\{\widetilde v - \pi(\widetilde x)\}}{\{1 - \pi(\widetilde x)\}^2}  \bigg\}  - \Psi(P) 
+\end{align*}
+
+\begin{equation*}
+    \chi(P, O) = \dfrac{S}{\Pr(S=1, V=1)}  \bigg\{(1 - V) I^*\dfrac{\pi(X)}{1 - \pi(X)} + (1 - I^*)\dfrac{\mu_0(X)\{V - \pi(X)\}}{\{1 - \pi(X)\}^2}  \bigg\}  - \Psi(P) 
+\end{equation*}
+
+\begin{equation*}
+    \widehat{\Psi} = \sum_{j=1}^n \left[(1 - V_j) \{I^*_j - \mu_0(X_j)\}\dfrac{\pi(X_j)}{1 - \pi(X_j)} + (1 - I^*_j)\dfrac{\mu_0(X_j)\{V_j - \pi(X_j)\}}{\{1 - \pi(X_j)\}^2}\right]
+\end{equation*}
+
+\begin{proof}
+To prove the doubly-robustness of $\hat\Psi$, it suffices to show that 
+\begin{align*}
+    E\bigg[ (1 - V) I^*_j\dfrac{\pi(X)}{1 - \pi(X)} + (1 - I^*)\dfrac{\mu_0(X)\{V - \pi(X)\}}{\{1 - \pi(X)\}^2}\mid S=1\bigg] = \Pi
+\end{align*}
+if (1) $\dot\mu_0(\cdot)=\mu_0(\cdot)$ a.s., or (2) $\dot \pi(\cdot)=\pi(\cdot)$ and $\dot\mu_0(\cdot)=\mu_0(\cdot)$  a.s.
+
+\begin{enumerate}
+        \item If $\dot\mu_0(\cdot)=\mu_0(\cdot)$ a.s., then
+        \begin{align*}
+            &E\bigg[ (1 - V) I^*\dfrac{\dot\pi(X)}{1 - \dot\pi(X)} + (1 - I^*)\dfrac{\mu_0(X)\{V - \dot\pi(X)\}}{\{1 - \dot\pi(X)\}^2}\mid S=1\bigg]\\
+            &= E\Bigg\{ E\bigg[ I^*\dfrac{\dot\pi(X)}{1 - \dot\pi(X)} - (1 - I^*)\dfrac{\mu_0(X)\dot\pi(X)}{\{1 - \dot\pi(X)\}^2} \mid V=0, S=1\bigg] \mid S = 1\Bigg\} \\
+            &= E\Bigg\{ \dfrac{\dot\pi(X)}{1 - \dot\pi(X)} \mu_0(X) - \dfrac{\mu_0(X)\dot\pi(X)}{\{1 - \dot\pi(X)\}^2}(1 - \mu_0(X)) \mid V=0, S=1\bigg] \mid S = 1\Bigg\}\\
+            &= E\Bigg\{ \dfrac{\dot\pi(X)}{1 - \dot\pi(X)} \left[\mu_0(X) - \dfrac{\mu_0(X)}{1 - \dot\pi(X)}(1 - \mu_0(X))\right] \mid V=0, S=1\bigg] \mid S = 1\Bigg\}\\
+            &\qquad E\bigg[\pi(X)\{1-\mu_1(X)\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid  S=1\bigg]\\
+            &= 0 + \Pi = \Pi
+        \end{align*}
+    \item If $\dot\pi(\cdot)=\pi(\cdot)$ and $\dot\mu_0(\cdot)=\mu_0(\cdot)$ a.s., then 
+\begin{align*}
+    &E\bigg[ (1-V)\{I^* -  \mu_0(X)\}\dfrac{\pi(X)\{1 - \dot\mu_1(X)\}}{\{1 - \pi(X)\}\{1 - \mu_0(X)\}^2} + V\{1-I^*\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid S=1\bigg]\\
+    =& E\bigg[ \{1 - \pi(X)\}\{\mu_0(X) -  \mu_0(X)\}\dfrac{\pi(X)\{1 - \dot\mu_1(X)\}}{\{1 - \pi(X)\}\{1 - \mu_0(X)\}^2} + \pi(X)\{1-\mu_1(X)\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid S=1\bigg]\\
+    &= \Pi
+\end{align*}
+\end{enumerate}
+\end{proof}
+\newpage
+
+Then the pathwise derivative of $\Psi_t$ wrt $t$ is
+
+\begin{align*}
+    \dfrac{\partial}{dt}\Psi_t\bigg\vert_{t=0}  &= \dfrac{\partial}{dt} E_t \left\{\dfrac{\mu_0(X)\pi(X)}{1 - \pi(X)}\mid S=1, V=1\right\}\bigg\vert_{t=0} + E\left[ \dfrac{\partial}{dt}\left\{\dfrac{\mu^t_0(X)\pi^t(X)}{1 - \pi^t(X)} \right\} \bigg\vert_{t=0}\mid S=1, V=1\right] \\
+    &=E\left[\dfrac{\tilde s \tilde v}{\Pr(S=1, V=1)}\{\mathbbm 1_{\tilde x}(x)-f(x\mid S=1, V=1)\}\dfrac{\mu_0(x)\pi(x)}{1 - \pi(x)}\right] + \\
+    & \qquad E\bigg[\dfrac{\tilde s(1-\tilde v)\mathbbm 1_{\tilde x}(x)}{f_{S, V, X}(1, 0, x)}\dfrac{\pi(x)}{1 - \pi(x)}\{\tilde i^* - \mu_0(x)\} + \dfrac{\tilde s(1-\tilde i)\mathbbm 1_{\tilde x}(x)}{f_{S, I^*, X}(1, 0, x)}\dfrac{\mu_0(x)}{1 - \pi(x)}\{\tilde v - \pi(x)\} - \\
+    &\qquad \quad \dfrac{\tilde s(1 - \tilde i)\mathbbm 1_{\tilde x}(x)}{f_{S, I^*, X}(1, 0, x)} \dfrac{\mu_0(x)\pi(x)}{\{1 - \pi(x)\}^2} \{\tilde v - \pi(x)\} \bigg\vert S = 1, V = 1\bigg]\\
+\end{align*}
+Define the risk ratio of testing positive among the treated as:
+\begin{align*}
+    \Psi &= \dfrac{\Pr[I^1 = 2, T^1 = 1 | V = 1]}{\Pr[I^0 = 2, T^0 = 1 | V = 1]} \\
+         &= \dfrac{\Pr[I^1 = 2, T^1 = 1 | V = 1]}{\E[\Pr[I^0 = 2, T^0 = 1 | V = 1, X] | V = 1]}.
+\end{align*}
+By consistency the numerator is equal to $\Pr[I^1 = 2, T^1 = 1 | V = 1]$ and by the previous results we have that 
+\begin{equation*}
+    \Pr[I^0 = 2, T^0 = 1 | V = 1, X] = \dfrac{\Pr[I = 1, T = 1 | V = 1, X]}{\Pr[I = 1, T = 1 | V = 0, X]} \Pr[I = 2, T = 1 | V = 0, X]
+\end{equation*}
+which is equivalent to 
+\begin{equation*}
+    \Pr[I^0 = 2, T^0 = 1 | V = 1, X] = \dfrac{1}{\psi(X)} \Pr[I = 2, T = 1 | V = 1, X].
+\end{equation*}
+where $\psi(X)$ is the conditional odds ratio defined previously, i.e.
+\begin{equation*}
+    \psi(X) = \dfrac{\dfrac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 1, T = 1 | V = 1, X]}}{\dfrac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I = 1, T = 1 | V = 0, X]}}
+\end{equation*}
+Hence
+\begin{align*}
+    \Psi &= \dfrac{\Pr[I = 2, T = 1 | V = 1]}{\E\left[\dfrac{1}{\psi(X)} \Pr[I = 2, T = 1 | V = 1, X] | V = 1\right]} \\
+\end{align*}
+To show this is identified under the biased sampling design consider
+\begin{align*}
+    \Psi &= \dfrac{\Pr[I = 2, T = 1 | V = 1]}{\E\left[\dfrac{1}{\psi(X)} \Pr[I = 2, T = 1 | V = 1, X] | V = 1\right]} \\
+    &= \dfrac{\Pr[I = 2, T = 1 | V = 1]}{\int \dfrac{1}{\psi(X)} \Pr[I = 2, T = 1 | V = 1, X] f(x | V = 1) dx} \\
+    &= \dfrac{\Pr[I = 2 | T = 1, V = 1] \Pr[T = 1 | V = 1]}{\int \dfrac{1}{\psi(X)} \Pr[I = 2 | T = 1, V = 1, X] \Pr[T = 1 | V = 1, X]  f(x | V = 1) dx} \\
+    &= \dfrac{\Pr[I = 2 | T = 1, V = 1] \Pr[T = 1 | V = 1]}{\int \dfrac{1}{\psi(X)} \Pr[I = 2 | T = 1, V = 1, X] \Pr[T = 1 | V = 1]  f(x | T = 1, V = 1) dx} \\
+\end{align*}
+where the last line follows by Bayes theorem 
+\begin{equation*}
+    f(x | V = 1) = \dfrac{f(x | T = 1, V = 1)\Pr[T = 1 | V = 1]}{\Pr[T = 1 | V = 1, X]}
+\end{equation*}
+and further
+\begin{align*}
+    \Psi &= \dfrac{\Pr[I = 2 | T = 1, V = 1]}{\int \dfrac{1}{\psi(X)} \Pr[I = 2 | T = 1, V = 1, X] f(x | T = 1, V = 1) dx} \\
+    &= \dfrac{\Pr[I = 2 | T = 1, V = 1]}{\E\left[\dfrac{1}{\psi(X)} \Pr[I = 2 | T = 1, V = 1, X] \bigg| T = 1, V = 1\right]} \\
+    &= \dfrac{\Pr[I^* = 1 | S = 1, V = 1]}{\E\left[\dfrac{1}{\psi^*(X)} \Pr[I^* = 1 | S = 1, V = 1, X] \bigg| S = 1, V = 1\right]} \\
+\end{align*}
+where all elements are identified under biased sampling.
+
+
+We continue to derive the EIF of
+$$\Psi = \dfrac{E(I^*\mid S=1, V=1)}{E\left\{\dfrac{Pr(I^*=1\mid S=1, V=0, X)Pr(V=1\mid S=1, I^*=0, X)}{Pr(V=0\mid S=1, I^*=0, X)}\mid S=1, V=1\right\}}$$
+
+To derive the EIF for $\Psi$, we use the point-mass approach in Hines et al. 2019.
+
+
+We consider a one-dimensional parametric submodel
+
+$$f_\theta(i^*, s, v, x)=\theta \mathbbm 1_{\tilde i^*, \tilde s, \tilde v, \tilde x}(i^*, s, v, x) + (1-\theta)f(i^*, s, v,x),$$
+
+and let
+$$\Psi_\theta = \dfrac{E_\theta(I^*\mid S=1, V=1)}{\int \dfrac{E_\theta(I^*\mid S=1, V=0, X=x)E_\theta(V \mid S=1, I^*=0, X=x)}{E_\theta(1-V\mid S=1, I^*=0, X=x)}f_\theta(x\mid S=1, V=1)dx}$$
+
+
+We have
+\begin{align*}
+    \dfrac{\partial}{\partial\theta}E_\theta(I^*\mid S=1, V=1)\mid_{\theta=0} &= \int i^* \dfrac{\partial}{\partial\theta}f_\theta(i^*\mid S=1, V=1)\mathrm d i^*\mid_{\theta = 0}\\
+    &= \dfrac{\mathbbm 1_{\tilde s,\tilde v}(1, 1)}{f_{S, V}(1, 1)}\{\tilde i^* - E(I^*\mid S=1, V=1)\}\\
+    &= \dfrac{\tilde s\tilde v}{f_{S, V}(1, 1)}\{\tilde i^* - E(I^*\mid S=1, V=1)\}
+\end{align*}
+
+and Similarly,
+\begin{align*}
+    \dfrac{\partial}{\partial\theta}E_\theta(I^*\mid S=1, V=0, X=x)\mid_{\theta=0} &= \dfrac{\tilde s(1-\tilde v)\mathbbm 1_{\tilde x}(x)}{f_{S, V, X}(1, 0, x)}\{\tilde i^* - E(I^*\mid S=1, V=0, X=x)\}\\
+     \dfrac{\partial}{\partial\theta}E_\theta(V \mid S=1, I^*=0, X=x)\mid_{\theta=0} &= \dfrac{\tilde s(1-\tilde i)\mathbbm 1_{\tilde x}(x)}{f_{S, I^*, X}(1, 0, x)}\{\tilde v - E(V\mid S=1, I^*=0, X=x)\}\\
+     \dfrac{\partial}{\partial\theta}E_\theta(1-V\mid S=1, I^*, X=x)\mid_{\theta=0} &= -\dfrac{\tilde s(1 - \tilde i)\mathbbm 1_{\tilde x}(x)}{f_{S, I^*, X}(1, 0, x)}\{\tilde v - E(V\mid S=1, I^*=0, X=x)\}.
+\end{align*}
+
+We also have
+$$\dfrac{\partial}{\partial\theta}f_\theta(x\mid S=1, V=1) = \dfrac{\tilde s \tilde v}{Pr(S=1, V=1)}\{\mathbbm 1_{\tilde x}(x)-f(x\mid S=1, V=1)\}$$
+
+The pathwise derivative of $\Psi_\theta$ wrt $\theta$ is
+\begin{align*}
+    \dfrac{\partial}{\partial\theta}\Psi_\theta\mid_{\theta=0} &= \dfrac{\dfrac{\tilde s\tilde v}{Pr(S=1, V=1)}\{\tilde i^* - Pr(I^*=1\mid S=1, V=1)\}}{E\left\{\dfrac{Pr(I^*=1\mid S=1, V=0, X)Pr(V = 1\mid S=1, I^*=0, X)}{Pr(V = 0 \mid S=1, I^*=0, X)}\mid S=1, V=1\right\}} -\\
+    & \dfrac{E(I^*\mid S=1, V=1)}{\left[E\left\{\dfrac{Pr(I^*=1\mid S=1, V=0, X)Pr(V = 1\mid S=1, I^*=0, X)}{Pr(V = 0 \mid S=1, I^*=0, X)}\mid S=1, V=1\right\}\right]^2}\times \\
+    &\bigg[ \dfrac{\tilde s(1 - \tilde v)}{f_{S, V, X}(1, 0, \tilde x)}\{\tilde i^* - Pr(I^* = 1\mid S=1, V=0, X=\tilde x)\}\dfrac{Pr(V = 1\mid S=1, I^*=0, X = \tilde x)}{Pr(V = 0\mid S=1, I^*=0, X = \tilde x)}f(\tilde x\mid S=1, V=1) -\\
+    & \dfrac{\tilde s(1-\tilde i)}{f_{S, I^*, X}(1, 0, \tilde x)}\{\tilde v - Pr(V=1\mid S=1, I^*=0, X=\tilde x)\}\dfrac{Pr(I^*=1\mid S=1, V=0, X=\tilde x)}{Pr(V = 0\mid S=1, I^*=0, X = \tilde x)}f(\tilde x | S = 1 , V = 1) + \\
+    &\dfrac{\tilde s(1 - \tilde i)}{f_{S, I^*, X}(1, 0, x)}\{\tilde v^* - Pr(V = 1\mid S=1, I^*=0, X=\tilde x)\}\times \\&\qquad \dfrac{Pr(I^*=0\mid S=1, V=1, X=\tilde x)Pr(V = 1\mid S=1, I^*=0, X=\tilde x)}{\{Pr(V = 0\mid S=1, I^*=0, X=\tilde x)\}^2} f(\tilde x\mid S=1, V=1)+\\
+    &\dfrac{\tilde s\tilde v}{Pr(S=1, V=1)}\dfrac{Pr(I^*=1\mid S=1, V=0, X=\tilde x)Pr(I^*=0\mid S=1, V=1, X=\tilde x)}{Pr(I^*=0\mid S=1, V=0, X=\tilde x)} -\\
+   & \dfrac{\tilde s\tilde v}{Pr(S=1, V=1)}E\left\{\dfrac{Pr(I^*=1\mid S=1, V=0, X)Pr(I^*=0\mid S=1, V=1, X)}{Pr(I^*=0\mid S=1, V=0, X)}\mid S=1, V=1\right\}\bigg]\\
+   &= \dfrac{\tilde s\tilde v\tilde i^*}{\sigma\mu E\left\{\dfrac{\mu_0(X)\pi(X)}{1 - \pi(X)}\mid S=1, V=1\right\}} - \dfrac{Pr(I^*=1\mid S=1, V=1)}{\left[E\left\{\dfrac{\mu_0(X)\pi(X)}{1 - \pi(X)}\mid S=1, V=1\right\}\right]^2}\times \\
+    &\bigg[ \dfrac{\tilde s(1 - \tilde v)}{\sigma\mu}\{\tilde i^* - \mu_0(\tilde x)\}\dfrac{\pi(\tilde x)}{\{1 - \pi(\tilde x)\}} + \dfrac{\tilde s\tilde v}{\sigma\mu}\{1-\tilde i^*\}\dfrac{\mu_0(\tilde x)}{1-mu_0(\tilde x)}\bigg]
+\end{align*}
+where $\sigma=P(S=1)$, $\pi(x) = Pr(V=1\mid S=1, X=x)$, $\pi=Pr(V=1\mid S=1)$, $f_s(x)=f(x\mid S=1)$ and $\mu_v(x)=Pr(I^*=1\mid V=v, S=1, X=x)$.
+
+By Hines et al. 2019, the efficient influence function for $\Psi$ is
+\begin{align*}
+    EIF(O_j) &=\dfrac{S_jV_j I^*_j}{\sigma \int \dfrac{\pi_0(x)\{1 - \pi_1(x)\}}{1 - \pi_0(x)}\mu(x)f_s(x)dx} - \dfrac{Pr(I^*=1, V=1\mid S=1)}{\left[\int \dfrac{\pi_0(x)\{1 - \pi_1(x)\}}{1 - \pi_0(x)}\mu(x)f_s(x)dx\right]^2}\times \\
+    &\bigg[ \dfrac{S_j(1 - V_j)}{\sigma}\{I^*_j - \pi_0(X_j)\}\dfrac{\mu(X_j)\{1 - \pi_1(X_j)\}}{\{1 - \mu(X_j)\}\{1 - \pi_0(X_j)\}^2} + \dfrac{S_jV_j}{\sigma}\{1-I^*_j\}\dfrac{\pi_0(X_j)}{1-\pi_0(X_j)}\bigg] 
+\end{align*}
+
+\section{One-step correction estimator}
+\begin{enumerate}   
+    \item Specify the propensity score model $\pi(x;\alpha)$ and the outcome regression model $\mu_v(x;\beta)$. The nuisance parameters may be estimated by solving estimating equations
+    \begin{align*}
+        \sum_{j=1}^n X_j\{V_j - \pi(X_j;\alpha)\} &= 0;\\
+        \sum_{j=1}^n \begin{pmatrix}
+            X_j\\V_j
+        \end{pmatrix}\{I^*_j - \mu_{V_j}(X_j;\beta)\}=0.
+    \end{align*}
+    Denote the resulting estimators as $\hat\alpha$, $\hat\beta$.
+    \item Let $\hat \Pi$ be an estimator for $\Pi\equiv \int \dfrac{\mu_0(x)\{1 - \mu_1(x)\}}{1 - \mu_0(x)}\pi(x)f_s(x)dx$, for example,
+    $$\hat\Pi = \dfrac{1}{n}\sum_{j=1}^n \dfrac{\mu_0(X_j;\hat\beta)\{1 - \mu_1(X_j;\hat\beta)\}}{1 - \mu_0(X_j;\hat\beta)}\pi(X_j;\hat \alpha).$$
+
+    The initial estimator of $\Psi$ is
+    $$\hat\Psi_0 = \dfrac{\dfrac{1}{n}\sum_{j=1}^n I^*_jV_j}{\hat\Pi}.$$
+    \item The one-step corrected estimator is
+    \begin{align*}
+        \hat\Psi_1 &= \hat\Psi_0 +\dfrac{1}{n}\sum_{i=1}^n \bigg\{\dfrac{V_jI^*_j}{\hat\Pi}-\\&\qquad \dfrac{\dfrac{1}{n}\sum_{k=1}^n I^*_kV_k}{\hat\Pi^2}\bigg[S_j(1 - V_j)\{I^*_j - \mu_0(X_j;\hat\beta)\}\dfrac{\pi(X_j;\hat\alpha)\{1 - \mu_1(X_j;\hat\beta)\}}{\{1 - \pi(X_j;\hat\alpha)\}\{1 - \mu_0(X_j;\hat\beta)\}^2} + S_jV_j\{1-I^*_j\}\dfrac{\mu_0(X_j;\hat\beta)}{1-\mu_0(X_j;\hat\beta)}\bigg]\bigg\}\\
+        &= 2\hat\Psi_0-\dfrac{\hat\Psi_0}{\hat\Pi}\dfrac{1}{n}\sum_{j=1}^n\bigg[S_j(1 - V_j)\{I^*_j - \mu_0(X_j;\hat\beta)\}\dfrac{\pi(X_j;\hat\alpha)\{1 - \mu_1(X_j;\hat\beta)\}}{\{1 - \pi(X_j;\hat\alpha)\}\{1 - \mu_0(X_j;\hat\beta)\}^2} + S_jV_j\{1-I^*_j\}\dfrac{\mu_0(X_j;\hat\beta)}{1-\mu_0(X_j;\hat\beta)}\bigg]
+    \end{align*}
+\end{enumerate}
+
+\section{Doubly robust estimator}
+Note that
+\begin{align*}
+    EIF(O_j) &=\dfrac{S_jV_j I^*_j}{\sigma \Pi} - \dfrac{\Psi}{\Pi}\bigg[ \dfrac{S_j(1 - V_j)}{\sigma}\{I^*_j - \mu_0(X_j)\}\dfrac{\pi(X_j)\{1 - \mu_1(X_j)\}}{\{1 - \pi(X_j)\}\{1 - \mu_0(X_j)\}^2} + \dfrac{S_jV_j}{\sigma}\{1-I^*_j\}\dfrac{\mu_0(X_j)}{1-\mu_0(X_j)}\bigg] 
+\end{align*}
+
+Solve
+$$\dfrac{1}{n}\sum_{j=1}^n \dfrac{V_jI^*_j}{\Pi}-\dfrac{\Psi}{\Pi}\dfrac{1}{n}\sum_{j=1}^n\bigg[ (1-V_j)\{I^*_j - \mu_0(X_j)\}\dfrac{\pi(X_j)\{1 - \mu_1(X_j)\}}{\{1 - \pi(X_j)\}\{1 - \mu_0(X_j)\}^2} + V_j\{1-I^*_j\}\dfrac{\mu_0(X_j)}{1-\mu_0(X_j)}\bigg]=0,$$
+we obtain the estimator 
+\begin{align*}
+\hat\Psi_2&= \dfrac{\sum_{i=1}^n V_jI_j^*}{\sum_{j=1}^n\bigg[ (1-V_j)\{I^*_j - \mu_0(X_j;\hat\beta)\}\dfrac{\pi(X_j;\hat\alpha)\{1 - \mu_1(X_j;\hat\beta)\}}{\{1 - \pi(X_j;\hat\alpha)\}\{1 - \mu_0(X_j;\hat\beta)\}^2} + V_j\{1-I^*_j\}\dfrac{\mu_0(X_j;\hat\beta)}{1-\mu_0(X_j;\hat\beta)}\bigg]}
+\end{align*}
+
+We can show that $\hat\Psi_2$ is consistent if $\mu_0(\cdot;\beta)$ is correctly specified, and either $\pi(\cdot;\alpha)$ or $\mu_1(\cdot;\beta)$ is correctly specified. 
+
+\begin{proof}
+To prove the doubly-robustness of $\hat\Psi_2$, it suffices to show that 
+\begin{align*}
+    E\bigg[ (1-V)\{I^* - \dot \mu_0(X)\}\dfrac{\dot\pi(X)\{1 - \dot\mu_1(X)\}}{\{1 - \dot\pi(X)\}\{1 - \dot\mu_0(X)\}^2} + V\{1-I^*\}\dfrac{\dot\mu_0(X)}{1-\dot\mu_0(X)}\mid S=1\bigg] = \Pi
+\end{align*}
+if (1) $\dot\mu_v(\cdot)=\mu_v(\cdot)$ a.s. for $v=0,1$, or (2) $\dot \pi(\cdot)=\pi(\cdot)$ and $\dot\mu_0(\cdot)=\mu_0(\cdot)$  a.s.
+
+    \begin{enumerate}
+        \item If $\dot\mu_v(\cdot)=\mu_v(\cdot)$ a.s. for $v=0,1$, then
+        \begin{align*}
+            &E\bigg[ (1-V)\{I^* -  \mu_0(X)\}\dfrac{\dot\pi(X)\{1 - \mu_1(X)\}}{\{1 - \dot\pi(X)\}\{1 - \mu_0(X)\}^2} + V\{1-I^*\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid S=1\bigg]\\
+            =& E\bigg[ \{I^* -  \mu_0(X)\}\dfrac{\dot\pi(X)\{1 - \mu_1(X)\}}{\{1 - \dot\pi(X)\}\{1 - \mu_0(X)\}^2} \mid V=0, S=1\bigg]Pr(V=0\mid  S=1) + \\
+            &\qquad E\bigg[E\{V(1-I^*)\mid X\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid  S=1\bigg]\\
+            =& E\bigg[E \{I^* -  \mu_0(X)\mid V=0, S=1, X\}\dfrac{\dot\pi(X)\{1 - \mu_1(X)\}}{\{1 - \dot\pi(X)\}\{1 - \mu_0(X)\}^2} \mid V=0, S=1\bigg]Pr(V=0\mid  S=1) + \\
+            &\qquad E\bigg[\pi(X)\{1-\mu_1(X)\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid  S=1\bigg]\\
+            &= 0 + \Pi = \Pi
+        \end{align*}
+    \item If $\dot\pi(\cdot)=\pi(\cdot)$ and $\dot\mu_0(\cdot)=\mu_0(\cdot)$ a.s., then 
+\begin{align*}
+    &E\bigg[ (1-V)\{I^* -  \mu_0(X)\}\dfrac{\pi(X)\{1 - \dot\mu_1(X)\}}{\{1 - \pi(X)\}\{1 - \mu_0(X)\}^2} + V\{1-I^*\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid S=1\bigg]\\
+    =& E\bigg[ \{1 - \pi(X)\}\{\mu_0(X) -  \mu_0(X)\}\dfrac{\pi(X)\{1 - \dot\mu_1(X)\}}{\{1 - \pi(X)\}\{1 - \mu_0(X)\}^2} + \pi(X)\{1-\mu_1(X)\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid S=1\bigg]\\
+    &= \Pi
+\end{align*}
+
+
+    \end{enumerate}
+\end{proof}
+
+
+
+\bibliographystyle{plainnat}
+\bibliography{sample}
+
+\newpage
+let
+$$\Psi_\theta = \dfrac{E_\theta(I^*\mid S=1, V=1)}{\int \dfrac{E_\theta(I^*\mid S=1, V=0, X=x)E_\theta(V \mid S=1, I^*=0, X=x)}{E_\theta(1-V\mid S=1, I^*=0, X=x)}f_\theta(x\mid S=1, V=1)dx}$$
+
+\begin{align*}
+    \dfrac{\partial}{\partial\theta}E_\theta(I^*\mid S=1, V=0, X=x)\mid_{\theta=0} &= \dfrac{\tilde s(1-\tilde v)\mathbbm 1_{\tilde x}(x)}{f_{S, V, X}(1, 0, x)}\{\tilde i^* - E(I^*\mid S=1, V=0, X=x)\}\\
+     \dfrac{\partial}{\partial\theta}E_\theta(V \mid S=1, I^*=0, X=x)\mid_{\theta=0} &= \dfrac{\tilde s(1-\tilde i)\mathbbm 1_{\tilde x}(x)}{f_{S, I^*, X}(1, 0, x)}\{\tilde v - E(V\mid S=1, I^*=0, X=x)\}\\
+     \dfrac{\partial}{\partial\theta}E_\theta(1-V\mid S=1, I^*, X=x)\mid_{\theta=0} &= -\dfrac{\tilde s(1 - \tilde i)\mathbbm 1_{\tilde x}(x)}{f_{S, I^*, X}(1, 0, x)}\{\tilde v - E(V\mid S=1, I^*=0, X=x)\}.
+\end{align*}
+
+\begin{align*}
+\int \int \dfrac{\tilde s(1-\tilde v)\mathbbm 1_{\tilde x}(x)}{f_{S, V, X}(1, 0, x)}\{\tilde i^* - E(I^*\mid S=1, V=0, X=x)\}di^* \dfrac{E_\theta(V \mid S=1, I^*=0, X=x)}{E_\theta(1-V\mid S=1, I^*=0, X=x)}f_\theta(x\mid S=1, V=1)   
+\end{align*}
+
+
+\newpage
+
+\begin{align*}
+    E(Y^0 | A = 1) = \dfrac{1}{\Pr(A = 1)} E\left\{\dfrac{\pi_0(X)Y(1-A)}{1-\pi_0(X)}\right\}
+\end{align*}
+where 
+\begin{equation*}
+    \pi_0(X) = \Pr(A = 1 | Y^0=0, X)
+\end{equation*}
+\end{document}
