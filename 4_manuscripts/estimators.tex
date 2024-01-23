@@ -1,0 +1,363 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage{geometry}
+
+% Useful packages
+\usepackage{natbib}
+\usepackage{amsmath,amsthm,amsfonts}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{bbm}
+\usepackage{bigints}
+\def\ll{\lambda}
+\def\LL{\Lambda}
+\def\arctanh{\mathrm{arctanh}}
+\def\tanh{\mathrm{tanh}}
+\def\indep{\!\perp\!\!\!\perp}
+\DeclareMathOperator{\E}{E}
+
+\newtheorem{example}{Example}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+
+\title{Appendix}
+
+
+\begin{document}
+\maketitle
+\section{Proofs of identifiability results}
+\noindent Assumptions:
+\begin{itemize}
+    \item[(A1)] Consistency of potential outcomes. For all individuals $i$ and for $v \in \{0, 1\}$, we have $I_i^v = I_i$ and $T_i^v = T_i$ when $V_i = v$.
+    \item[(A2)] No effect of vaccination on test-negative symptomatic illness ($I = 1$) among the vaccinated. That is, $\Pr(I^0 = 1 | V = 1, X) = \Pr(I^1 = 1 | V = 1, X).$
+    \item[(A3)] Odds ratio equi-confounding. Degree of unmeasured confounding bias on the odds ratio scale is the same for test-positive and test-negative illnesses, i.e. 
+    $$\beta_2(X) = \beta_1(X), $$
+    $$ \text{where } \beta_i(X) = \log \frac{\Pr(I^0 = i, T^0 = 1 | V = 1, X)\Pr(I^0 = 0, T^0 = 1 | V = 0, X)}{\Pr(I^0 = 0, T^0 = 1 | V = 1, X)\Pr(I^0 = i, T^0 = 1| V = 0, X)}.$$
+    \item[(A4)] Overlap of vaccination among test-positives and test-negatives. Define $\mathcal{S}_i(v)$ as the support of the law of $(I^v = i, T^v = 1, V = v, X)$, then for $v$ in $\{0,1\}$, then it must be that $\mathcal{S}_2(1) \subseteq \mathcal{S}_2(0)$ and $\mathcal{S}_2(v) \subseteq \mathcal{S}_1(v).$
+    \item[(A5)] Equivalent effects of vaccination on test-seeking behavior for test-positive and test-negative illnesses. That is, for $v \in \{0, 1\}$, $\Pr(T^v = 1 | I^v = 2, V = 1, X) = \Pr(T^v = 1 | I^v = 1, V = 1, X)$ and $\Pr(T^v = 1 | I^v = 2, V = 0, X) = \Pr(T^v = 1 | I^v = 1, V = 0, X)$.
+\end{itemize}
+
+\newpage
+\begin{theorem}
+Under assumption A1, the causal risk ratio among the vaccinated, 
+\begin{equation*}
+    \Psi \equiv \dfrac{\Pr(I^1=2|V=1)}{\Pr(I^0=2|V=1)},
+\end{equation*}
+is equivalent to 
+\begin{equation}
+    \Psi^0_{om} \equiv \dfrac{\Pr(I = 2 | V = 1)}{E\left[\Pr(I = 2 | V = 0, X) \exp\{\alpha^0_2(X)\}\Big| V = 1 \right]}
+\end{equation}
+and 
+\begin{equation}
+    \Psi^0_{ipw} \equiv \dfrac{E\{V \mathbbm 1(I = 2)\}}{E\left\{ (1 - V) \mathbbm 1(I = 2) \dfrac{\pi^0_2(X)}{1 - \pi^0_2(X)}\right\}}
+\end{equation}
+where 
+\begin{equation*}
+    \pi^0_i(X) = \Pr(V = 1 | I^0 = i, X)
+\end{equation*}
+is the generalized propensity score and 
+\begin{equation*}
+    \beta^0_i(X) = \log \dfrac{\Pr(I^0 = i | V = 1, X)\Pr(I^0 = 0 | V = 0, X)}{\Pr(I^0 = 0 | V = 1, X)\Pr(I^0 = i | V = 0, X)}
+\end{equation*}
+is the odds ratio comparing the treatment-free potential outcome in the vaccinated and unvaccinated groups with 
+\begin{equation*}
+    \eta^0(X) = \log \dfrac{\Pr(I^0 = 0 | V = 0, X)}{\Pr(I^0 = 0 | V = 1, X)}
+\end{equation*}
+and 
+\begin{equation*}
+    \alpha^0_i(X) = \log \dfrac{\Pr(I^0 = i | V = 1, X)}{\Pr(I^0 = i | V = 0, X)}
+\end{equation*}
+such that
+\begin{equation*}
+    \beta^0_i(X) = \eta^0(X) + \alpha^0_i(X).
+\end{equation*}
+\end{theorem}
+
+\begin{proof}
+For the first expression, we have 
+\begin{align*}
+    \Psi &= \dfrac{\Pr(I^1=2|V=1)}{\Pr(I^0=2|V=1)} \\
+    &= \dfrac{\Pr(I^1=2|V=1)}{E[E\{\mathbbm 1 (I^0 = 2) | V = 1, X\} | V = 1]} \\
+    &= \dfrac{\Pr(I^1=2|V=1)}{E\left\{\int \mathbbm 1 (I^0 = 2) \cdot f(I^0 = i | V = 1, X) di \mid  V = 1\right\}} \\
+    &= \dfrac{\Pr(I^1=2|V=1)}{E\left\{\int \mathbbm 1 (I^0 = 2) \cdot f(I^0 = i | V = 0, X) \dfrac{f(I^0 = i | V = 1, X)}{f(I^0 = i | V = 0, X)}di \mid  V = 1\right\}} \\
+    &= \dfrac{\Pr(I^1=2|V=1)}{E\left\{ \Pr(I^0 = 2 | V = 0, X) \dfrac{\Pr(I^0 = 2 | V = 1, X)}{\Pr(I^0 = 2 | V = 0, X)} \mid  V = 1\right\}} \\
+    &= \dfrac{\Pr(I=2|V=1)}{E\left[ \Pr(I = 2 | V = 0, X) \exp\{\alpha^0_2(X)\} \mid  V = 1\right]}.
+\end{align*}
+The first line restates the definition. The second uses the law of iterated expectation. The third applies the definition of conditional expectation. The fourth multiplies the density by one. The fifth evaluates the integral and the sixth applies consistency and the definition of $\alpha_i(X)$
+
+For the second, we have 
+\begin{align*}
+    \Psi &= \dfrac{\Pr(I^1=2|V=1)}{\Pr(I^0=2|V=1)} \\
+    &= \dfrac{E\left\{\dfrac{V}{\Pr(V = 1)} \mathbbm 1 (I^1 = 2)\right\}}{E\left\{\dfrac{V}{\Pr(V=1)}\mathbbm 1 (I^0 = 2)\right\}} \\
+    &= \dfrac{E\{V \mathbbm 1 (I^1 = 2)\}}{E\left\{\mathbbm 1 (I^0 = 2) E(A | I^0 = 2, X)\right\}} \\
+    &= \dfrac{E\{V \mathbbm 1 (I^1 = 2)\}}{E\left\{\mathbbm 1 (I^0 = 2) \pi^0_2(X)\right\}} \\
+    &= \dfrac{E\{V \mathbbm 1 (I^1 = 2)\}}{E\left\{\mathbbm 1 (I^0 = 2) \dfrac{\pi^0_2(X)}{1-\pi^0_2(X)}E(1-A|I^0 = 2, X)\right\}} \\
+    &= \dfrac{E\{V \mathbbm 1 (I = 2)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2) \dfrac{\pi^0_2(X)}{1-\pi^0_2(X)}\right\}}.
+\end{align*}
+The first line restates the definition. The second uses the definition of conditional expectation. The third applies the law of iterated expectation. The fourth applies the definition of the generalized propensity score $\pi_i(X)$. The fifth multiplies by one. The sixth reverses the law of iterated expectations and applies consistency. 
+\end{proof}
+\newpage
+
+\begin{theorem}
+Under assumptions A1 - A4, the causal risk ratio among the vaccinated, 
+\begin{equation*}
+    \Psi \equiv \dfrac{\Pr(I^1=2|V=1)}{\Pr(I^0=2|V=1)},
+\end{equation*}
+is identified in the population underlying the test-negative design by 
+\begin{equation}
+    \Psi_{om} \equiv \dfrac{\Pr(I = 2 | V = 1)}{E\left\{ \exp\{\alpha_1(X)\} \Pr(I = 2 | V = 0, X) \Big| V = 1 \right\}}
+\end{equation}
+and 
+\begin{equation}
+    \Psi_{ipw} \equiv \dfrac{E\{V \mathbbm 1 (I = 2)\}}{E\left\{ (1 - V) \mathbbm 1(I = 2) \dfrac{\pi_1(X)}{1 - \pi_1(X)}\right\}}
+\end{equation}
+where $\alpha_i(X) = \log \dfrac{\Pr(I =i | V = 1, X)}{\Pr(I =i | V = 0, X)}$ and $\pi_i(X) = \Pr(V = 1 | I = i, X)$ are both observables. 
+\end{theorem}
+
+\begin{proof}
+For the first expression, note that by Assumption A3 and exclusivity of test-negative and test-positive illnesses
+\begin{align*}
+    \dfrac{\Pr(I^0 = 2 | V = 1, X)}{\Pr(I^0 = 2 | V = 0, X)} &= \dfrac{\Pr(I^0 = 1 | V = 1, X)}{\Pr(I^0 = 1 | V = 0, X)} \\
+    &= \dfrac{\Pr(I^1 = 1 | V = 1, X)}{\Pr(I^0 = 1 | V = 0, X)} \\
+    &= \dfrac{\Pr(I = 1 | V = 1, X)}{\Pr(I = 1 | V = 0, X)} \\
+\end{align*}
+where the first line is by Assumption A3 and exclusivity of test-negative and test-positive illnesses. The second line is by Assumption A2. And the last line applies consistency. This implies
+\begin{equation*}
+    \alpha_2^0(X) = \alpha_1(X)
+\end{equation*}
+and, therefore, combining with the derivation of Theorem 1, we have
+\begin{align*}
+    \Psi &= \dfrac{\Pr(I = 2 | V = 1)}{E\left\{ \exp\{\alpha^0_2(X)\} \Pr(I = 2 | V = 0, X) \Big| V = 1 \right\}} \\
+    &= \dfrac{\Pr(I = 2 | V = 1)}{E\left\{ \exp\{\alpha_1(X)\} \Pr(I = 2 | V = 0, X) \Big| V = 1 \right\}}.
+\end{align*}
+
+For the second expression, note first that, by the invariance of odds ratios, Assumptions A2 and A3 imply
+\begin{equation*}
+    \dfrac{\Pr(V = 1 | I^0 = 2, X)}{\Pr(V = 0 | I^0 = 2, X)} = \dfrac{\Pr(V = 1 | I = 1, X)}{\Pr(V = 0 | I = 1, X)}
+\end{equation*}
+and by consequence 
+\begin{equation*}
+    \dfrac{\pi^0_2(X)}{1 - \pi^0_2(X)} = \dfrac{\pi_1(X)}{1 - \pi_1(X)}.
+\end{equation*}
+Thus, again, continuing the derivation in Theorem 1, we have 
+\begin{align*}
+    \Psi &= \dfrac{E\{V \mathbbm 1 (I = 2)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2) \dfrac{\pi^0_2(X)}{1-\pi^0_2(X)}\right\}} \\
+    &= \dfrac{E\{V \mathbbm 1 (I = 2)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2) \dfrac{\pi_1(X)}{1-\pi_1(X)}\right\}}.
+\end{align*}
+\end{proof}
+\newpage
+
+\begin{corollary}
+If we add assumption A5, that is that direct effects of vaccination on testing behavior are the same for test-positive and test-negative illnesses, then $\Psi_{om}$ and $\Psi_{ipw}$ are equivalent to
+\begin{equation}
+    \Psi^\dagger_{om} \equiv \dfrac{\Pr(I = 2, T = 1 | V = 1)}{E\left\{ \exp\{\alpha^\dagger_1(X)\} \Pr(I = 2, T = 1 | V = 0, X) \Big| V = 1 \right\}}
+\end{equation}
+and 
+\begin{equation}
+    \Psi^\dagger_{ipw} \equiv \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{ (1 - V) \mathbbm 1(I = 2, T = 1) \dfrac{\pi^\dagger_1(X)}{1 - \pi^\dagger_1(X)}\right\}}
+\end{equation}
+where $\alpha^\dagger_1(X) = \dfrac{\Pr(I = 1, T = 1 | V = 1, X)}{\Pr(I = 1, T = 1 | V = 0, X)}$ and $\pi^\dagger_1(X) = \Pr(V = 1| I = 1, T = 1, X)$.
+\end{corollary}
+
+\begin{proof}
+    Define $\Psi^\dagger$ as 
+    \begin{equation*}
+        \Psi^\dagger \equiv  \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{\Pr(I^0=2, T^0 = 1|V=1)},
+    \end{equation*}
+    and note that
+    \begin{align*}
+        \Psi^\dagger &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{\Pr(I^0=2, T^0 = 1|V=1)} \\
+        &= \dfrac{\Pr(I^1 = 2 | V = 1)\Pr(T^1 = 1 | I^1 = 2, V = 1)}{\Pr(I^0=2, T^0 = 1|V=1)} \\
+        & = \dfrac{\Pr(I^1 = 2 | V = 1)}{E\left\{\dfrac{\Pr(I^0 = 2, T^0 = 1 | V = 1, X)}{\Pr(T^1 = 1 | I^1 = 2, V = 1, X)}  \bigg| V = 1\right\}} \\
+        & = \dfrac{\Pr(I^1 = 2 | V = 1)}{E\left\{\dfrac{\Pr(I^0 = 1, T^0 = 1 | V = 1, X)\Pr(I^0 = 2, T^0 = 1 | V = 0, X)}{\Pr(I^0 = 1, T^0 = 1 | V = 0, X)\Pr(T^1 = 1 | I^1 = 2, V = 1, X)}  \bigg| V = 1\right\}} \\
+        & = \dfrac{\Pr(I^1 = 2 | V = 1)}{E\left\{\dfrac{\Pr(I^1 = 1 | V = 1, X)}{\Pr(I^0 = 1 | V = 0, X)}\Pr(I^0 = 2 | V = 0, X)  \bigg| V = 1\right\}} \\
+        & = \dfrac{\Pr(I^1 = 2 | V = 1)}{E\left\{\Pr(I^0 = 2 | V = 1, X)  \bigg| V = 1\right\}} \\
+        & = \dfrac{\Pr(I^1 = 2 | V = 1)}{\Pr(I^0 = 2 | V = 1)} \\
+        &= \Psi.
+    \end{align*}
+    The first line follows by definition. The second factors the joint probability. The third applies the law of iterated expectations. The fourth applies assumption A3. The fifth applies assumption A5. The sixth reverses assumption A3 and the seventh reverses the law of iterated expectations. 
+
+    As $\Psi^\dagger = \Psi$, it now suffices to show that $\Psi^\dagger_{om}$ and $\Psi^\dagger_{ipw}$ identify $\Psi^\dagger$. Following the same steps as the derivations in Theorems 1 and 2, for the first expression we have 
+    \begin{align*}
+    \Psi^\dagger &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{\Pr(I^0=2, T^0 = 1|V=1)} \\
+    &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{E[E\{\mathbbm 1 (I^0 = 2, T^0 = 1) | V = 1, X\} | V = 1]} \\
+    &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{E\left\{\int \mathbbm 1 (I^0= 2, T^0 = 1) \cdot f(I^0 = i, T^0 = 1 | V = 1, X) di \mid  V = 1\right\}} \\
+    &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{E\left\{\int \mathbbm 1 (I^0= 2, T^0 = 1) \cdot f(I^0 = i, T^0 = 1 | V = 0, X) \dfrac{f(I^0 = i, T^0 = 1 | V = 1, X)}{f(I^0 = i, T^0 = 1 | V = 0, X)}di \mid  V = 1\right\}} \\
+    &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{E\left\{ \Pr(I^0 = 2, T^0 = 1 | V = 0, X) \dfrac{\Pr(I^0 = 2, T^0 = 1 | V = 1, X)}{\Pr(I^0 = 2, T^0 = 1 | V = 0, X)} \mid  V = 1\right\}} \\
+    &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{E\left\{ \Pr(I^0 = 2, T^0 = 1 | V = 0, X) \dfrac{\Pr(I^0 = 1, T^0 = 1 | V = 1, X)}{\Pr(I^0 = 1, T^0 = 1 | V = 0, X)} \mid  V = 1\right\}} \\
+    &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{E\left\{ \Pr(I^0 = 2, T^0 = 1 | V = 0, X) \dfrac{\Pr(I^1 = 1, T^1 = 1 | V = 1, X)}{\Pr(I^0 = 1, T^0 = 1 | V = 0, X)} \mid  V = 1\right\}} \\
+    &= \dfrac{\Pr(I=2, T = 1|V=1)}{E\left\{ \Pr(I = 2, T = 1 | V = 0, X) \dfrac{\Pr(I = 1, T = 1 | V = 1, X)}{\Pr(I = 1, T = 1 | V = 0, X)} \mid  V = 1\right\}} \\
+    &= \dfrac{\Pr(I = 2, T = 1 | V = 1)}{E\left\{ \exp\{\alpha^\dagger_1(X)\} \Pr(I = 2, T = 1 | V = 0, X) \Big| V = 1 \right\}}.
+    \end{align*}
+
+For the second expression, note first that, by the invariance of odds ratios, Assumptions A2, A3, and A5 imply
+\begin{equation*}
+    \dfrac{\Pr(V = 1 | I^0 = 2, T^0 = 1, X)}{\Pr(V = 0 | I^0 = 2,  T^0 = 1, X)} = \dfrac{\Pr(V = 1 | I = 1, T = 1, X)}{\Pr(V = 0 | I = 1,  T = 1, X)}
+\end{equation*}
+and by consequence 
+\begin{equation*}
+    \dfrac{\pi^{0\dagger}_2(X)}{1 - \pi^{0\dagger}_2(X)} = \dfrac{\pi^\dagger_1(X)}{1 - \pi^\dagger_1(X)}.
+\end{equation*}
+Thus we have
+\begin{align*}
+    \Psi &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{\Pr(I^0=2, T^0 = 1|V=1)} \\
+    &= \dfrac{E\{\dfrac{V}{\Pr(V=1)} \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\dfrac{V}{\Pr(V=1)}\mathbbm 1 (I^0 = 2, T^0 = 1)\right\}} \\
+    &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) E(A | I^0 = 2, T^0 = 1, X)\right\}} \\
+    &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) \pi^{0\dagger}_2(X)\right\}} \\
+    &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) \dfrac{\pi^{0\dagger}_2(X)}{1-\pi^{0\dagger}_2(X)}E(1-A|I^0 = 2, T^0 = 1, X)\right\}} \\
+    &= \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2, T = 1) \dfrac{\pi^{0\dagger}_2(X)}{1-\pi^{0\dagger}_2(X)}\right\}} \\
+    &= \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2, T = 1) \dfrac{\pi^\dagger_1(X)}{1-\pi^\dagger_1(X)}\right\}}.
+\end{align*}
+\end{proof}
+\newpage 
+\begin{corollary}
+Under assumptions A1 - A5 and the biased sampling design of the test-negative study, $\Psi^\dagger_{om}$ and $\Psi^\dagger_{ipw}$, and therefore by previous results $\Psi_{om}$, $\Psi_{ipw}$, and $\Psi$, are identified by
+\begin{equation}
+    \Psi_{om}^* = \dfrac{\Pr(I^* = 1 | S = 1, V = 1)}{E\left\{ \exp\{\alpha^*_1(X)\} \Pr(I^* = 1 | S = 1, V = 0, X) \Big| S = 1, V = 1 \right\}}
+\end{equation}
+and 
+\begin{equation}
+    \Psi_{ipw}^* = \dfrac{E\{VI^*|S =1\}}{E\left\{ (1 - V) I^* \dfrac{\pi^*(X)}{1 - \pi^*(X)} \bigg| S = 1\right\}}
+\end{equation}
+where $\alpha^*_1(X) = \dfrac{\Pr(I^* = 0 | S = 1, V = 1, X)}{\Pr(I^* = 0| S = 1, V = 0, X)}$ and $\pi^*(X) = \Pr(V = 1| S = 1, I^* = 0, X)$.
+\end{corollary}
+
+\begin{proof}
+For the first expression we have,
+    \begin{align*}
+    \Psi^\dagger_{om} &= \dfrac{\Pr(I=2, T = 1|V=1)}{E\left\{ \dfrac{\Pr(I = 1, T = 1 | V = 1, X)}{\Pr(I = 1, T = 1 | V = 0, X)}\Pr(I = 2, T = 1 | V = 0, X) \mid  V = 1\right\}} \\
+    &= \dfrac{\Pr(I = 2, T = 1 | V = 1)}{\int \dfrac{\Pr(I = 1, T = 1 | V = 1, x)}{\Pr(I = 1, T = 1 | V = 0, x)} \Pr(I = 2, T = 1 | V = 0, x) f(x | V = 1) dx} \\
+    &= \dfrac{\Pr(I = 2 | T = 1, V = 1)\Pr(T = 1 | V = 1)}{\int \dfrac{\Pr(I = 1 | T = 1, V = 1, x)}{\Pr(I = 1 | T = 1, V = 0, x)} \Pr(I = 2 | T = 1, V = 0, x) \Pr(T = 1 | V = 1, x) f(x | V = 1) dx} \\
+    &= \dfrac{\Pr(I = 2 | T = 1, V = 1)\Pr(T = 1 | V = 1)}{\int \dfrac{\Pr(I = 1 | T = 1, V = 1, x)}{\Pr(I = 1 | T = 1, V = 0, x)} \Pr(I = 2 | T = 1, V = 0, x) \Pr(T = 1 | V = 1) f(x | T =1, V = 1) dx} \\
+    &= \dfrac{\Pr(I = 2 | T = 1, V = 1)}{\int \dfrac{\Pr(I = 1 | T = 1, V = 1, x)}{\Pr(I = 1 | T = 1, V = 0, x)} \Pr(I = 2 | T = 1, V = 0, x) f(x | T =1, V = 1) dx} \\
+    &= \dfrac{\Pr(I = 2 | T = 1, V = 1)}{E\left\{ \dfrac{\Pr(I = 1 | T = 1, V = 1, X)}{\Pr(I = 1 | T = 1, V = 0, X)} \Pr(I = 2 | T = 1, V = 0, X) \bigg| T = 1, V = 1\right\}} \\
+    &= \dfrac{\Pr(I^* = 1 | S = 1, V = 1)}{E\left\{ \dfrac{\Pr(I^* = 0 | S = 1, V = 1, X)}{\Pr(I^* = 0 | S = 1, V = 0, X)} \Pr(I^* = 1 | S = 1, V = 0, X) \bigg| S = 1, V = 1\right\}} \\
+    &= \dfrac{\Pr(I^* = 1 | S = 1, V = 1)}{E\left\{ \exp\{\alpha^*_1(X)\} \Pr(I^* = 1 | S = 1, V = 0, X) \Big| S = 1, V = 1 \right\}}.
+\end{align*}
+The first line restates the definition of $\Psi^\dagger_{om}$. The second applies the definition of conditional expectation. The third factors the joint probabilities. The fourth applies Bayes theorem, i.e. 
+\begin{equation*}
+    f(x | V = 1) = \dfrac{f(x | T = 1, V = 1)\Pr(T = 1 | V = 1)}{\Pr(T = 1 | V = 1, x)}.
+\end{equation*}
+The fifth cancels the $\Pr(T = 1 |V = 1)$ terms in the numerator and denominator. The sixth applies the definition of conditional expectation. The seventh applies the sampling design $S = \mathbbm 1 (T = 1, I \neq 0)$ and the perfect test $I^* = \mathbbm 1(I = 2)$.
+
+For the second expression we have,
+\begin{align*}
+    \Psi^\dagger_{ipw} &= \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{ (1 - V) \mathbbm 1(I = 2, T = 1) \dfrac{\pi^\dagger_1(X)}{1 - \pi^\dagger_1(X)}\right\}} \\
+    &= \dfrac{E\{V \mathbbm 1 (I = 2) | T = 1\} \Pr(T = 1)}{E\left\{ (1 - V) \mathbbm 1(I = 2) \dfrac{\pi^\dagger_1(X)}{1 - \pi^\dagger_1(X)} \bigg| T = 1\right\} \Pr(T = 1)} \\
+    &= \dfrac{E\{V \mathbbm 1 (I = 2) | T = 1\}}{E\left\{ (1 - V) \mathbbm 1(I = 2) \dfrac{\pi^\dagger_1(X)}{1 - \pi^\dagger_1(X)} \bigg| T = 1\right\}} \\
+    &= \dfrac{E\{VI^*|S =1\}}{E\left\{ (1 - V) I^* \dfrac{\pi^*(X)}{1 - \pi^*(X)} \bigg| S = 1\right\}}.
+\end{align*}
+The first line restates the definition of $\Psi^\dagger_{ipw}$. The second applies the law of iterated expectations. The third cancels the $\Pr(T = 1)$ terms in the numerator and denominator. The fourth applies the sampling design $S = \mathbbm 1 (T = 1, I \neq 0)$ and the perfect test $I^* = \mathbbm 1(I = 2)$.
+
+\end{proof}
+\newpage
+\section{Estimation}
+\subsection{Plug-in}
+Corollary 2 suggests two plug-in estimators for the causal risk ratio among the vaccinated.  An estimator based on modeling the outcome
+\begin{equation}
+    \widehat{\Psi}_{om}^* = \dfrac{\sum_{i=1}^n V_i I^*_i}{\sum_{i=1}^n V_i \mu_0(X_i)\dfrac{1 - \mu^*_1(X_i)}{1 - \mu^*_0(X_i)}},
+\end{equation}
+and an inverse probability weighting estimator
+\begin{equation}
+    \widehat{\Psi}_{ipw}^* = \dfrac{\sum_{i=1}^n V_i I^*_i}{\sum_{i=1}^n (1 - V_i) I^*_i \dfrac{\pi^*(X_i)}{1 - \pi^*(X_i)}},
+\end{equation}
+where 
+\begin{align*}
+    \pi^*(X) &= \Pr(V=1\mid S=1, I^*=0, X) \\
+    \mu^*_v(X) &= \Pr(I^*=1\mid S=1, V=v, X).
+\end{align*}
+\subsection{Influence function}
+Here we derive an alternative estimator based on the efficient influence function, i.e. 
+\begin{equation}
+    \widehat{\Psi}_{dr}^* = \dfrac{\sum_{i=1}^n V_i I^*_i}{\sum_{i=1}^n (1 - V_i)\dfrac{\pi^*_1(X_i)}{1 - \pi^*_1(X)} \{I_i - \mu^*_0(X_i) \} + V_i \mu^*_0(X_i)\dfrac{1 - \mu^*_1(X_i)}{1 - \mu^*_0(X_i)}}
+\end{equation}
+Let $\Psi(P)$ be the target parameter under true law of the observed data $P$. From the identifiability results in Section 1, we have that 
+% $$\Psi(P) = \dfrac{E(I^*\mid S=1, V=1)}{E\left\{\dfrac{\Pr(I^*=1\mid S=1, V=0, X)\Pr(V=1\mid S=1, I^*=0, X)}{\Pr(V=0\mid S=1, I^*=0, X)}\mid S=1, V=1\right\}}.$$ 
+$$\Psi(P) = E\left\{\dfrac{\Pr(I^*=1\mid S=1, V=0, X)\Pr(I^*=0\mid S=1, V=1, X)}{\Pr(I^*=0\mid S=1, V=0, X)}\mid S=1, V=1\right\}.$$ 
+For convenience, let
+\begin{align*}
+    \pi(X) &= \Pr(V=1\mid S=1, I^*=0, X) \\
+    \mu^*_v(X) &= \Pr(I^*=1\mid S=1, V=v, X).
+\end{align*}
+Define $P_t$ as a parametric submodel indexed by $t \in [0,1]$ such that
+$$P_t = t \widetilde{P} + (1 - t)P$$
+where $\widetilde{P}$ is smoothed parametric estimate of $P$ and note that $P_0 = P$. To find the influence function we will use the fact that if we perturb the target in direction of a point mass $\widetilde{o} = (\widetilde{i}^*, \widetilde{s}, \widetilde{v}, \widetilde{x})$ of $\widetilde{P}$
+$$ \chi(P, \widetilde{o}) = \frac{d}{dt} \Psi(P_t)\bigg\vert_{t=0}$$
+where the right-hand side is the so-called the G\^{a}teaux derivative. Note that 
+\begin{align*}
+    \Psi(P_t) &= \int \dfrac{\int i^* f_t(i^* | s=1,v=0,x)di^* \int (1-i^*) f_t(i^* | s=1, v=1, x)di^*}{\int(1 - i^*) f_t(i^* | s=1, v=0, x)di^*}f_t(x|s=1,v=1)dx \\
+    &= \int \dfrac{1}{f_{S,V}(1, 1)} \dfrac{\int i^* f_t(i^*, s=1,v=0,x)di^* \int (1 - i^*)  f_t(i^*, s=1, v=1, x)dv}{\int(1 - i^*)  f_t(i^*, s=1, v=0, x)dv}dx 
+\end{align*}
+\begin{align*}
+    \Psi(P_t) &= \int (1 - v)i^*\dfrac{\int v f_t(v | s=1, i^*=0, x)dv}{\int (1-v) f_t(v | s=1, i^*=0, x)dv} f(i^*, s=1, v, x) di^* dv dx \\
+    &= \int (1 - v)i^*\dfrac{\int v f_t(v, s=1, i^*=0, x)dv}{\int (1-v) f_t(v, s=1, i^*=0, x)dv} f(i^*, s=1, v, x) di^* dv dx
+\end{align*}
+
+Then the pathwise derivative of $\Psi_t$ wrt $t$ is
+\begin{align*}
+   &\frac{d}{dt} \Psi(P_t)\bigg\vert_{t=0} \\
+   &= \int \dfrac{1}{f_{S,V}(1, 1)} \frac{d}{dt} \left\{\dfrac{\int i^* f_t(i^*, s=1,v=0,x)di^* \int (1 - i^*)  f_t(i^*, s=1, v=1, x)dv}{\int(1 - i^*)  f_t(i^*, s=1, v=0, x)dv} \right\} \bigg\vert_{t=0}dx \\
+   &= \int \dfrac{1}{f_{S,V}(1, 1)}\bigg\{ \dfrac{1 - \mu^*_1(x)}{1-\mu^*_0(x)} \dfrac{f(x, s=1, v=1)}{f(x, s=1, v=0)}\int i^* \frac{d}{dt} f_t(i^*, s=1,v=0,x) \bigg\vert_{t=0} di^* \\
+   &\qquad + \dfrac{\mu^*_0(x)}{1 - \mu^*_0(x)} \int (1-i^*) \frac{d}{dt}f_t(i^*, s=1, v=1, x) \bigg\vert_{t=0} di^* \\ 
+   &\qquad - \dfrac{\mu^*_0(x)\{1 - \mu^*_1(x)\}}{\{1 - \mu^*_0(x)\}^2} \dfrac{f(x, s=1, v=1)}{f(x, s=1, v =0)} \int (1-i^*) \frac{d}{dt}f_t(i^*, s=1, v=0, x) \bigg\vert_{t=0} dv \\
+   % &\qquad + \dfrac{\mu^*_0(x)\pi(x)}{1-\pi(x)} \frac{d}{dt} f_t(x, s=1, v=1) \bigg\vert_{t=0} \\
+   % &\qquad - \dfrac{\mu^*_0(x)\pi(x)}{1-\pi(x)} \dfrac{f(x, s=1, v=1)}{f(x, s=1, v=0)} \frac{d}{dt} f_t(x, s=1, v=0) \bigg\vert_{t=0} \bigg\}dx \\
+   &= \int \dfrac{1}{f_{S,V}(1, 1)}\bigg\{  \dfrac{1 - \mu^*_1(x)}{1-\mu^*_0(x)} \dfrac{f(x, s=1, v=1)}{f(x, s=1, v=0)}\int i^* \{ \mathbbm 1_{\widetilde i^*, \widetilde s, \widetilde v, \widetilde x}(i^*, 1, 0, x) - f(i^*, s=1,v=0,x) \} di^* \\
+   &\qquad + \dfrac{\mu^*_0(x)}{1-\mu^*_0(x)} \int (1 - i^*) \{\mathbbm 1_{\widetilde i^*, \widetilde s, \widetilde v, \widetilde x}(i^*, 1, 1, x) - f(i^*, s=1, v=1, x) \} di^* \\ 
+   &\qquad -\dfrac{\mu^*_0(x)\{1 - \mu^*_1(x)\}}{\{1 - \mu^*_0(x)\}^2} \dfrac{f(x, s=1, v=1)}{f(x, s=1, v =0)} \int (1 - i^*) \{\mathbbm 1_{\widetilde i^*, \widetilde s, \widetilde v, \widetilde x}(i^*, 1, 0, x) - f(i^*, s=1, v=0, x) \} di^*  \\
+   % & \qquad + \dfrac{\mu^*_0(x)\pi(x)}{1-\pi(x)} \left\{\mathbbm 1_{\widetilde s, \widetilde v, \widetilde x}(1,1,x) - f_t(x, s=1, v=1) \right\} \\
+   % & \qquad - \dfrac{\mu^*_0(x)\pi(x)}{1-\pi(x)} \dfrac{f(x, s=1, v=1)}{f(x, s=1, v=0)} \left\{\mathbbm 1_{\widetilde s, \widetilde v, \widetilde x}(1,0,x) - f_t(x, s=1, v=0) \right\}  \bigg\}dx\\
+    %&= \int \dfrac{1}{f_{S,V}(1, 1)}\bigg\{ \dfrac{\pi(\widetilde x)}{1-\pi(\widetilde x)} \widetilde i^* \widetilde s(1 - \widetilde v) - \Psi(P) + \dfrac{\mu^*_0(\widetilde x)}{1-\pi(\widetilde x)}(1-\widetilde i^*) \widetilde s \widetilde v  - \Psi(P) - \dfrac{\mu^*_0(x)\pi(x)}{\{1 - \pi(x)\}^2} (1-\widetilde i^*) \widetilde s (1-\widetilde v) - \Psi(P) +  \bigg\}dx \\ 
+   &= \int \dfrac{1}{f_{S,V}(1, 1)} \dfrac{\mu^*_0(x)\{1 - \mu^*_1(x)\}}{1 - \mu^*_0(x)}f(x, s=1, v=1) \bigg\{\dfrac{\widetilde{i}^*\widetilde{s}(1-\widetilde{v})\mathbbm 1_{\widetilde{x}}(x)}{\mu^*_0(x)} + \dfrac{(1-\widetilde{i}^*)\widetilde{s}\widetilde{v}\mathbbm 1_{\widetilde{x}}(x)}{1 - \mu^*_1(x)} \\
+   &\qquad - \dfrac{(1-\widetilde{i}^*)\widetilde{s}(1-\widetilde{v})\mathbbm 1_{\widetilde{x}}(x)}{\{1 - \mu^*_0(x)\}}\bigg\} dx - \Psi(P) \\
+   &=\dfrac{\widetilde s}{f_{S,V}(1, 1)}  \bigg\{(1 - \widetilde v)\widetilde i^*\dfrac{1 - \mu^*_1(\widetilde x)}{1 - \mu^*_0(\widetilde x)} + \widetilde v (1 - \widetilde i^*) \dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)} -  (1 - \widetilde v) (1 - \widetilde i^*)\dfrac{\mu^*_0(\widetilde x)\{1 - \mu^*_1(\widetilde x)\}}{\{1 - \mu^*_0(\widetilde x)\}^2}  \bigg\}  - \Psi(P) \\
+   &=\dfrac{\widetilde s}{f_{S,V}(1, 1)}  \bigg\{(1 - \widetilde v)\widetilde i^*\dfrac{1 - \mu^*_1(\widetilde x)}{1 - \mu^*_0(\widetilde x)} + \widetilde v \left\{\dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)} - \widetilde i^* \dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)}\right\} \\
+   &\qquad -  (1 - \widetilde v) \left[\dfrac{\mu^*_0(\widetilde x)\{1 - \mu^*_1(\widetilde x)\}}{\{1 - \mu^*_0(\widetilde x)\}^2} - \widetilde i^*\dfrac{\mu^*_0(\widetilde x)\{1 - \mu^*_1(\widetilde x)\}}{\{1 - \mu^*_0(\widetilde x)\}^2}\right]  \bigg\}  - \Psi(P) \\
+   &=\dfrac{\widetilde s}{f_{S,V}(1, 1)}  \bigg\{(1 - \widetilde v) \left[\widetilde i^* - \dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)}  + \widetilde i^*\dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)}\right]\dfrac{1 - \mu^*_1(\widetilde x)}{1 - \mu^*_0(\widetilde x)}\\
+   &\qquad   + \widetilde v \left[\dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)} - \widetilde i^* \dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)}\right] \bigg\}  - \Psi(P) \\
+   &=\dfrac{\widetilde s}{f_{S,V}(1, 1)}  \bigg\{(1 - \widetilde v) \left[ \dfrac{\widetilde i^* - \widetilde i^* \mu^*_0(\widetilde x) - \mu^*_0(\widetilde x) + \widetilde i^* \mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)}\right]\dfrac{1 - \mu^*_1(\widetilde x)}{1 - \mu^*_0(\widetilde x)} \\
+   &\qquad + \widetilde v \left[\dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)} - \widetilde i^* \dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)}\right]   \bigg\}  - \Psi(P) \\
+   &=\dfrac{\widetilde s}{f_{S,V}(1, 1)}  \bigg\{(1 - \widetilde v) \{\widetilde i^* - \mu^*_0(\widetilde x)\}\dfrac{1 - \mu^*_1(\widetilde x)}{1 - \mu^*_0(\widetilde x)} + \widetilde v \mu^*_0(\widetilde x) \dfrac{1 - \mu^*_1(\widetilde x)}{1 - \mu^*_0(\widetilde x)}  \bigg\}  - \Psi(P) 
+\end{align*}
+
+Then the pathwise derivative of $\Psi_t$ wrt $t$ is
+\begin{align*}
+   &\frac{d}{dt} \Psi(P_t)\bigg\vert_{t=0} \\
+   &= \int \frac{d}{dt} \left\{\dfrac{\int v f_t(v, s=1, i^*=0, x)dv}{\int (1-v) f_t(v, s=1, i^*=0, x)dv} (1 - v)i^*f_t(i^*, s=1, v, x) \right\} di^* dv dx \\
+   &= \int \dfrac{1}{1-\pi^*(x)} \dfrac{f(i^*, s=1, v, x)}{f(i^*=0, s=1, x)} (1 - v)i^* \int v \frac{d}{dt} f_t(i^*=0, s=1,v,x) \bigg\vert_{t=0} dv \\
+   &\qquad - \dfrac{\pi^*(x)}{\{1 - \pi^*(x)\}^2} \dfrac{f(i^*, s=1, v, x)}{f(i^*=0, s=1, x)} (1 - v)i^* \int (1-v) \frac{d}{dt}f_t(i^*=0, s=1, v, x) \bigg\vert_{t=0} dv \\
+   &\qquad + \dfrac{\pi^*(x)}{1-\pi^*(x)} (1 - v)i^* \frac{d}{dt} f_t(i^*, s=1, v, x) \bigg\vert_{t=0} di^*dvdx \\
+   % &\qquad - \dfrac{\mu^*_0(x)\pi(x)}{1-\pi(x)} \dfrac{f(x, s=1, v=1)}{f(x, s=1, v=0)} \frac{d}{dt} f_t(x, s=1, v=0) \bigg\vert_{t=0} \bigg\}dx \\
+   &= \int  \dfrac{1}{1-\pi^*(x)} \dfrac{f(i^*, s=1, v, x)}{f(i^*=0, s=1, x)} (1 - v)i^* \int v \{ \mathbbm 1_{\widetilde i^*, \widetilde s, \widetilde v, \widetilde x}(0, 1, v, x) - f(i^*=0, s=1,v,x) \} dv \\
+   &\qquad -\dfrac{\pi^*(x)}{\{1 - \pi^*(x)\}^2} \dfrac{f(i^*, s=1, v, x)}{f(i^*=0, s=1, x)} (1 - v)i^* \int (1 - v) \{\mathbbm 1_{\widetilde i^*, \widetilde s, \widetilde v, \widetilde x}(0, 1, v, x) - f(i^*=0, s=1, v, x) \} dv \\
+   &\qquad + \dfrac{\pi^*(x)}{1-\pi^*(x)} (1 - v)i^* \{\mathbbm 1_{\widetilde i^*, \widetilde s, \widetilde v, \widetilde x}(i^*, 1, v, x) - f(i^*, s=1,v,x)\} di^*dvdx \\
+   % & \qquad + \dfrac{\mu^*_0(x)\pi(x)}{1-\pi(x)} \left\{\mathbbm 1_{\widetilde s, \widetilde v, \widetilde x}(1,1,x) - f_t(x, s=1, v=1) \right\} \\
+   % & \qquad - \dfrac{\mu^*_0(x)\pi(x)}{1-\pi(x)} \dfrac{f(x, s=1, v=1)}{f(x, s=1, v=0)} \left\{\mathbbm 1_{\widetilde s, \widetilde v, \widetilde x}(1,0,x) - f_t(x, s=1, v=0) \right\}  \bigg\}dx\\
+    %&= \int \dfrac{1}{f_{S,V}(1, 1)}\bigg\{ \dfrac{\pi(\widetilde x)}{1-\pi(\widetilde x)} \widetilde i^* \widetilde s(1 - \widetilde v) - \Psi(P) + \dfrac{\mu^*_0(\widetilde x)}{1-\pi(\widetilde x)}(1-\widetilde i^*) \widetilde s \widetilde v  - \Psi(P) - \dfrac{\mu^*_0(x)\pi(x)}{\{1 - \pi(x)\}^2} (1-\widetilde i^*) \widetilde s (1-\widetilde v) - \Psi(P) +  \bigg\}dx \\ 
+   &= \int (1 - v)i^* \dfrac{\pi^*(x)}{1 - \pi^*(x)}f(i^*, s=1, v, x) \bigg\{\dfrac{(1-\widetilde{i}^*)\widetilde{s}\widetilde{v}\mathbbm 1_{\widetilde{x}}(x)\mu^*_0(x)}{\pi^*(x)} - \dfrac{(1-\widetilde{i}^*)\widetilde{s}(1-\widetilde{v})\mathbbm 1_{\widetilde{x}}(x)\mu^*_0(x)}{1 - \pi^*(x)} \\
+   &\qquad + \widetilde s \mathbbm 1_{\widetilde{i}}(i)\mathbbm 1_{\widetilde{v}}(v)\mathbbm 1_{\widetilde{x}}(x) \bigg\} dx - \Psi(P) \\
+   &=\widetilde s\bigg\{(1-\widetilde{i}^*)\widetilde{v}\dfrac{\mu^*_0(\widetilde x)}{1 - \pi^*(\widetilde x)} -  (1 - \widetilde v) (1 - \widetilde i^*)\dfrac{\mu^*_0(\widetilde x) \pi^*(\widetilde x)}{\{1 - \pi^*(\widetilde x)\}^2} + 1 \bigg\}  - \Psi(P) \\
+   &=\dfrac{\widetilde s}{f_{S,V}(1, 1)}  \bigg\{(1 - \widetilde v)\widetilde i^*\dfrac{1 - \mu^*_1(\widetilde x)}{1 - \mu^*_0(\widetilde x)} + \widetilde v \left\{\dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)} - \widetilde i^* \dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)}\right\} \\
+   &\qquad -  (1 - \widetilde v) \left[\dfrac{\mu^*_0(\widetilde x)\{1 - \mu^*_1(\widetilde x)\}}{\{1 - \mu^*_0(\widetilde x)\}^2} - \widetilde i^*\dfrac{\mu^*_0(\widetilde x)\{1 - \mu^*_1(\widetilde x)\}}{\{1 - \mu^*_0(\widetilde x)\}^2}\right]  \bigg\}  - \Psi(P) \\
+   &=\dfrac{\widetilde s}{f_{S,V}(1, 1)}  \bigg\{(1 - \widetilde v) \left[\widetilde i^* - \dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)}  + \widetilde i^*\dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)}\right]\dfrac{1 - \mu^*_1(\widetilde x)}{1 - \mu^*_0(\widetilde x)}\\
+   &\qquad   + \widetilde v \left[\dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)} - \widetilde i^* \dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)}\right] \bigg\}  - \Psi(P) \\
+   &=\dfrac{\widetilde s}{f_{S,V}(1, 1)}  \bigg\{(1 - \widetilde v) \left[ \dfrac{\widetilde i^* - \widetilde i^* \mu^*_0(\widetilde x) - \mu^*_0(\widetilde x) + \widetilde i^* \mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)}\right]\dfrac{1 - \mu^*_1(\widetilde x)}{1 - \mu^*_0(\widetilde x)} \\
+   &\qquad + \widetilde v \left[\dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)} - \widetilde i^* \dfrac{\mu^*_0(\widetilde x)}{1 - \mu^*_0(\widetilde x)}\right]   \bigg\}  - \Psi(P) \\
+   &=\dfrac{\widetilde s}{f_{S,V}(1, 1)}  \bigg\{(1 - \widetilde v) \{\widetilde i^* - \mu^*_0(\widetilde x)\}\dfrac{1 - \mu^*_1(\widetilde x)}{1 - \mu^*_0(\widetilde x)} + \widetilde v \mu^*_0(\widetilde x) \dfrac{1 - \mu^*_1(\widetilde x)}{1 - \mu^*_0(\widetilde x)}  \bigg\}  - \Psi(P) 
+\end{align*}
+Therefore the influence function is
+\begin{equation*}
+    \chi(P, O) = \dfrac{S}{\Pr(S=1, V=1)}  \bigg\{(1 - V) I^*\dfrac{\pi(X)}{1 - \pi(X)} + (1 - I^*)\dfrac{\mu^*_0(X)\{V - \pi(X)\}}{\{1 - \pi(X)\}^2}  \bigg\}  - \Psi(P) 
+\end{equation*}
+and because it was derived without parametric restrictions on the law of the observed data it is also the efficient influence function. 
+
+\begin{equation*}
+    \widehat{\Psi} = \sum_{j=1}^n \left[(1 - V_j) \{I^*_j - \mu^*_0(X_j)\}\dfrac{\pi(X_j)}{1 - \pi(X_j)} + (1 - I^*_j)\dfrac{\mu^*_0(X_j)\{V_j - \pi(X_j)\}}{\{1 - \pi(X_j)\}^2}\right]
+\end{equation*}
+\end{document}
