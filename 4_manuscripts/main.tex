@@ -147,7 +147,7 @@ $$\frac{\Pr[V = 1 | I^0 = 2, T^0 = 1, X]}{\Pr[ V = 0 | I^0 = 2, T^0 = 1, X]} =\f
 which implies the odds of vaccination in the test-negative controls are a proxy for the so-called \textit{extended propensity score} (EPS) function, $\pi^*(X)$. The EPS extends the standard propensity score function to accommodate unmeasured confounding by conditioning on the treatment-free potential outcomes $I^0 = 2$ and $T^0 = 1$. 
 
 \section{Estimation}
-As mentioned above, the conventional approach to estimating effectiveness in a TND is based on logistic regression for $I^*$ conditional on $X$ and $V$, e.g.
+The traditional approach to estimating vaccine effectiveness in a TND is based on logistic regression for $I^*$ conditional on $X$ and $V$, e.g.
 $$\log \left\{\dfrac{\Pr[I^* = 1 | S = 1, V, X]}{\Pr[I^* = 0 | S = 1, V, X]}\right\} = \gamma_0 + \gamma_1 V + \gamma_2 X,$$
 where effectiveness is defined as one minus the odds ratio comparing vaccinated and unvaccinated, i.e. $VE = 1 - \exp(\gamma_1)$. As we have shown, $ \exp(\gamma_1)$ is equal to $\Psi^*_{om}(X)$ and by extension the conditional causal risk ratio among the vaccinated $\Psi_{RRV}(X)$ under the identifiability assumptions of Section \ref{sec:conditions} and correct model specification. 
 
@@ -159,7 +159,7 @@ where $\mu^*_v(X) &= \Pr(I^*=1\mid S=1, V=v, X)$ is the probability of testing p
 \begin{equation}\label{eqn:ipw_estimator}
     \widehat{\Psi}_{ipw}^* = \dfrac{\sum_{i=1}^n V_i I^*_i}{\sum_{i=1}^n (1 - V_i) I^*_i \dfrac{\pi^*(X_i)}{1 - \pi^*(X_i)}},
 \end{equation}
-where $\pi^*(X) = \Pr(V=1\mid S=1, I^*=0, X)$ is the probability of vaccination among the test-negative controls. The first estimator, $\widehat{\Psi}_{om}^*$, requires the correct specification of the model for the outcome and the second estimator, $\widehat{\Psi}_{ipw}^*$,  requires the correct specification of the the model for the probability of vaccination. In some settings, one estimator may be preferred over the other. For instance, when more is known about the mechanism for ``assigning'' vaccination or when the outcome is very rare, the weighting estimator may be preferred \cite{robins_estimating_1992,braitman_rare_2002}; when the process that gives rise to infection and testing is well understood the estimator may be preferred. In practice, however, both models may be difficult to specify correctly. Using data-adaptive and more flexible machine learning estimators for estimation of these nuisance models offers the possibility of capturing more complex data generation processes. These data-adaptive estimators generally have slower rates of convergence than the $\sqrt{n}$ rates of parametric models and therefore will not yield asymptotically valid confidence intervals \cite{chernozhukov_doubledebiased_2018}. To address this challenge, we can use a doubly-robust estimator which combines models for the conditional loss $\widehat{\mu}^*_v(X)$ and the probability of treatment $\widehat{\pi}^*(X)$, such as
+where $\pi^*(X) = \Pr(V=1\mid S=1, I^*=0, X)$ is the probability of vaccination among the test-negative controls. The first estimator, $\widehat{\Psi}_{om}^*$, requires the correct specification of the model for the outcome and the second estimator, $\widehat{\Psi}_{ipw}^*$,  requires the correct specification of the the model for the extended propensity score model. In some settings, one estimator may be preferred over the other. For instance, when more is known about the mechanism for ``assigning'' vaccination, the weighting estimator may be preferred \cite{robins_estimating_1992,braitman_rare_2002}; when the process that gives rise to infection and testing is well understood the outcome estimator may be preferred. In practice, however, both models may be difficult to specify correctly. Using data-adaptive and more flexible machine learning estimators for estimation of these nuisance models offers the possibility of capturing more complex data generation processes. These data-adaptive estimators generally have slower rates of convergence than the $\sqrt{n}$ rates of parametric models and therefore will not yield asymptotically valid confidence intervals \cite{chernozhukov_doubledebiased_2018}. To address this challenge, we can use a doubly-robust estimator which combines models for the conditional loss $\widehat{\mu}^*_v(X)$ and the probability of treatment $\widehat{\pi}^*(X)$. In Appendix AX, we derive such an estimator based on the efficient influence function for $\Psi_{RRV}$
 \begin{equation}\label{eqn:dr_estimator}
     \widehat{\Psi}_{dr}^* = \dfrac{\sum_{i=1}^n V_i I^*_i}{\sum_{i=1}^n (1 - V_i)\dfrac{\pi^*_1(X_i)}{1 - \pi^*_1(X)} \{I_i - \mu^*_0(X_i) \} + V_i \mu^*_0(X_i)\dfrac{1 - \mu^*_1(X_i)}{1 - \mu^*_0(X_i)}}
 \end{equation}
@@ -218,6 +218,7 @@ Our results also rely on the assumption that the vaccine does not affect the inc
 Sometimes vaccination 
 Immortal time bias is a well-known source of bias in vaccine effectiveness studies \cite{suissa_immortal_2008}. 
 
+\newpage
 
 \printbibliography
 %The key assumption is that the degree of unmeasured confounding on the odds ratio scale is the same for illnesses with the same symptom set regardless if $I=2$ or $I=1$ is cause. This assumption is similar, in spirit, to recently suggested alternative scale-independent parallel trend assumption in the difference-in-differences literature. We have shown that this assumption can be used to identify the causal risk ratio among the vaccinated and have proposed a simple estimator. We have also shown that the proposed estimator is robust to violations of the equi-confounding assumption and have proposed a sensitivity analysis to assess the robustness of the results to violations of the equi-confounding assumption.
@@ -476,6 +477,12 @@ Immortal time bias is a well-known source of bias in vaccine effectiveness studi
     \end{figure}
     \clearpage
 
+\begin{figure}
+    \centering
+    \includegraphics{sims.pdf}
+    \caption{Caption}
+    \label{fig:sims}
+\end{figure}
 
 \clearpage
 \input{supplement.tex}
