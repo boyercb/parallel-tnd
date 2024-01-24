@@ -50,6 +50,7 @@ vignettes/*.pdf
 4_manuscripts/*.out
 4_manuscripts/*.run.xml
 4_manuscripts/*.synctex.gz
+4_manuscripts/*.synctex*
 4_manuscripts/*.pdf
 4_manuscripts/*.docx
 
