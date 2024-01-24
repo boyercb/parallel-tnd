@@ -767,59 +767,59 @@ $I^* = \lambda_{sens} \cdot \mathbb{I}(I = 2) + (1 - \lambda_{spec}) \cdot \math
 \subsection{What about immortal time bias?}
 
 \subsection{Relationship to vaccination mechanisms}
-Define the following:
-\begin{description}
-    \item[$\lambda$:] Force of infection 
-    \item[$\pi$:] Probability of symptoms given infection
-    \item[$P$:] Total population 
-    \item[$v$:] Proportion vaccinated
-    \item[$\mu$:] Probability of care-seeking given symptoms
-    \item[$\theta(t):$] Hazard ratio for infection given 
-\end{description}
-The rate of ascertaining test-positive, vaccinated persons is
-$$
-\Lambda_{V I}(t)=\lambda_I \pi_I \mu_V[(1-\varphi) e^{-\lambda_I t} + \varphi \theta e^{-\theta \lambda_I t}] v P .
-$$
+% Define the following:
+% \begin{description}
+%     \item[$\lambda$:] Force of infection 
+%     \item[$\pi$:] Probability of symptoms given infection
+%     \item[$P$:] Total population 
+%     \item[$v$:] Proportion vaccinated
+%     \item[$\mu$:] Probability of care-seeking given symptoms
+%     \item[$\theta(t):$] Hazard ratio for infection given 
+% \end{description}
+% The rate of ascertaining test-positive, vaccinated persons is
+% $$
+% \Lambda_{V I}(t)=\lambda_I \pi_I \mu_V[(1-\varphi) e^{-\lambda_I t} + \varphi \theta e^{-\theta \lambda_I t}] v P .
+% $$
 
-$$
-\Lambda_{U I}(t)=\lambda_I \pi_I \mu_U e^{-\lambda_I t}(1-v) P .
-$$
+% $$
+% \Lambda_{U I}(t)=\lambda_I \pi_I \mu_U e^{-\lambda_I t}(1-v) P .
+% $$
 
-Test-negative vaccinated and unvaccinated persons are ascertained at the rates
-$$
-\Lambda_{V N}(t)=\lambda_N \pi_N \mu_V v P
-$$
-and
-$$
-\Lambda_{U N}(t)=\lambda_N \pi_N \mu_U(1-v) P,
-$$
-respectively, assuming vaccination does not affect susceptibility to the test-negative conditions.
+% Test-negative vaccinated and unvaccinated persons are ascertained at the rates
+% $$
+% \Lambda_{V N}(t)=\lambda_N \pi_N \mu_V v P
+% $$
+% and
+% $$
+% \Lambda_{U N}(t)=\lambda_N \pi_N \mu_U(1-v) P,
+% $$
+% respectively, assuming vaccination does not affect susceptibility to the test-negative conditions.
 
-Test-negative studies typically measure the odds ratio of vaccination among the test-positive and test-negative subjects, similar to the exposure odds ratio in case-control studies, using cumulative cases $(C)$. For the test-positive outcome,
-$$
-\begin{gathered}
-C_{V I}(t)=\pi_I \mu_V\left[(1-\varphi)\left(1-e^{-\lambda_I t}\right)+\varphi\left(1-e^{-\theta \lambda_I t}\right)\right] v P \\
-C_{U I}(t)=\pi_I \mu_U\left(1-e^{-\lambda_I t}\right)(1-v) P .
-\end{gathered}
-$$
+% Test-negative studies typically measure the odds ratio of vaccination among the test-positive and test-negative subjects, similar to the exposure odds ratio in case-control studies, using cumulative cases $(C)$. For the test-positive outcome,
+% $$
+% \begin{gathered}
+% C_{V I}(t)=\pi_I \mu_V\left[(1-\varphi)\left(1-e^{-\lambda_I t}\right)+\varphi\left(1-e^{-\theta \lambda_I t}\right)\right] v P \\
+% C_{U I}(t)=\pi_I \mu_U\left(1-e^{-\lambda_I t}\right)(1-v) P .
+% \end{gathered}
+% $$
 
-Under the assumption that test-negative infections are not immunizing, cumulative cases are proportional to the incidence rate and study duration:
-$$
-\begin{gathered}
-C_{V N}(t)=\lambda_N \pi_N \mu_V v P t \\
-C_{U N}(t)=\lambda_N \pi_N \mu_U(1-v) P t .
-\end{gathered}
-$$
+% Under the assumption that test-negative infections are not immunizing, cumulative cases are proportional to the incidence rate and study duration:
+% $$
+% \begin{gathered}
+% C_{V N}(t)=\lambda_N \pi_N \mu_V v P t \\
+% C_{U N}(t)=\lambda_N \pi_N \mu_U(1-v) P t .
+% \end{gathered}
+% $$
 
-We consider the case of immunizing test-negative outcomes in Web Appendix 1. Using the vaccine-exposure odds ratio measured from cumulative cases,
-$$
-\begin{aligned}
-1-O R^C(t) & =1-\frac{C_{V I}(t) C_{U N}(t)}{C_{U I}(t) C_{V N}(t)} \\
-& =1-\frac{(1-\varphi)\left(1-e^{-\lambda_I t}\right)+\varphi\left(1-e^{-\theta \lambda_I t}\right)}{1-e^{-\lambda_I t}} \\
-& =\varphi\left(1-\frac{1-e^{-\theta \lambda_I t}}{1-e^{-\lambda_I t}}\right) .
-\end{aligned}
-$$
+% We consider the case of immunizing test-negative outcomes in Web Appendix 1. Using the vaccine-exposure odds ratio measured from cumulative cases,
+% $$
+% \begin{aligned}
+% 1-O R^C(t) & =1-\frac{C_{V I}(t) C_{U N}(t)}{C_{U I}(t) C_{V N}(t)} \\
+% & =1-\frac{(1-\varphi)\left(1-e^{-\lambda_I t}\right)+\varphi\left(1-e^{-\theta \lambda_I t}\right)}{1-e^{-\lambda_I t}} \\
+% & =\varphi\left(1-\frac{1-e^{-\theta \lambda_I t}}{1-e^{-\lambda_I t}}\right) .
+% \end{aligned}
+% $$
 
-$\varphi$
+% $\varphi$
 \end{appendix}
 

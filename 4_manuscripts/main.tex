@@ -29,7 +29,7 @@
 \doublespacing
 
 \section{Introduction} \label{sec:introduction}
-Observational data are frequently used for the post-market evaluation of vaccine effectiveness \cite{chua_use_2020-1,dean_covid-19_2021,patel_postlicensure_2020}. Monitoring the effectiveness of vaccines is important as changes in population immunity as well as antigenic changes to the pathogen of interest occur that may render estimates from pre-market randomized trials irrelevant \cite{hitchings_effectiveness_2021,israel_elapsed_2021}. Investigators may also be interested in the performance of vaccines in key populations that were ineligible or underrepresented in the clinical trial population \cite{olson_effectiveness_2022}; outcomes and safety signals that may have been underpowered \cite{thompson_effectiveness_2021}; or they may want to compare vaccine formulations against one another or against other therapeutics not considered in the original trial. Under these circumstances, a quick and relatively cheap study design for estimating vaccine effectiveness is the so-called test-negative design (TND) \cite{sullivan_potential_2014,jackson_test-negative_2013}. 
+Observational data are frequently used for the post-market evaluation of vaccine effectiveness \cite{chua_use_2020-1,dean_covid-19_2021,patel_postlicensure_2020}. Monitoring the effectiveness of vaccines is important as changes in population immunity as well as antigenic changes to the pathogen of interest occur that may render estimates from pre-market randomized trials irrelevant \cite{hitchings_effectiveness_2021,israel_elapsed_2021}. Investigators may also be interested in the performance of vaccines in key populations that were ineligible or underrepresented in the clinical trial population \cite{olson_effectiveness_2022}; outcomes and safety signals that may have been underpowered \cite{thompson_effectiveness_2021}; or they may want to compare vaccine formulations against one another or against other therapeutics not considered in the original trial \cite{skowronski_two-dose_2022}. Under these circumstances, a quick and relatively cheap study design for estimating vaccine effectiveness is the so-called test-negative design (TND) \cite{sullivan_potential_2014,jackson_test-negative_2013}. 
  
 Historically, the term ``test-negative design'' has been applied broadly to any design in which individuals who test positive for a pathogen of interest are compared with those who test negative. However, there are important methodological differences between approaches. Here, we focus on designs that meet the following criteria: patients with acute respiratory illness are prospectively recruited using a unified symptom screen through hospitals or other care facilities, consented, and a laboratory test for the pathogen of interest is preformed. Detailed information about their demographic, medical, and vaccination history is collected via a questionnaire at enrollment or through linked medical and vaccination records. Those who test positive form the ``cases'' and those who test negative are the comparison group. 
 
@@ -121,7 +121,7 @@ The logic behind the equi-confounding assumption, therefore, is to use the test-
 where we note that $\frac{\Pr[I = 1, T =1  | V = 0, X]}{\Pr[I = 1, T = 1 | V = 1, X]}$ acts as a proxy for $\frac{\Pr[I^0 = 2, T^0 =1  | V = 0, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}$ or, borrowing from the difference-in-differences literature, essentially a ``parallel trend'' for $I=2$ in absence of vaccination. This is similar to the intuitive motivation for the test-negative design, i.e. that those who test-negative are, for a variety of reasons related to care-seeking etc, a useful proxy for the test-positives. 
 
 Plugging the result in equation \ref{eqn:proxy} back into the definition of $\Psi_{RRV}(X)$, we obtain the following 
-    \begin{equation}
+    \begin{equation}\label{eqn:cohort_estimand}
          \Psi^\dagger_{om}(X) \equiv \dfrac{\dfrac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 1, T = 1 | V = 1, X]}}{\dfrac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I = 1, T = 1 | V = 0, X]}}
     \end{equation}
 which is the odds ratio comparing the odds of testing positive with the test-positive or test-negative illness in the vaccinated and unvaccinated. Note, $\Psi^\dagger_{om}(X)$ is written strictly in terms of observable quantitites.
@@ -206,49 +206,23 @@ The results are reported in Figure \ref{fig:sims}. When there is no unmeasured c
 
 \section{Discussion} \label{sec:discussion}
 
-In this article, we have described alternative identifiability conditions under which the test-negative design produces an unbiased estimate of the vaccine effectiveness against symptomatic illness. Our results allow for the possibility of unmeasured confounding provided that the degree of confounding is the same for the illnesses 
+In this article, we have described alternative conditions under which the test-negative design produces an unbiased estimate of the vaccine effectiveness against symptomatic illness in the presence of unmeasured confounding. Specifically, we showed that, as long as the vaccine has no effect on the test-negative illness and unobserved variables act equivalently on symptomatic illness and testing for test-positive and test-negative infections, the TND recovers the true vaccine effectiveness among the vaccinated in the population. While our results apply to commonly-used TND estimator based on logistic regression, we also derived estimators of the marginal effect based on outcome modeling and inverse probability weighting as well as efficient semiparametric approaches based on the efficient influence function. 
 
-Requires knowledge of what the test-negative illness or illnesses are in order to understand whether equi-confounding is plausible. In some sense the ideal comparator would be an illness with a similar transmission mechanism/exposure mechanism and a similar presentation, but is unaffected by the vaccine. Some examples of unmeasured characteristics where equi-confounding may hold include health-seeking, assortativity. In previous work on flu the most common test-negative illnesses were X.  
+To determine whether the equi-confounding assumption is plausible, it would be helpful to know what the test-negative illness or illnesses are, although this requires additional sampling and testing. In previous TNDs for influenza the most common test-negative illnesses were X. The ideal test-negative illness would be one with the same transmission mechanism/exposure risk and a similar clinical presentation, but which remains unaffected by the vaccine. Regardless, subject-matter expertise, and in particular, a nuanced understanding of both the biology and the social dynamics governing infection and test-seeking will be required to judge the appropriateness on a case-by-case basis. Some examples of unmeasured characteristics where equi-confounding between test-positive and test-negative infections seems more likely include health-seeking, assortativity. An interesting example of equi-confounding by design is the differential exclusion of person-time immediately post vaccination among the vaccinated such as in TNDs where cases are excluded/marked as unvaccinated if they occur within the first $D$ days after the first or second dose. In a typical observational study such an exclusion would induce immortal time bias \cite{suissa_immortal_2008}. However, as we show in Appendix AX, the TND still produces unbiased estimates as long as this time is excluded equally among the vaccinated for both test-positive cases and test-negative controls. 
 
-We have mainly focused on TND in the outpatient setting, where voluntary care seeking is
-Our approach is 
-Our results rely crucia
+Even when equi-confounding is not plausible, as we show in our simulations above, the TND may still yield less biased estimates as compared to conventional cohort approaches based on the same covariate set if the test-negative illness is still a decent proxy for residual confounding. When data from a full cohort are available, such as via large healthcare databases, our results point to an alternative to standard approaches to confounding control, namely by comparing test- positive and test-negative infections via expression (\ref{eqn:cohort_estimand}). This would also permit estimation of the absolute risk under different vaccination regimes. When equi-confounding is implausible, progress can still be made by leveraging additional negative controls. \citeauthor{li_double_2023} describe such an approach in a TND based on two or more proxies for unmeasured confounding \cite{li_double_2023}. Compared to our approach, their method requires a negative control outcome and negative control exposure as well as proper specification of the so-called \textit{treatment-confounding bridge function}. We note that the test-negative illness cannot be used as one of the proxies in this framework because there is not sufficient variation in test-negative versus test-positive illnesses, either because they are mutually exclusive or the joint probability of having both over the study period is sufficiently low.
 
 Our results also rely on the assumption that the vaccine does not affect the incidence of other infections which may cause the same symptoms. This assumption may be violated if either vaccination or infection provides short-term nonspecific protection through activation of the immune system. Previous work has suggested that this may be the case for influenza vaccines \cite{cowling_increased_2012}. However, other results have shown the opposite \cite{sundaram_influenza_2013}.
 
-Prior work on the TND suggests that the design could be biased when there is correlation in vaccination behavior for vaccines that target the test positive and test negative illnesses. As shown in the DAG in Figure X this would also violate our identifiability assumptions because it would imply the existence of a confounder that does not affect the test positive and test negative illnesses equally. However, this could be resolved by measuring and adjusting for vaccination for the test negative illness. This further highlights the need to carefully consider and, where possible, document the source of the test negative illnesses. Investigators should also regularly collect full vaccination history.
+We have mainly focused on TNDs conducted in the outpatient setting, where voluntary care seeking is a major concern. However, TNDs are increasingly conducted in inpatient settings as well to monitor vaccine effectiveness against hospitalization and death, particularly during the Covid-19 pandemic. In theory our results would apply in the inpatient setting as well although care should be taken as both the composition of test-negative illnesses as well as the source of unmeasured confounding is likely different. 
 
-Sometimes vaccination 
-Immortal time bias is a well-known source of bias in vaccine effectiveness studies \cite{suissa_immortal_2008}. 
+
+Prior work on the TND suggests that the design could be biased when there is correlation in vaccination behavior for vaccines that target the test positive and test negative illnesses. As shown in the DAG in Figure X this would also violate our identifiability assumptions because it would imply the existence of a confounder that does not affect the test positive and test negative illnesses equally. However, this could be resolved by measuring and adjusting for vaccination for the test negative illness. This further highlights the need to carefully consider and, where possible, document the source of the test negative illnesses. Investigators should also regularly collect full vaccination history.
 
 \newpage
 
 \printbibliography
-%The key assumption is that the degree of unmeasured confounding on the odds ratio scale is the same for illnesses with the same symptom set regardless if $I=2$ or $I=1$ is cause. This assumption is similar, in spirit, to recently suggested alternative scale-independent parallel trend assumption in the difference-in-differences literature. We have shown that this assumption can be used to identify the causal risk ratio among the vaccinated and have proposed a simple estimator. We have also shown that the proposed estimator is robust to violations of the equi-confounding assumption and have proposed a sensitivity analysis to assess the robustness of the results to violations of the equi-confounding assumption.
-% \begin{itemize}
-%     \item Under these assumptions only the effect among the vaccinated is identified.
-%     \begin{itemize}
-%         \item Alternative 1: assume no effect modification between $V = 0$ and $V = 1$.
-%         \item Alternative 2: as in proximal inference, find a second proxy (an NCE or NCO). Good candidate vaccination history for $I = 1$?
-%     \end{itemize}
-%     \item Works best when who/what constitutes $I = 1$ (test negative sympotmatics) is clearly defined. Tight symptom screen is critical. Equi-confounding probably more plausible during a short time window.
-%     \begin{itemize}
-%         \item Need to be sure that pool of pathogens in $I = 1$ is unaffected by vaccination.
-%         \item Need to be careful about whether what constitutes $I = 1$ changes over the study period and whether that has implications for the assumptions. 
-%     \end{itemize}
-%     \item When $X$ is not low dimensional, requires correctly specified models. Estimators based on inverse-probability weighting as well as doubly-robust variants should be possible. 
-%     \item Getting estimates that aren't conditional on $X$ will probably require bespoke code. 
-% \end{itemize}
 
-
-% Potential violations:
-% \begin{itemize}
-%     \item Not mutually exclusive.
-%     \item Direct effect of vaccination on testing.
-%     \item What if symptom screen is imperfect?
-%     \item asymptomatic illness
-% \end{itemize}
-%\printbibliography
 
 
     \begin{figure}[p]
