@@ -84,9 +84,9 @@
     \begin{align*}
         \Psi &= \dfrac{\Pr(I^1=2|V=1)}{\Pr(I^0=2|V=1)} \\
         &= \dfrac{E\left\{\dfrac{V}{\Pr(V = 1)} \mathbbm 1 (I^1 = 2)\right\}}{E\left\{\dfrac{V}{\Pr(V=1)}\mathbbm 1 (I^0 = 2)\right\}} \\
-        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2)\}}{E\left\{\mathbbm 1 (I^0 = 2) E(A | I^0 = 2, X)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2)\}}{E\left\{\mathbbm 1 (I^0 = 2) E(V | I^0 = 2, X)\right\}} \\
         &= \dfrac{E\{V \mathbbm 1 (I^1 = 2)\}}{E\left\{\mathbbm 1 (I^0 = 2) \pi^0_2(X)\right\}} \\
-        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2)\}}{E\left\{\mathbbm 1 (I^0 = 2) \dfrac{\pi^0_2(X)}{1-\pi^0_2(X)}E(1-A|I^0 = 2, X)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2)\}}{E\left\{\mathbbm 1 (I^0 = 2) \dfrac{\pi^0_2(X)}{1-\pi^0_2(X)}E(1-V|I^0 = 2, X)\right\}} \\
         &= \dfrac{E\{V \mathbbm 1 (I = 2)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2) \dfrac{\pi^0_2(X)}{1-\pi^0_2(X)}\right\}}.
     \end{align*}
     The first line restates the definition. The second uses the definition of conditional expectation. The third applies the law of iterated expectation. The fourth applies the definition of the generalized propensity score $\pi_i(X)$. The fifth multiplies by one. The sixth reverses the law of iterated expectations and applies consistency. 
@@ -193,9 +193,9 @@
     \begin{align*}
         \Psi &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{\Pr(I^0=2, T^0 = 1|V=1)} \\
         &= \dfrac{E\{\dfrac{V}{\Pr(V=1)} \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\dfrac{V}{\Pr(V=1)}\mathbbm 1 (I^0 = 2, T^0 = 1)\right\}} \\
-        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) E(A | I^0 = 2, T^0 = 1, X)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) E(V | I^0 = 2, T^0 = 1, X)\right\}} \\
         &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) \pi^{0\dagger}_2(X)\right\}} \\
-        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) \dfrac{\pi^{0\dagger}_2(X)}{1-\pi^{0\dagger}_2(X)}E(1-A|I^0 = 2, T^0 = 1, X)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) \dfrac{\pi^{0\dagger}_2(X)}{1-\pi^{0\dagger}_2(X)}E(1-V |I^0 = 2, T^0 = 1, X)\right\}} \\
         &= \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2, T = 1) \dfrac{\pi^{0\dagger}_2(X)}{1-\pi^{0\dagger}_2(X)}\right\}} \\
         &= \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2, T = 1) \dfrac{\pi^\dagger_1(X)}{1-\pi^\dagger_1(X)}\right\}}.
     \end{align*}
@@ -428,6 +428,46 @@ Then the pathwise derivative of $\Psi_t$ wrt $t$ is
                 \end{tikzpicture}
             \caption{$I_1$ and $I_2$ are not mutually exclusive.}
             \end{subfigure}
+            \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+            \tikzstyle{every state}=[
+              draw = none,
+              fill = none
+            ]
+            \node[state] (x) {$X$};
+            \node[state] (v) [right of=x] {$V$};
+            \node[state] (i) [right of=v] {$I_2$};
+            \node[state] (t) [right of=i] {$T$};
+            \node[state] (is) [right of=t] {$I^*$};
+            \node[state] (i1) [below of=i] {$I_1$};
+            \node[state] (u) [below of=x] {$U$};
+            \node[state] (v1) [below of=v] {$V_1$};
+   
+            \path[->] (x) edge node {} (v);
+            \path[->] (x) edge [out=45, in=135] node {} (i);
+    
+            \path[->] (v) edge node {} (i);
+            
+            \path[->] (i) edge node {} (t);
+            \path[->] (i1) edge node {} (t);
+            \path[->] (i1) edge node {} (is);
+
+            \path[->] (x) edge [out=45, in=135] node {} (t);
+    
+            \path[->] (t) edge node {} (is);
+            \path[->] (v1) edge node {} (i1);
+
+            \path[->] (i) edge [out=45, in=135] node {} (is);
+            \path[->] (i1) edge [dashed] node {} (i);
+
+    
+            \path[->] (u) edge node {} (v1);
+            \path[->] (u) edge node {} (v);
+            % \path[->] (u) edge [line width=2pt] node {} (i);
+            % \path[->] (u) edge [line width=2pt] node {} (t);
+            % \path[->] (u) edge [line width=2pt] node {} (i1);
+            \end{tikzpicture}
+        \caption{Correlated vaccination behavior.}
+        \end{subfigure}
     % \begin{subfigure}{0.8\linewidth}
     %     \centering
     %     \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
@@ -672,7 +712,7 @@ Unlike in a placebo-controlled trial, participants in a test-negative design are
     \dfrac{\Pr(T^1 = 1 | I^1 = 1, V = 1, X)}{\Pr(T^0 = 1 | I^0 = 1, V = 1, X)} = \dfrac{\Pr(T^1 = 1 | I^1 = 2, V = 1, X)}{\Pr(T^0 = 1 | I^0 = 2, V = 1, X)}.
 \end{equation}
 \end{itemize}
-This assumption allows for vaccination to affect testing behavior provided it does so similarly for test-positive and test-negative illnesses. Together with assumption A4 it implies
+This assumption allows for vaccination to affect testing behavior provided it does so similarly for test-positive and test-negative illnesses. Together with assumption A3 it implies
 \begin{equation*}
     \dfrac{\Pr(T = 1 | I = 1, V = 1, X)}{\Pr(T = 1 | I = 1, V = 0, X)} = \dfrac{\Pr(T = 1 | I = 2, V = 1, X)}{\Pr(T = 1 | I = 2, V = 0, X)}.
 \end{equation*}
@@ -703,51 +743,34 @@ It may be plausible given that participants may not know which infection they ha
 \end{corollary}
     
     \begin{proof}
-        Define $\Psi^\dagger$ as 
+        Define $\gamma(X)$ as 
         \begin{equation*}
-            \Psi^\dagger \equiv  \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{\Pr(I^0=2, T^0 = 1|V=1)},
+            \gamma(X) \equiv \dfrac{\Pr(T = 1 | I = 1, V = 1, X)}{\Pr(T = 1 | I = 1, V = 0, X)} \dfrac{\Pr(T = 1 | I = 2, V = 0, X)}{\Pr(T = 1 | I = 2, V = 1, X)},
         \end{equation*}
-        and note that
+        and note that by Assumption A5*, $\gamma(X) = 1$. First, we show that $\Psi$ is identified by $\Psi^\dagger_{om}$ and therefore by Corollary 2 by $\Psi^*_{om}$. We have
         \begin{align*}
-            \Psi^\dagger &= \dfrac{\Pr(I^1=2|V=1)}{\Pr(I^0=2|V=1)} \\
-            &= \dfrac{\Pr(I^1=2|V=1)}{\Pr(I^0=2|V=1)} \dfrac{\Pr(T = 1 | I = 2, V = 1, X)}{\Pr(T = 1 | I = 2, V = 0, X)}\dfrac{\Pr(T = 1 | I = 1, V = 0, X)}{\Pr(T = 1 | I = 1, V = 1, X)}\\
-            & = \dfrac{\Pr(I^1 = 2 | V = 1)}{E\left\{\dfrac{\Pr(I^0 = 2, T^0 = 1 | V = 1, X)}{\Pr(T^1 = 1 | I^1 = 2, V = 1, X)}  \bigg| V = 1\right\}} \\
-            & = \dfrac{\Pr(I^1 = 2 | V = 1)}{E\left\{\dfrac{\Pr(I^0 = 1, T^0 = 1 | V = 1, X)\Pr(I^0 = 2, T^0 = 1 | V = 0, X)}{\Pr(I^0 = 1, T^0 = 1 | V = 0, X)\Pr(T^1 = 1 | I^1 = 2, V = 1, X)}  \bigg| V = 1\right\}} \\
-            & = \dfrac{\Pr(I^1 = 2 | V = 1)}{E\left\{\dfrac{\Pr(I^1 = 1 | V = 1, X)}{\Pr(I^0 = 1 | V = 0, X)}\Pr(I^0 = 2 | V = 0, X)  \bigg| V = 1\right\}} \\
-            & = \dfrac{\Pr(I^1 = 2 | V = 1)}{E\left\{\Pr(I^0 = 2 | V = 1, X)  \bigg| V = 1\right\}} \\
-            & = \dfrac{\Pr(I^1 = 2 | V = 1)}{\Pr(I^0 = 2 | V = 1)} \\
-            &= \Psi.
+            \Psi &= \dfrac{\Pr(I^1=2|V=1)}{\Pr(I^0=2|V=1)} \\
+            &= \dfrac{\Pr(I^1=2|V=1)}{E\left\{\Pr(I^0=2|V=1, X) | V= 1 \right\}} \\
+            &= \dfrac{\Pr(I^1=2|V=1)}{E\left\{\dfrac{\Pr(I^0=1|V=1, X)}{\Pr(I^0=1|V=0, X)}\Pr(I^0=2|V=0, X) \bigg| V= 1 \right\}} \\
+            &= \dfrac{\Pr(I^1=2|V=1)}{E\left\{\dfrac{\Pr(I^1=1|V=1, X)}{\Pr(I^0=1|V=0, X)}\Pr(I^0=2|V=0, X) \bigg| V= 1 \right\}} \\
+            &= \dfrac{\Pr(I=2|V=1)}{E\left\{\dfrac{\Pr(I=1|V=1, X)}{\Pr(I=1|V=0, X)}\Pr(I=2|V=0, X) \gamma(X) \bigg| V= 1 \right\}} \\
+            &= \dfrac{\Pr(I=2|V=1)}{E\left\{\dfrac{\Pr(I=1, T=1|V=1, X)}{\Pr(I=1, T = 1|V=0, X)} \dfrac{\Pr(I=2, T=1|V=0, X)}{\Pr(T^ = 1 | I = 2, V = 1, X)}\bigg| V= 1 \right\}} \\
+            &= \dfrac{\Pr(I=2, T=1 |V=1)}{E\left\{\dfrac{\Pr(I=1, T=1|V=1, X)}{\Pr(I=1, T= 1|V=0, X)} \Pr(I=2, T=1|V=0, X) \bigg| V= 1 \right\}} \\
+            &= \Psi^\dagger_{om}.
         \end{align*}
-        The first line follows by definition. The second factors the joint probability. The third applies the law of iterated expectations. The fourth applies assumption A3. The fifth applies assumption A5. The sixth reverses assumption A3 and the seventh reverses the law of iterated expectations. 
-    
-        As $\Psi^\dagger = \Psi$, it now suffices to show that $\Psi^\dagger_{om}$ and $\Psi^\dagger_{ipw}$ identify $\Psi^\dagger$. Following the same steps as the derivations in Theorems 1 and 2, for the first expression we have 
+        The first line follows by definition. The second applies the law of iterated expectations. The third applies assumption A3. The fourth applies assumption A2. The fifth applies new assumption A5*. The sixth replaces the product of conditionals with the joint distribution. The seventh reverses the law of iterated expectations. 
+
+        Next, we show that $\Psi$ is identified by $\Psi^\dagger_{ipw}$ and therefore by Corollary 2 by $\Psi^*_{ipw}$. Note that, by the invariance of the odds ratio, 
+        \begin{equation*}
+            \gamma(X) = \dfrac{\Pr(V = 1 | I = 1, T = 1, X)}{\Pr(V = 0 | I = 1, T = 1, X)} \dfrac{\Pr(V = 0 | I = 2, T = 1, X)}{\Pr(V = 1 | I = 2, T = 1, X)},
+        \end{equation*}
+        We have
         \begin{align*}
-        \Psi^\dagger &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{\Pr(I^0=2, T^0 = 1|V=1)} \\
-        &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{E[E\{\mathbbm 1 (I^0 = 2, T^0 = 1) | V = 1, X\} | V = 1]} \\
-        &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{E\left\{\int \mathbbm 1 (I^0= 2, T^0 = 1) \cdot f(I^0 = i, T^0 = 1 | V = 1, X) di \mid  V = 1\right\}} \\
-        &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{E\left\{\int \mathbbm 1 (I^0= 2, T^0 = 1) \cdot f(I^0 = i, T^0 = 1 | V = 0, X) \dfrac{f(I^0 = i, T^0 = 1 | V = 1, X)}{f(I^0 = i, T^0 = 1 | V = 0, X)}di \mid  V = 1\right\}} \\
-        &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{E\left\{ \Pr(I^0 = 2, T^0 = 1 | V = 0, X) \dfrac{\Pr(I^0 = 2, T^0 = 1 | V = 1, X)}{\Pr(I^0 = 2, T^0 = 1 | V = 0, X)} \mid  V = 1\right\}} \\
-        &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{E\left\{ \Pr(I^0 = 2, T^0 = 1 | V = 0, X) \dfrac{\Pr(I^0 = 1, T^0 = 1 | V = 1, X)}{\Pr(I^0 = 1, T^0 = 1 | V = 0, X)} \mid  V = 1\right\}} \\
-        &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{E\left\{ \Pr(I^0 = 2, T^0 = 1 | V = 0, X) \dfrac{\Pr(I^1 = 1, T^1 = 1 | V = 1, X)}{\Pr(I^0 = 1, T^0 = 1 | V = 0, X)} \mid  V = 1\right\}} \\
-        &= \dfrac{\Pr(I=2, T = 1|V=1)}{E\left\{ \Pr(I = 2, T = 1 | V = 0, X) \dfrac{\Pr(I = 1, T = 1 | V = 1, X)}{\Pr(I = 1, T = 1 | V = 0, X)} \mid  V = 1\right\}} \\
-        &= \dfrac{\Pr(I = 2, T = 1 | V = 1)}{E\left\{ \exp\{\alpha^\dagger_1(X)\} \Pr(I = 2, T = 1 | V = 0, X) \Big| V = 1 \right\}}.
-        \end{align*}
-    
-    For the second expression, note first that, by the invariance of odds ratios, Assumptions A2, A3, and A5 imply
-    \begin{equation*}
-        \dfrac{\Pr(V = 1 | I^0 = 2, T^0 = 1, X)}{\Pr(V = 0 | I^0 = 2,  T^0 = 1, X)} = \dfrac{\Pr(V = 1 | I = 1, T = 1, X)}{\Pr(V = 0 | I = 1,  T = 1, X)}
-    \end{equation*}
-    and by consequence 
-    \begin{equation*}
-        \dfrac{\pi^{0\dagger}_2(X)}{1 - \pi^{0\dagger}_2(X)} = \dfrac{\pi^\dagger_1(X)}{1 - \pi^\dagger_1(X)}.
-    \end{equation*}
-    Thus we have
-    \begin{align*}
-        \Psi &= \dfrac{\Pr(I^1=2, T^1 = 1|V=1)}{\Pr(I^0=2, T^0 = 1|V=1)} \\
-        &= \dfrac{E\{\dfrac{V}{\Pr(V=1)} \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\dfrac{V}{\Pr(V=1)}\mathbbm 1 (I^0 = 2, T^0 = 1)\right\}} \\
-        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) E(A | I^0 = 2, T^0 = 1, X)\right\}} \\
+        \Psi &= \dfrac{\Pr(I^1=2|V=1)}{\Pr(I^0=2|V=1)} \\
+        &= \dfrac{E\left\{\dfrac{V}{\Pr(V=1)} \mathbbm 1 (I^1 = 2)\right\}}{E\left\{\dfrac{V}{\Pr(V=1)}\mathbbm 1 (I^0 = 2)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) E(V | I^0 = 2, T^0 = 1, X)\right\}} \\
         &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) \pi^{0\dagger}_2(X)\right\}} \\
-        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) \dfrac{\pi^{0\dagger}_2(X)}{1-\pi^{0\dagger}_2(X)}E(1-A|I^0 = 2, T^0 = 1, X)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) \dfrac{\pi^{0\dagger}_2(X)}{1-\pi^{0\dagger}_2(X)}E(1-V|I^0 = 2, T^0 = 1, X)\right\}} \\
         &= \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2, T = 1) \dfrac{\pi^{0\dagger}_2(X)}{1-\pi^{0\dagger}_2(X)}\right\}} \\
         &= \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2, T = 1) \dfrac{\pi^\dagger_1(X)}{1-\pi^\dagger_1(X)}\right\}}.
     \end{align*}
@@ -757,12 +780,9 @@ It may be plausible given that participants may not know which infection they ha
 \subsection{What if symptom screen is imperfect?}
 Here we mean what if some non
 \newpage
+
 \subsection{What if test is imperfect?}
-Recall that 
-
-$$\Pr[I^* = 1 | S = 1, V = 1, X] = \Pr[I = 2 | S = 1, V = 1, X] \Pr[I^* = 1]$$
-
-$I^* = \lambda_{sens} \cdot \mathbb{I}(I = 2) + (1 - \lambda_{spec}) \cdot \mathbb{I}(I \neq 2)$
+In the main text, we assumed the availability of a perfect test such that $I^*_i = \mathbbm 1 (I_i = 2, T_i = 1)$ for all individuals. In the absence of such a test, here we describe the potential for bias due to misclassification of case status which has also been described previously \cite{sullivan_theoretical_2016}. Because most studies employ real-time reverse-transcription polymerase chain reaction (RT-PCR), false positives are unlikely as most RT-PCR tests have specificity approaching 100\%. Therefore, misclassification of test-positives is probably rare, perhaps due to sample contamination or data entry errors. False negatives may be be more likely as test sensitivity is generally lower due to the fact that (1) some of those infected with test-positive illness may not shed detectable virus or viral RNA; (2) some may seek care after shedding has ceased; or (3) sample quality may be compromised due to swab quality or inadequate storage. If sample collection is sufficient such that the source of the test-negative infection can be identified via RT-PCR, then sensitivity with respect to the test-positive illness can be improved by limiting to test-negative controls with an identified cause. In the case that misclassification is nondifferential with respect to vaccination, bias is likely to be minimal due to high specificity. However, care should be taken as test errors must be independent of potential confounders and effect modifiers for the bias to be strictly towards the null. 
 
 \subsection{What about immortal time bias?}
 
