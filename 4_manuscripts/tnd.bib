@@ -394,6 +394,25 @@
   file = {/Users/christopherboyer/Zotero/storage/9RJYF63E/Lipsitch et al. - 2016 - Observational studies and the difficult quest for .pdf;/Users/christopherboyer/Zotero/storage/E8RQCIF2/2622846.html}
 }
 
+@article{liu_identification_2020,
+  title = {Identification and Inference for Marginal Average Treatment Effect on the Treated with an Instrumental Variable},
+  author = {Liu, Lan and Miao, Wang and Sun, Baoluo and Robins, James and Tchetgen, Eric Tchetgen},
+  date = {2020-07},
+  journaltitle = {Stat Sin},
+  volume = {30},
+  number = {3},
+  eprint = {33209012},
+  eprinttype = {pmid},
+  pages = {1517--1541},
+  issn = {1017-0405},
+  doi = {10.5705/ss.202017.0196},
+  url = {https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7671747/},
+  urldate = {2024-02-08},
+  abstract = {In observational studies, treatments are typically not randomized and therefore estimated treatment effects may be subject to confounding bias. The instrumental variable (IV) design plays the role of a quasi-experimental handle since the IV is associated with the treatment and only affects the outcome through the treatment. In this paper, we present a novel framework for identification and inference using an IV for the marginal average treatment effect amongst the treated (ETT) in the presence of unmeasured confounding. For inference, we propose three different semiparametric approaches: (i) inverse probability weighting (IPW), (ii) outcome regression (OR), and (iii) doubly robust (DR) estimation, which is consistent if either (i) or (ii) is consistent, but not necessarily both. A closed-form locally semiparametric efficient estimator is obtained in the simple case of binary IV and outcome and the efficiency bound is derived for the more general case.},
+  pmcid = {PMC7671747},
+  file = {/Users/christopherboyer/Zotero/storage/FNGCEYJT/Liu et al. - 2020 - IDENTIFICATION AND INFERENCE FOR MARGINAL AVERAGE .pdf}
+}
+
 @article{mesidor2023test,
   title = {Test Negative Design for Vaccine Effectiveness Estimation in the Context of the {{COVID-19}} Pandemic: {{A}} Systematic Methodology Review},
   author = {Mésidor, Miceline and Liu, Yan and Talbot, Denis and Skowronski, Danuta M and De Serres, Gaston and Merckx, Joanna and Koushik, Anita and Tadrous, Mina and Carazo, Sara and Jiang, Cong and others},
@@ -502,6 +521,24 @@
   urldate = {2023-08-23},
   abstract = {In order to estimate the causal effects of one or more exposures or treatments on an outcome of interest, one has to account for the effect of "confounding factors" which both covary with the exposures or treatments and are independent predictors of the outcome. In this paper we present regression methods which, in contrast to standard methods, adjust for the confounding effect of multiple continuous or discrete covariates by modelling the conditional expectation of the exposures or treatments given the confounders. In the special case of a univariate dichotomous exposure or treatment, this conditional expectation is identical to what Rosenbaum and Rubin have called the propensity score. They have also proposed methods to estimate causal effects by modelling the propensity score. Our methods generalize those of Rosenbaum and Rubin in several ways. First, our approach straightforwardly allows for multivariate exposures or treatments, each of which may be continuous, ordinal, or discrete. Second, even in the case of a single dichotomous exposure, our approach does not require subclassification or matching on the propensity score so that the potential for "residual confounding," i.e., bias, due to incomplete matching is avoided. Third, our approach allows a rather general formalization of the idea that it is better to use the "estimated propensity score" than the true propensity score even when the true score is known. The additional power of our approach derives from the fact that we assume the causal effects of the exposures or treatments can be described by the parametric component of a semiparametric regression model. To illustrate our methods, we reanalyze the effect of current cigarette smoking on the level of forced expiratory volume in one second in a cohort of 2,713 adult white males. We compare the results with those obtained using standard methods.},
   file = {/Users/christopherboyer/Zotero/storage/3ZGPSX2R/Robins et al. - 1992 - Estimating Exposure Effects by Modelling the Expec.pdf}
+}
+
+@article{scharfstein_adjusting_1999,
+  title = {Adjusting for {{Nonignorable Drop-Out Using Semiparametric Nonresponse Models}}},
+  author = {Scharfstein, Daniel O. and Rotnitzky, Andrea and Robins, James M.},
+  date = {1999-12-01},
+  journaltitle = {Journal of the American Statistical Association},
+  volume = {94},
+  number = {448},
+  pages = {1096--1120},
+  publisher = {{Taylor \& Francis}},
+  issn = {0162-1459},
+  doi = {10.1080/01621459.1999.10473862},
+  url = {https://www.tandfonline.com/doi/abs/10.1080/01621459.1999.10473862},
+  urldate = {2024-02-08},
+  abstract = {Consider a study whose design calls for the study subjects to be followed from enrollment (time t = 0) to time t = T, at which point a primary endpoint of interest Y is to be measured. The design of the study also calls for measurements on a vector V t) of covariates to be made at one or more times t during the interval [0, T). We are interested in making inferences about the marginal mean μ0 of Y when some subjects drop out of the study at random times Q prior to the common fixed end of follow-up time T. The purpose of this article is to show how to make inferences about μ0 when the continuous drop-out time Q is modeled semiparametrically and no restrictions are placed on the joint distribution of the outcome and other measured variables. In particular, we consider two models for the conditional hazard of drop-out given (V(T), Y), where V(t) denotes the history of the process V t) through time t, t ∈ [0, T). In the first model, we assume that λQ(t|V(T), Y) exp(α0 Y), where α0 is a scalar parameter and λ0(t|V(t)) is an unrestricted positive function of t and the process V(t). When the process Vt) is high dimensional, estimation in this model is not feasible with moderate sample sizes, due to the curse of dimensionality. For such situations, we consider a second model that imposes the additional restriction that λ0(t|V(t)) = λ0(t) exp(γ′0(t)), where λ0 t) is an unspecified baseline hazard function, W(t) = w(t, V(t)), w(·,·) is a known function that maps (t, V(t)) to Rq , and γ0 is a q × 1 unknown parameter vector. When α0 ≠ 0, then drop-out is nonignorable. On account of identifiability problems, joint estimation of the mean μ0 of Y and the selection bias parameter α0 may be difficult or impossible. Therefore, we propose regarding the selection bias parameter α0 as known, rather than estimating it from the data. We then perform a sensitivity analysis to see how inference about α0 changes as we vary α0 over a plausible range of values. We apply our approach to the analysis of ACTG 175, an AIDS clinical trial.},
+  keywords = {Augmented inverse probability of censoring weighted estimators,Cox proportional hazards model,Identification; Missing data,Noncompliance; Nonparametric methods,Randomized trials,Sensitivity analysis,Time-dependent covariates.},
+  file = {/Users/christopherboyer/Zotero/storage/V69XWJDC/Scharfstein et al. - 1999 - Adjusting for Nonignorable Drop-Out Using Semipara.pdf}
 }
 
 @article{schnitzer_estimands_2022,
