@@ -1,0 +1,1352 @@
+
+\begin{appendix}
+
+    \renewcommand{\thefigure}{A\arabic{figure}}
+    \setcounter{figure}{0}
+    
+    \renewcommand{\thetable}{A\arabic{table}}
+    \setcounter{table}{0}
+    
+    \renewcommand{\theequation}{A\arabic{equation}}
+    \setcounter{equation}{0}
+
+    \singlespacing
+%    \appendixwithtoc
+    \newpage
+
+    \section{Proofs of main identifiability results} \label{sec:proofs}
+    For convenience, we restate below the core identifiability conditions from the main text. 
+    \begin{enumerate}[label=\upshape(A\arabic*), ref=A\arabic*]
+    \item\label{app_ass1} Consistency of potential outcomes. For all individuals $i$ and for $v \in \{0, 1\}$, we have $I_i^v = I_i$ and $T_i^v = T_i$ when $V_i = v$. 
+    \item\label{app_ass2} No effect of vaccination on testing negative and symptomatic among the vaccinated. That is, $\Pr[I^0 = 1, T^0=1 | V = 1, X] = \Pr[I^1 = 1, T^1=1 | V = 1, X].$
+    \item\label{app_ass3} Odds ratio equi-confounding. Degree of unmeasured confounding bias on the odds ratio scale is the same for test-positive and test-negative illnesses, i.e. 
+    $$OR_2(X) = OR_1(X), $$
+    $$ \text{where } OR_i(X) = \frac{\Pr[I^0 = i, T^0 = 1 | V = 1, X]\Pr[I^0 = 0, T^0 = 1 | V = 0, X]}{\Pr[I^0 = 0, T^0 = 1 | V = 1, X]\Pr[I^0 = i, T^0 = 1| V = 0, X]}.$$
+    \item\label{app_ass4} Overlap of vaccination among test-positives and test-negatives. Define $\mathcal{S}_i(v)$ as the support of the law of $(I^0 = i, T^0 = 1, V = v, X)$, then for $v$ in $\{0,1\}$, then it must be that $\mathcal{S}_2(1) \subseteq \mathcal{S}_2(0)$ and $\mathcal{S}_2(v) \subseteq \mathcal{S}_1(v).$
+    %\item[(A5)] No direct effect of vaccination on test-seeking behavior among the vaccinated. That is, for $i$ in $\{1,2\}$, $\Pr[T^1 = 1 | I^1 = i, V = 1, X] = \Pr[T^0 = 1 | I^0 = i, V = 1, X].$
+\end{enumerate}
+
+    %In Proposition \ref{prop1}, we established that, under Assumption \ref{app_ass1} alone, the causal risk ratio for medically-attended illness among the vaccinated, $\Psi_{RRV}$, is equivalent to two expressions involving the (unobserved) treatment-free potential outcome $\mathbbm 1(I^0 = 2, T^0=1)$, one based on the outcome itself and one based on the so-called generalized propensity score. In Lemma \ref{lemma1}, we show that, if we add Assumptions \ref{app_ass2} - \ref{app_ass4}, we can use the observed ratio of testing negative among the vaccinated and unvaccinated as a proxy for expressions involved the treatment-free potential outcome and therefore identify $\Psi_{RRV}$ when we have access to unbiased samples from the underlying target population. Then in Lemma \ref{lemma2} we show $\Psi_{RRV}$ is still identifiable despite the biased sampling design of the test-negative design, due to the invariance of the odds ratio, thus completing our proof. 
+    
+    \newpage
+    \subsection{Proof of Proposition \ref{prop1}} \label{sec:proof1}
+    
+    \begin{proof}
+    We begin by showing that, under Assumption \ref{app_ass1} alone, the causal risk ratio for medically-attended illness among the vaccinated, $\Psi_{RRV}$, 
+    \begin{equation*}
+        \Psi \equiv \dfrac{\Pr(I^1=2, T^1=1|V=1)}{\Pr(I^0=2, T^0=1|V=1)},
+    \end{equation*}
+    is equivalent to two expressions involving only the (unobserved) treatment-free potential outcome, $\mathbbm 1(I^0 = 2, T^0=1)$, namely 
+    \begin{equation}
+        \Psi^0_{om} \equiv \dfrac{\Pr(I = 2, T = 1 | V = 1)}{E\left[\Pr(I = 2, T = 1 | V = 0, X) \exp\{\alpha^0_2(X)\}\Big| V = 1 \right]}
+    \end{equation}
+    and 
+    \begin{equation}
+        \Psi^0_{ipw} \equiv \dfrac{E\{V \mathbbm 1(I = 2, T = 1)\}}{E\left\{ (1 - V) \mathbbm 1(I = 2, T = 1) \dfrac{\pi^0_2(X)}{1 - \pi^0_2(X)}\right\}}
+    \end{equation}
+    where 
+    \begin{equation*}
+        \pi^0_i(X) \equiv \Pr(V = 1 | I^0 = i, T^0 = 1,  X)
+    \end{equation*}
+    is the extended propensity score and 
+     \begin{equation*}
+        \alpha^0_i(X) \equiv \log \dfrac{\Pr(I^0 = i, T^0 = 1 | V = 1, X)}{\Pr(I = i, T=1 | V = 0, X)}
+    \end{equation*}
+    
+    For the first expression, we have 
+    \begin{align*}
+        \Psi &= \dfrac{\Pr(I^1=2, T^1=1|V=1)}{\Pr(I^0=2, T^0=1|V=1)} \\
+        &= \dfrac{\Pr(I^1=2,T^1=1|V=1)}{E[E\{\mathbbm 1 (I^0 = 2, T^0=1) | V = 1, X\} | V = 1]} \\
+        &= \dfrac{\Pr(I^1=2,T^1=1|V=1)}{E\left\{\int \mathbbm 1 (I^0 = 2, T^0=1) f(I^0 = i, T^0=1 | V = 1, X) di \mid  V = 1\right\}} \\
+        &= \dfrac{\Pr(I^1=2,T^1=1|V=1)}{E\left\{\int \mathbbm 1 (I^0 = 2, T^0=1) f(I^0 = i, T^0=1 | V = 0, X) \dfrac{f(I^0 = i,T^0=1 | V = 1, X)}{f(I^0 = i, T^0=1| V = 0, X)}di \mid  V = 1\right\}} \\
+        &= \dfrac{\Pr(I^1=2,T^1=1|V=1)}{E\left\{ \Pr(I^0 = 2, T^0=1 | V = 0, X) \dfrac{\Pr(I^0 = 2, T^0=1 | V = 1, X)}{\Pr(I^0 = 2, T^0=1 | V = 0, X)} \mid  V = 1\right\}} \\
+        &= \dfrac{\Pr(I=2,T=1|V=1)}{E\left[ \Pr(I = 2, T=1 | V = 0, X) \exp\{\alpha^0_2(X)\} \mid  V = 1\right]}.
+    \end{align*}
+    The first line restates the definition. The second uses the law of iterated expectation. The third applies the definition of conditional expectation. The fourth multiplies the density by one. The fifth evaluates the integral and the sixth applies consistency and the definition of $\alpha_i(X)$
+    
+    For the second, we have 
+    \begin{align*}
+        \Psi &= \dfrac{\Pr(I^1=2, T^1=1|V=1)}{\Pr(I^0=2, T^0=1|V=1)} \\
+        &= \dfrac{E\left\{\dfrac{V}{\Pr(V = 1)} \mathbbm 1 (I^1 = 2, T^1=1)\right\}}{E\left\{\dfrac{V}{\Pr(V=1)}\mathbbm 1 (I^0 = 2,T^0=1)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1=1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0=1) E(V | I^0 = 2, T^0=1, X)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1=1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0=1) \pi^0_2(X)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1=1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0=1) \dfrac{\pi^0_2(X)}{1-\pi^0_2(X)}E(1-V|I^0 = 2, T^0=1, X)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I = 2, T=1)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2, T=1) \dfrac{\pi^0_2(X)}{1-\pi^0_2(X)}\right\}}.
+    \end{align*}
+    The first line restates the definition. The second uses the definition of conditional expectation. The third applies the law of iterated expectation and cancels the $\Pr(V=1)$ terms in the numerator and denominator. The fourth applies the definition of the generalized propensity score $\pi_i(X)$. The fifth multiplies by one. The sixth reverses the law of iterated expectations and applies consistency. 
+
+    We now show that, under assumptions \ref{app_ass1} - \ref{app_ass4}, $\Psi^0_{om}$ and $\Psi^0_{ipw}$, and therefore by extension $\Psi$, are identified under cohort sampling by 
+    \begin{equation}
+        \Psi_{om} \equiv \dfrac{\Pr(I = 2, T = 1 | V = 1)}{E\left\{\Pr(I = 2, T = 1 | V = 0, X) \exp\{\alpha_1(X)\} \Big| V = 1 \right\}}
+    \end{equation}
+    and 
+    \begin{equation}
+        \Psi_{ipw} \equiv \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{ (1 - V) \mathbbm 1(I = 2, T = 1) \dfrac{\pi_1(X)}{1 - \pi_1(X)}\right\}}
+    \end{equation}
+    where $\alpha_1(X) = \log \dfrac{\Pr(I = 1, T = 1 | V = 1, X)}{\Pr(I = 1, T = 1 | V = 0, X)}$ and $\pi_1(X) = \Pr(V = 1| I = 1, T = 1, X)$ are both written in terms of observable quantities.
+    
+    For the first expression, note that 
+    \begin{align*}
+        \dfrac{\Pr(I^0 = 2, T^0=1 | V = 1, X)}{\Pr(I^0 = 2, T^0=1 | V = 0, X)} &= \dfrac{\Pr(I^0 = 1, T^0=1 | V = 1, X)}{\Pr(I^0 = 1, T^0=1 | V = 0, X)} \\
+        &= \dfrac{\Pr(I^1 = 1, T^1=1 | V = 1, X)}{\Pr(I^0 = 1, T^0=1 | V = 0, X)} \\
+        &= \dfrac{\Pr(I = 1, T = 1 | V = 1, X)}{\Pr(I = 1, T = 1 | V = 0, X)} \\
+    \end{align*}
+    where the first line is by Assumption \ref{app_ass3} and mutual exclusivity of test-negative and test-positive illnesses. The second line is by Assumption \ref{app_ass2}. And the last line applies Assumption \ref{app_ass1}. This implies
+    \begin{equation*}
+        \alpha_2^0(X) = \alpha_1(X)
+    \end{equation*}
+    and, therefore, combining with the derivation of Proposition \ref{prop1}, we have
+    \begin{align*}
+        \Psi &= \dfrac{\Pr(I = 2, T = 1 | V = 1)}{E\left\{ \exp\{\alpha^0_2(X)\} \Pr(I = 2, T = 1 | V = 0, X) \Big| V = 1 \right\}} \\
+        &= \dfrac{\Pr(I = 2, T = 1 | V = 1)}{E\left\{ \exp\{\alpha_1(X)\} \Pr(I = 2, T = 1 | V = 0, X) \Big| V = 1 \right\}}.
+    \end{align*}
+    
+    For the second expression, note first that, by the invariance of odds ratios, Assumptions \ref{app_ass2} and \ref{app_ass3} imply
+    \begin{equation*}
+        \dfrac{\Pr(V = 1 | I^0 = 2, T^0=1, X)}{\Pr(V = 0 | I^0 = 2, T^0=1, X)} = \dfrac{\Pr(V = 1 | I = 1, T=1, X)}{\Pr(V = 0 | I = 1, T=1, X)}
+    \end{equation*}
+    and by consequence 
+    \begin{equation*}
+        \dfrac{\pi^0_2(X)}{1 - \pi^0_2(X)} = \dfrac{\pi_1(X)}{1 - \pi_1(X)}.
+    \end{equation*}
+    Thus, again, continuing the derivation in Proposition \ref{prop1}, we have 
+    \begin{align*}
+        \Psi &= \dfrac{E\{V \mathbbm 1 (I = 2, T=1)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2, T=1) \dfrac{\pi^0_2(X)}{1-\pi^0_2(X)}\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I = 2, T=1)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2, T=1) \dfrac{\pi_1(X)}{1-\pi_1(X)}\right\}}.
+    \end{align*}
+    \end{proof}
+    \newpage
+
+    \subsection{Proof of Proposition \ref{prop2}}\label{sec:proof2}
+    % \begin{lemma}\label{lemma2}
+    % Under selection $S = \mathbbm 1(I\neq 0, T = 1)$, $\Psi_{om}$ and $\Psi_{ipw}$ are equivalent to 
+    % \begin{equation}
+    %     \Psi_{om}^* = \dfrac{\Pr(I^* = 1 | S = 1, V = 1)}{E\left\{  \Pr(I^* = 1 | S = 1, V = 0, X) \exp\{\alpha^*_1(X)\}\Big| S = 1, V = 1 \right\}}
+    % \end{equation}
+    % and 
+    % \begin{equation}
+    %     \Psi_{ipw}^* = \dfrac{E\{VI^*|S =1\}}{E\left\{ (1 - V) I^* \dfrac{\pi^*_0(X)}{1 - \pi^*_0(X)} \bigg| S = 1\right\}}
+    % \end{equation}
+    % where $\alpha^*_1(X) = \log \dfrac{\Pr(I^* = 0 | S = 1, V = 1, X)}{\Pr(I^* = 0| S = 1, V = 0, X)}$ and $\pi^*_0(X) = \Pr(V = 1| S = 1, I^* = 0, X)$. 
+    % \end{lemma}
+    
+    \begin{proof}
+    For the first expression we have,
+        \begin{align*}
+        \Psi_{om} &= \dfrac{\Pr(I=2, T = 1|V=1)}{E\left\{ \dfrac{\Pr(I = 1, T = 1 | V = 1, X)}{\Pr(I = 1, T = 1 | V = 0, X)}\Pr(I = 2, T = 1 | V = 0, X) \mid  V = 1\right\}} \\
+        &= \dfrac{\Pr(I = 2, T = 1 | V = 1)}{\int \dfrac{\Pr(I = 1, T = 1 | V = 1, x)}{\Pr(I = 1, T = 1 | V = 0, x)} \Pr(I = 2, T = 1 | V = 0, x) f(x | V = 1) dx} \\
+        &= \dfrac{\Pr(I = 2 | T = 1, V = 1)\Pr(T = 1 | V = 1)}{\int \dfrac{\Pr(I = 1 | T = 1, V = 1, x)}{\Pr(I = 1 | T = 1, V = 0, x)} \Pr(I = 2 | T = 1, V = 0, x) \Pr(T = 1 | V = 1, x) f(x | V = 1) dx} \\
+        &= \dfrac{\Pr(I = 2 | T = 1, V = 1)\Pr(T = 1 | V = 1)}{\int \dfrac{\Pr(I = 1 | T = 1, V = 1, x)}{\Pr(I = 1 | T = 1, V = 0, x)} \Pr(I = 2 | T = 1, V = 0, x) \Pr(T = 1 | V = 1) f(x | T =1, V = 1) dx} \\
+        &= \dfrac{\Pr(I = 2 | T = 1, V = 1)}{\int \dfrac{\Pr(I = 1 | T = 1, V = 1, x)}{\Pr(I = 1 | T = 1, V = 0, x)} \Pr(I = 2 | T = 1, V = 0, x) f(x | T =1, V = 1) dx} \\
+        &= \dfrac{\Pr(I = 2 | T = 1, V = 1)}{E\left\{ \dfrac{\Pr(I = 1 | T = 1, V = 1, X)}{\Pr(I = 1 | T = 1, V = 0, X)} \Pr(I = 2 | T = 1, V = 0, X) \bigg| T = 1, V = 1\right\}} \\
+        &= \dfrac{\Pr(I^* = 1 | S = 1, V = 1)}{E\left\{ \dfrac{\Pr(I^* = 0 | S = 1, V = 1, X)}{\Pr(I^* = 0 | S = 1, V = 0, X)} \Pr(I^* = 1 | S = 1, V = 0, X) \bigg| S = 1, V = 1\right\}} \\
+        &= \dfrac{\Pr(I^* = 1 | S = 1, V = 1)}{E\left\{ \Pr(I^* = 1 | S = 1, V = 0, X) \exp\{\alpha^*_1(X)\}\Big| S = 1, V = 1 \right\}}.
+    \end{align*}
+    The first line restates the definition of $\Psi_{om}$. The second applies the definition of conditional expectation. The third factors the joint probabilities. The fourth applies Bayes theorem, i.e. 
+    \begin{equation*}
+        f(x | V = 1) = \dfrac{f(x | T = 1, V = 1)\Pr(T = 1 | V = 1)}{\Pr(T = 1 | V = 1, x)}.
+    \end{equation*}
+    The fifth cancels the $\Pr(T = 1 |V = 1)$ terms in the numerator and denominator. The sixth applies the definition of conditional expectation. The seventh applies the sampling design $S = \mathbbm 1 (T = 1, I \neq 0)$ and the perfect test $I^* = \mathbbm 1(I = 2)$.
+    
+    For the second expression we have,
+    \begin{align*}
+        \Psi_{ipw} &= \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{ (1 - V) \mathbbm 1(I = 2, T = 1) \dfrac{\pi_1(X)}{1 - \pi_1(X)}\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I = 2) | T = 1\} \Pr(T = 1)}{E\left\{ (1 - V) \mathbbm 1(I = 2) \dfrac{\pi_1(X)}{1 - \pi_1(X)} \bigg| T = 1\right\} \Pr(T = 1)} \\
+        &= \dfrac{E\{V \mathbbm 1 (I = 2) | T = 1\}}{E\left\{ (1 - V) \mathbbm 1(I = 2) \dfrac{\pi_1(X)}{1 - \pi_1(X)} \bigg| T = 1\right\}} \\
+        &= \dfrac{E\{VI^*|S =1\}}{E\left\{ (1 - V) I^* \dfrac{\pi^*_0(X)}{1 - \pi^*_0(X)} \bigg| S = 1\right\}}.
+    \end{align*}
+    The first line restates the definition of $\Psi_{ipw}$. The second applies the law of iterated expectations. The third cancels the $\Pr(T = 1)$ terms in the numerator and denominator. The fourth applies the sampling design $S = \mathbbm 1 (T = 1, I \neq 0)$ and the perfect test $I^* = \mathbbm 1(I = 2, T=1)$.
+    \end{proof}
+    
+    \newpage
+    \section{Plug-in Estimation}\label{sec:app_estimation}
+    \subsection{Cohort estimators}
+    The identified expressions $\Psi_{om}$ and $\Psi_{ipw}$ in Proposition \ref{prop1} suggest two plug-in estimators for $\Psi$ when one has access to the full sample (including those untested) from the underlying cohort, i.e. $O_{cohort} = \{(X_i, V_i, I_i, T_i) : i = 1, \ldots, N\}$. First, an estimator based on modeling the outcome
+    \begin{equation}\label{eqn:om_estimator_cohort}
+        \widehat{\Psi}_{om} = \dfrac{\sum_{i=1}^N V_i \mathbbm 1 (I_i=2, T_i=1)}{\sum_{i=1}^N V_i \widehat{\mu}_0(X_i)\dfrac{1 - \widehat{\mu}_1(X_i)}{1 - \widehat{\mu}_0(X_i)}},
+    \end{equation}
+    where $\mu_v(X) = \Pr(I=2, T=1 \mid V=v, X)$ is the probability of testing positive among those with vaccine status $V = v$ in the full sample. 
+    
+    Second, an inverse probability weighting estimator
+    \begin{equation}\label{eqn:ipw_estimator_cohort}
+        \widehat{\Psi}_{ipw} = \dfrac{\sum_{i=1}^N V_i \mathbbm 1 (I_i=2, T_i=1)}{\sum_{i=1}^N (1 - V_i) \mathbbm 1 (I_i=2, T_i=1) \dfrac{\widehat{\pi}_1(X_i)}{1 - \widehat{\pi}_1(X_i)}},
+    \end{equation}
+    where $\pi_1(X) = \Pr(V=1\mid I=1, T=1, X)$ is the  probability of vaccination among those who test-negative. Both $\widehat{\mu}_v(X)$ and $\widehat{\pi}_1(X)$ are nuisance functions. 
+
+    \subsection{TND estimators}
+    Alternatively, the identified expressions $\Psi^*_{om}$ and $\Psi^*_{ipw}$ in Proposition \ref{prop2} suggest two plug-in estimators for $\Psi$ under TND sampling, i.e. $O_{TND} = \{(X_i, V_i, S_i=1, I^*_i) : i = 1, \ldots, n\}$. First, an estimator based on modeling the outcome
+    \begin{equation}\label{eqn:om_estimator_tnd}
+        \widehat{\Psi}_{om}^* = \dfrac{\sum_{i=1}^n V_i I^*_i}{\sum_{i=1}^n V_i \widehat{\mu}^*_0(X_i)\dfrac{1 - \widehat{\mu}^*_1(X_i)}{1 - \widehat{\mu}^*_0(X_i)}},
+    \end{equation}
+    where $\mu^*_v(X) = \Pr(I^*=1 \mid S=1, V=v, X)$ is the probability of testing positive among those with vaccine status $V = v$ in the full sample.
+
+    Second, an inverse probability weighting estimator
+    \begin{equation}\label{eqn:ipw_estimator_tnd}
+        \widehat{\Psi}_{ipw}^* = \dfrac{\sum_{i=1}^n V_i I^*_i}{\sum_{i=1}^n (1 - V_i) I^*_i \dfrac{\widehat{\pi}_0^*(X_i)}{1 - \widehat{\pi}_0^*(X_i)}},
+    \end{equation}
+    where $\pi^*_0(X) = \Pr(V=1\mid S=1, I=0, X)$ is the  probability of vaccination among those who test-negative. Both $\widehat{\mu}^*_v(X)$ and $\widehat{\pi}^*_0(X)$ are nuisance functions. 
+    \newpage
+
+    \subsection{Estimating Equations}
+    Here we provide a detailed description of methods for obtaining standard errors and corresponding confidence intervals for $\widehat{\Psi}_{om}^*$ and $\widehat{\Psi}_{ipw}^*$ based on stacked estimating equations. Throughout this section we presume models for nuisance functions are correctly specified. Although not the focus of this paper, a similar procedure could be used to obtain standard errors and confidence intervals for $\widehat{\Psi}_{om}$ and $\widehat{\Psi}_{ipw}$.
+
+    We first introduce additional notation. As before, we observe data $O = (X, V, S=1, I^*)$ for $i = 1, \ldots, n$, where $n$ is the number of observed units. Let $\mathbb{P}(g)$ denote the average of function $g(O)$  across $n$ units, i.e., $\mathbb{P}(g) = n^{-1}\sum_{i=1}^n g(O_{i})$. Let $\operatorname{expit}(x) = \exp(x)/{1 + \exp(x)}$. For  random variables $V$ and $W$ , let $V \overset{P}{\rightarrow} W$ and $V \overset{D}{\rightarrow} W$ denote $V$ converges to $W$ in probability and in distribution, respectively.
+
+    The estimators $\widehat{\Psi}^*_{om}$ and $\widehat{\Psi}^*_{ipw}$ can be expressed via stacked estimating equations of the form:
+    \begin{equation*}
+        \psi(O; \nu, \Psi^*) = \begin{pmatrix}
+            \psi_{\text{nuis}}(I^*, V, X; \nu) \\
+            \psi_{\text{effect}}(I^*, V, X; \Psi^*)
+        \end{pmatrix}
+    \end{equation*}
+    where the first estimates the parameters $\nu$ of a model for the nuisance function $\mu_v(X)$ and the second estimates the causal estimand $\Psi^*$ for the target parameter $\Psi$, with estimates obtained as the solution to
+    \begin{equation*}
+        0 = \mathbb{P}\big\{\psi(O; \widehat{\nu}, \widehat{\Psi}^*)\big\}.
+    \end{equation*}
+    We now consider examples for each estimator in turn. 
+    
+    For the outcome modeling estimator, following the suggestion in the main paper, one might specify a pooled over $V$ logistic regression model for the nuisance function, i.e. $\mu^*_V(X; \nu_{om}) = \operatorname{expit}\{(1, V, X, VX)'\nu_{om}\}$. In this case, the estimating equation is given by 
+    \begin{equation*}
+        \psi_{om}(O; \nu_{om}, \Psi^*_{om}) = \begin{pmatrix}
+            (1, V, X, VX)'\left[ I^* - \mu^*_V(X; \nu_{om})\right] \\
+            V \left\{I^* - \mu^*_0(X; \widehat{\nu}_{om}) \dfrac{1 - \mu^*_1(X; \widehat{\nu}_{om})}{1 - \mu^*_0(X; \widehat{\nu}_{om})}\Psi^*_{om}\right\}
+        \end{pmatrix}.
+    \end{equation*}
+
+    For the inverse probability weighting estimator, again following the suggestion in the main paper, one might specify a logistic regression model for the nuisance function, i.e. $\pi^*_0(X; \nu_{ipw}) = \operatorname{expit}\{(1, X)'\nu_{ipw}\}$. In this case, the estimating equation is given by 
+    \begin{equation*}
+        \psi_{ipw}(O; \nu_{ipw}, \Psi^*_{ipw}) = \begin{pmatrix}
+            (1, X)'\left[V(1-I^*) - \pi^*_0(X; \nu_{ipw})\right] \\
+            I^* \left\{V - (1-V) \dfrac{\pi^*_0(X; \widehat{\nu}_{ipw})}{1 - \pi^*_0(X; \widehat{\nu}_{ipw})}\Psi^*_{ipw}\right\}
+        \end{pmatrix}.
+    \end{equation*}
+
+    We can characterize the statistical properties of the estimator using M-estimation theory \cite{stefanski_calculus_2002}. Under regularity conditions, we have the following asymptotic normality of the estimators:
+
+    \[\sqrt{n}\left\{\big(\widehat{\Psi}^*, \widehat{\nu}\big)'-\big(\underline{\Psi}^*, \underline{\nu}\big)^\prime \right\} \xrightarrow{D} N\left(0, V_1^{-1} V_2\left(V_1^{-1}\right)^{\prime}\right)\]
+    where 
+    \begin{align*}
+        V_1&=\left.E\left\{\frac{\partial \psi\left(O ; \Psi^*, \nu\right)}{\partial\left(\Psi^*, \nu\right)^{\prime}}\right\}\right|_{\left(\Psi^*, \nu\right)=\left(\underline{\Psi}^*, \underline{\nu}\right)}, \\
+        V_2&=E\left[\left\{\Psi\left(O ;\underline{\Psi}^*, \underline{\nu}\right)\right\}\left\{\Psi\left(O ; \underline{\Psi}^*, \underline{\nu}\right)\right\}^{\prime}\right]
+    \end{align*}
+and where $\left(\underline{\Psi}^*, \underline{\nu}\right)$ is the probability limit of the estimators. By the law of large numbers, we have $\underline{\Psi}^*_{om}=\Psi^*_{om}$ if  $\underline{\nu}_{om}=\nu_{om}$ and $\underline{\Psi}^*_{ipw}=\Psi^*_{ipw}$ if $\underline{\nu}_{ipw}=\nu_{ipw}$, which occurs when the nuisance functions are correctly specified.
+
+A consistent variance estimator for $\widehat{\Psi}^*$ can be obtained by substituting the empirical analogs of $V_1$ and $V_2$, i.e., $\widehat{\sigma}^2=\widehat{V}_1^{-1} \widehat{V}_2(\widehat{V}_1^{-1})^{\prime}$. Confidence intervals can be constructed leveraging the asymptotic normality of $\widehat{\Psi}^*$ and the consistent variance estimator $\widehat{\sigma}^2$. A $100(1-\alpha) \%$ confidence interval for $\widehat{\Psi}^*$ is given as
+$$
+\left(\widehat{\Psi}^*-z_{1-\frac{\alpha}{2}} \frac{\widehat{\sigma}}{\sqrt{n}}, \widehat{\Psi}^*+z_{1-\frac{\alpha}{2}} \frac{\widehat{\sigma}}{\sqrt{n}}\right)
+$$
+where $z_\alpha$ is the $100 \alpha$th percentile of the standard normal distribution.
+
+\subsection{Bootstrapping}
+An alternative method for obtaining standard errors and confidence intervals for $\widehat{\Psi}^*_{om}$ or $\widehat{\Psi}^*_{ipw}$ is the  bootstrap \cite{diciccio_bootstrap_1987}. As in the main text, let $O = \{(X_i, V_i, S_i = 1, I_i^*)\}_{i=1}^n$ represent the available data which are  independent realizations from unknown probability distribution $F_{\theta}$. 
+
+\begin{enumerate}
+    \item Draw bootstrap replicates $O_1, \ldots, O_B$ from $\widehat{F}_{\theta}$ by sampling with replacement from the dataset. 
+    \item For each replicate, $O_b$, estimate $\Psi^*$ by first estimating the nuisance function, $\mu^*_v(X)$ or $\pi_0^*(X)$, and then plug into expression \ref{eqn:om_estimator_tnd} or \ref{eqn:ipw_estimator_tnd}, thereby obtaining estimates $\widehat{\Psi}^*_1, \ldots, \widehat{\Psi}^*_B$.
+    \item Calculate the bootstrapped standard error from $\widehat{\sigma}_B = \sqrt{ \sum_{i=1}^{B} (\widehat{\Psi}^*_i - \overline{\Psi}^*)^2/(B-1)}$ where $\overline{\Psi}^* = B^{-1}\sum_{i=1}^B \widehat{\Psi}^*_i$.
+    \item Form a $100(1-\alpha)\%$ confidence interval for $\Psi^{\star}$ via
+    $$
+    \left(\widehat{\Psi}^*-z_{1-\frac{\alpha}{2}} \frac{\widehat{\sigma}}{\sqrt{n}}, \widehat{\Psi}^*+z_{1-\frac{\alpha}{2}} \frac{\widehat{\sigma}}{\sqrt{n}}\right)
+    $$
+    where $z_\alpha$ is the $100 \alpha$th percentile of the standard normal distribution.
+\end{enumerate}
+ Steps 3 and 4 may be replaced by alternative procedures which, in some cases, may yield better performing intervals.
+    \newpage
+
+    \section{Semiparametric Efficiency Theory}\label{sec:eif}
+    In this section, we start by deriving the efficient influence function (EIF) for $\Psi$. We then obtain an estimator of $\Psi$ based on the EIF and establish the conditions under which the estimator is $\sqrt{n}$-consistent and asymptotically normal. We then evaluate the robustness of the estimator to misspecification of the nuisance functions. 
+    
+    \subsection{The efficient influence function}
+    To derive the efficient influence function (EIF) for $\Psi$, we use the point-mass approach suggested in \textcite{hines_demystifying_2022}. The 
+    \begin{lemma}
+        The efficient influence function for $\Psi^*$ is given by 
+        \begin{align*}
+         \chi(P, O) &= \dfrac{1}{\sigma \Delta} \Bigg(S V I^* - \Psi(P)  \times \bigg[S(1 - V)\{I^* - \mu_0(X)\}\dfrac{\pi_0(X)\{1 - \mu_1(X)\}}{\{1 - \pi_0(X)\}\{1 - \mu_0(X)\}^2}\\
+        &\qquad + S V\{1-I^*\}\dfrac{\mu_0(X)}{1 - \mu_0(X)}\bigg] \Bigg)
+    \end{align*}
+    where 
+    \begin{align*}
+        \pi_i(X) &\equiv \Pr(V = 1 | S = 1, I^* = i, X), \\
+        \mu_v(X) &\equiv \Pr(I^* = 1 | S = 1, V = v, X), \\
+        \sigma &\equiv \Pr(S = 1, V = 1),
+    \end{align*}
+    and 
+    \begin{equation*}
+        \Delta \equiv E\left[\dfrac{\mu_0(X)\{1 - \mu_1(X)\}}{1 - \mu_0(X)} \bigg| S=1, V=1\right].
+    \end{equation*}
+    \end{lemma}
+
+    \begin{proof}
+    Let $\Psi(P)$ be the target parameter under true law of the observed data $P$. To derive the EIF, we assume we have access to iid observations $O \equiv (X, V, S, I^*)$ but show below that the resulting estimator is still identifiable under TND sampling. From the identifiability results in Lemma \ref{lemma1}, we have that 
+    % $$\Psi(P) = \dfrac{E(I^*\mid S=1, V=1)}{E\left\{\dfrac{\Pr(I^*=1\mid S=1, V=0, X)\Pr(V=1\mid S=1, I^*=0, X)}{\Pr(V=0\mid S=1, I^*=0, X)}\mid S=1, V=1\right\}}.$$ 
+    $$\Psi(P) = \dfrac{E_P(I^* = 1 | S = 1, V = 1)}{E_P\left\{\dfrac{E_P(I^*\mid S=1, V=0, X)E_P(1 - I^*\mid S=1, V=1, X)}{E_P(1 - I^*\mid S=1, V=0, X)} \bigg| S=1, V=1\right\}}.$$ 
+    
+    Define $P_t$ as a parametric submodel indexed by $t \in [0,1]$ such that
+    $$P_t = t \widetilde{P} + (1 - t)P$$
+    where $\widetilde{P}$ is smoothed parametric estimate of $P$ and note that $P_0 = P$. To find the influence function we will use the fact that if we perturb the target in direction of a point mass $\widetilde{o} = (\widetilde{i}^*, \widetilde{s}, \widetilde{v}, \widetilde{x})$ of $\widetilde{P}$
+    $$ \chi(P, \widetilde{o}) = \frac{d}{dt} \Psi(P_t)\bigg\vert_{t=0}$$
+    where the right-hand side is the so-called the G\^{a}teaux derivative. Note that
+    \begin{align*}
+        \dfrac{d}{dt}E_{P_t}(I^*\mid S=1, V=1)\Big\rvert_{t=0} &= \int i^* \dfrac{d}{dt}f_{P_t}(i^*\mid S=1, V=1)\Big\rvert_{t=0} \,di^*\\
+        &= \dfrac{\mathbbm 1_{\tilde s,\tilde v}(1, 1)}{f_{S, V}(1, 1)}\{\tilde i^* - E_P(I^*\mid S=1, V=1)\}\\
+        &= \dfrac{\tilde s\tilde v}{f_{S, V}(1, 1)}\{\tilde i^* - E_P(I^*\mid S=1, V=1)\},
+    \end{align*}
+    and similarly
+    \begin{align*}
+        \dfrac{d}{dt}E_{P_t}(I^*\mid S=1, V=0, X=x)\Big\rvert_{t=0} &= \dfrac{\tilde s(1-\tilde v)\mathbbm 1_{\tilde x}(x)}{f_{S, V, X}(1, 0, x)}\{\tilde i^* - \mu_0(X)\}\\
+         \dfrac{d}{dt}E_{P_t}(1-I^*\mid S=1, V=0, X=x)\Big\rvert_{t=0} &= -\dfrac{\tilde s(1-\tilde v)\mathbbm 1_{\tilde x}(x)}{f_{S, V, X}(1, 0, x)}\{\tilde i^* -\mu_0(X)\}\\
+         \dfrac{d}{dt}E_{P_t}(1-I^*\mid S=1, V=1, X=x)\Big\rvert_{t=0} &= -\dfrac{\tilde s\tilde v\mathbbm 1_{\tilde x}(x)}{f_{S, V, X}(1, 1, x)}\{\tilde i^* - \mu_1(X)\}.
+    \end{align*}
+We also have
+$$\dfrac{d}{dt}f_{P_t}(x\mid S=1, V=1)\Big\vert_{t=0} = \dfrac{\tilde s \tilde v}{f_{S, V}(1, 1)}\{\mathbbm 1_{\tilde x}(x)-f_X(x\mid S=1, V=1)\}.$$
+Then, applying the chain rule, the pathwise derivative of $\Psi_t$ wrt $t$ is
+\begin{align*}
+   &\frac{d}{dt} \Psi(P_t)\bigg\vert_{t=0} \\
+   &= \frac{d}{dt} \left[\dfrac{E_P(I^* = 1 | S = 1, V = 1)}{E_P\left\{\dfrac{E_P(I^*\mid S=1, V=0, X)E_P(1 - I^*\mid S=1, V=1, X)}{E_P(1 - I^*\mid S=1, V=0, X)} \bigg| S=1, V=1\right\}}\right] \vast\vert_{t=0}  \\
+   &= \dfrac{\dfrac{\tilde s\tilde v}{f_{S, V}(1, 1)}\{\tilde i^* - E_P(I^*\mid S=1, V=1)\}}{E_P\left[\dfrac{\mu_0(X)\{1-\mu_1(X)\}}{1-\mu_0(X)} \bigg| S=1, V=1\right]} - \dfrac{E_P(I^*\mid S=1, V=1)}{E_P\left[\dfrac{\mu_0(X)\{1-\mu_1(X)\}}{1-\mu_0(X)}\bigg| S=1, V=1\right]^2} \\
+   &\qquad \times \bigg( \dfrac{\tilde s(1 - \tilde v)}{f_{S, V}(1, 0)}\{\tilde i^* - \mu_0(\tilde x)\}\dfrac{f_X(\tilde x\mid S=1, V=1)\{1-\mu_1(\tilde x)\}}{f_X(\tilde x\mid S=1, V=0)\{1-\mu_0(\tilde x)\}} \\
+   & \qquad \qquad - \dfrac{\tilde s\tilde v}{f_{S, V}(1, 1)}\{\tilde i^* - \mu_1(\tilde x)\}\dfrac{\mu_0(\tilde x)}{1 - \mu_0(\tilde x)} + \dfrac{\tilde s(1 - \tilde v)}{f_{S, V}(1, 0)}\{\tilde i^* - \mu_0(\tilde x)\} \\
+   &\qquad \qquad \times \dfrac{f_X(\tilde x\mid S=1, V=1)\{1-\mu_1(\tilde x)\}\mu_0(\tilde x)}{f_X(\tilde x\mid S=1, V=0)\{1-\mu_0(\tilde x)\}^2}+\dfrac{\tilde s\tilde v}{f_{S, V}(1, 1)}\dfrac{\mu_0(\tilde x)\{1-\mu_1(\tilde x)\}}{1-\mu_0(\tilde x)} \\
+   & \qquad \qquad - \dfrac{\tilde s\tilde v}{f_{S, V}(1, 1)}E_P\left[\dfrac{\mu_0(X)\{1-\mu_1(X)\}}{1-\mu_0(X)}\bigg| S=1, V=1\right]\bigg) 
+\end{align*}
+Collecting terms, and noting that $\sigma = f_{S,V}(1, 1)$ and
+$$
+\dfrac{f_X(\tilde x\mid S=1, V=1)}{f_X(\tilde x\mid S=1, V=0)f_{S,V}(1, 0)} = \dfrac{\pi(\tilde x)}{\{1 - \pi(\tilde x)\} \sigma}
+$$
+we have
+\begin{align*}    
+    &= \dfrac{\dfrac{\tilde s\tilde v}{\sigma}\{\tilde i^* - E_P(I^*\mid S=1, V=1)\}}{E_P\left[\dfrac{\mu_0(X)\{1-\mu_1(X)\}}{1-\mu_0(X)} \bigg| S=1, V=1\right]} - \dfrac{E_P(I^*\mid S=1, V=1)}{E_P\left[\dfrac{\mu_0(X)\{1-\mu_1(X)\}}{1-\mu_0(X)}\bigg| S=1, V=1\right]^2} \\
+    &\qquad \times \bigg( \dfrac{\tilde s(1 - \tilde v)}{\sigma}\{\tilde i^* - \mu_0(\tilde x)\}\dfrac{\pi(\tilde x)\{1-\mu_1(\tilde x)\}}{\{1-\pi(\tilde x)\}\{1-\mu_0(\tilde x)\}} - \dfrac{\tilde s\tilde v}{\sigma}\{\tilde i^* - \mu_1(\tilde x)\}\dfrac{\mu_0(\tilde x)}{1 - \mu_0(\tilde x)} \\ 
+    &\qquad \qquad + \dfrac{\tilde s( 1 -\tilde v)}{\sigma}\{\tilde i^* - \mu_0(\tilde x)\}\dfrac{\pi(\tilde x)\{1 - \mu_1(\tilde x)\}\mu_0(\tilde x)}{\{1 - \pi(\tilde x)\}\{1 - \mu_0(\tilde x)\}^2} + \dfrac{\tilde s \tilde v}{\sigma}\dfrac{\mu_0(\tilde x)\{1 - \mu_1(\tilde x)\}}{1 - \mu_0(\tilde x)} \\
+    &\qquad \qquad - \dfrac{\tilde s\tilde v}{\sigma}E_P\left[\dfrac{\mu_0(X)\{1-\mu_1(X)\}}{1-\mu_0(X)}\bigg| S=1, V=1\right]\bigg)
+\end{align*}
+The result can be further simplified as
+\begin{align*}
+    &= \dfrac{\tilde s\tilde v\tilde i^*}{\sigma E_P\left[\dfrac{\mu_0(X)\{1 - \mu_1(X)\}}{1 - \mu_0(X)} \bigg| S=1, V=1\right]} - \dfrac{E_P(I^*\mid S=1, V=1)}{E_P\left[\dfrac{\mu_0(X)\{1 - \mu_1(X)\}}{1 - \mu_0(X)}\bigg| S=1, V=1\right]^2} \\
+    &\qquad \times \bigg[ \dfrac{\tilde s(1 - \tilde v)}{\sigma}\{\tilde i^* - \mu_0(\tilde x)\}\dfrac{\pi(\tilde x)\{1 - \mu_1(\tilde x)\}}{\{1 - \pi(\tilde x)\}\{1 - \mu_0(\tilde x)\}^2} + \dfrac{\tilde s \tilde v}{\sigma}\{1-\tilde i^*\}\dfrac{\mu_0(\tilde x)}{1 - \mu_0(\tilde x)}\bigg]
+\end{align*}
+Therefore the efficient influence function for $\Psi$ is 
+\begin{align*}
+     \chi(P, O) &= \dfrac{S V I^*}{\sigma E_P\left[\dfrac{\mu_0(X)\{1 - \mu_1(X)\}}{1 - \mu_0(X)} \bigg| S=1, V=1\right]} - \dfrac{\Psi(P)}{E_P\left[\dfrac{\mu_0(X)\{1 - \mu_1(X)\}}{1 - \mu_0(X)}\bigg| S=1, V=1\right]} \\
+    &\qquad \times \bigg[ \dfrac{S(1 - V)}{\sigma}\{I^* - \mu_0(X)\}\dfrac{\pi(X)\{1 - \mu_1(X)\}}{\{1 - \pi(X)\}\{1 - \mu_0(X)\}^2} + \dfrac{S V}{\sigma}\{1-I^*\}\dfrac{\mu_0(X)}{1 - \mu_0(X)}\bigg] 
+\end{align*}
+    \end{proof}
+
+    
+% \begin{align*}
+%     &\dfrac{\tilde s (1 - \tilde v)}{\sigma}\dfrac{\pi(\tilde x)\{1-\mu_1(\tilde x)\}}{\{1-\pi(\tilde x)\}\{1-\mu_0(\tilde x)\}}\left[\{\tilde i^* - \mu_0(\tilde x)\}\dfrac{1-\mu_0(\tilde x)}{1-\mu_0(\tilde x)} + \{\tilde i^* - \mu_0(\tilde x)\}\dfrac{\mu_0(\tilde x)}{1-\mu_0(\tilde x)}\right]\\
+%     &=  \dfrac{\tilde s (1 - \tilde v)}{\sigma}\dfrac{\pi(\tilde x)\{1-\mu_1(\tilde x)\}}{\{1-\pi(\tilde x)\}\{1-\mu_0(\tilde x)\}}\bigg[\{\tilde i^* - \mu_0(\tilde x) - \tilde i^* \mu_0(\tilde x) + \mu_0(\tilde x)^2\}\dfrac{1}{1-\mu_0(\tilde x)} \\
+%     &\qquad + \{\tilde i^* \mu_0(\tilde x) - \mu_0(\tilde x)^2\}\dfrac{1}{1-\mu_0(\tilde x)}\bigg] \\
+%     &= \dfrac{\tilde s (1 - \tilde v)}{\sigma}\dfrac{\pi(\tilde x)\{1-\mu_1(\tilde x)\}}{\{1-\pi(\tilde x)\}\{1-\mu_0(\tilde x)\}^2}\{\tilde i^* - \mu_0(\tilde x)\}
+% \end{align*}
+
+% \begin{align*}
+%     &\dfrac{\tilde s \tilde v}{\sigma}\dfrac{\mu_0(\tilde x)\{1 - \mu_1(\tilde x)\}}{1 - \mu_0(\tilde x)} - \dfrac{\tilde s\tilde v}{\sigma}\{\tilde i^* - \mu_1(\tilde x)\}\dfrac{\mu_0(\tilde x)}{1 - \mu_0(\tilde x)} \\
+%     &= \dfrac{\tilde s \tilde v}{\sigma}\dfrac{\mu_0(\tilde x)}{1 - \mu_0(\tilde x)} \bigg\{1 - \mu_1(\tilde x) - \tilde i + \mu_1(\tilde x)\bigg\} \\
+%     &= \dfrac{\tilde s \tilde v}{\sigma}\dfrac{\mu_0(\tilde x)}{1 - \mu_0(\tilde x)} \{1 - \tilde i\}
+% \end{align*}
+
+% \begin{align*}
+%     \dfrac{\tilde s}{\sigma}\dfrac{\pi(\tilde x)\{1-\mu_1(\tilde x)\}}{\{1-\pi(\tilde x)\}\{1-\mu_0(\tilde x)\}^2}\{\tilde i^* - \mu_0(\tilde x)\} - \dfrac{\tilde s \tilde v}{\sigma}\dfrac{\pi(\tilde x)\{1-\mu_1(\tilde x)\}}{\{1-\pi(\tilde x)\}\{1-\mu_0(\tilde x)\}^2}\{\tilde i^* - \mu_0(\tilde x)\} + \dfrac{\tilde s \tilde v}{\sigma} \dfrac{\mu_0(\tilde x)}{1 - \mu_0(\tilde x)} - \dfrac{\tilde s \tilde v}{\sigma} \tilde i^* \dfrac{\mu_0(\tilde x)}{1 - \mu_0(\tilde x)}
+% \end{align*}
+
+
+\subsection{An estimator based on the efficient influence function}
+As discussed in \textcite{hines_demystifying_2022}, an estimator for $\Psi$ that removes plug-in bias may be found as the solution to the following estimating equation 
+\begin{equation*}
+    0 = \dfrac{1}{n} \sum_{i=1}^n \chi(P_n, O_i).
+\end{equation*}
+For convenience, first define 
+\begin{equation*}
+    \Delta = E_P\left[\dfrac{\mu_0(X)\{1 - \mu_1(X)\}}{1 - \mu_0(X)} \bigg| S=1, V=1\right].
+\end{equation*}
+We solve 
+\begin{align*}
+    &\dfrac{1}{\Delta \sigma} \bigg(\dfrac{1}{n} \sum_{i=1}^n  S_i V_i I_i^* - \dfrac{1}{n} \sum_{i=1}^n \Psi(P_n) \bigg[  S_i (1 - V_i)\{I_i^* - \mu_0(X_i)\}\dfrac{\pi(X_i)\{1 - \mu_1(X_i)\}}{\{1 - \pi(X_i)\}\{1 - \mu_0(X_i)\}^2} \\
+    &\qquad +  S_i V_i\{1-I_i^*\}\dfrac{\mu_0(X_i)}{1 - \mu_0(X_i)}\bigg]\bigg) = 0
+\end{align*}
+for $\Psi(P_n)$ and obtain the estimator
+\begin{equation*}
+    \widehat{\Psi}_{dr} = \dfrac{\sum_{i=1}^n   S_i V_i I_i^*}{\sum_{i=1}^n S_i (1 - V_i)\{I_i^* - \mu_0(X_i)\}\dfrac{\pi(X_i)\{1 - \mu_1(X_i)\}}{\{1 - \pi(X_i)\}\{1 - \mu_0(X_i)\}^2} +  S_i V_i\{1-I_i^*\}\dfrac{\mu_0(X_i)}{1 - \mu_0(X_i)}}.
+\end{equation*}
+
+Now consider the case that we have $m$ observations from $O_{tnd} \equiv (X, V, S=1, I^*)$, i.e. the sampling design of the test-negative study. Note that summands in numerator and denominator are zero when $S_i=0$ such that $\widehat{\Psi}_{dr} = \widehat{\Psi}^*_{dr}$, where
+\begin{equation*}
+    \widehat{\Psi}^*_{dr} = \dfrac{\sum_{i=1}^{m}  V_i I_i^*}{\sum_{i=1}^m(1 - V_i)\{I_i^* - \mu_0(X_i)\}\dfrac{\pi(X_i)\{1 - \mu_1(X_i)\}}{\{1 - \pi(X_i)\}\{1 - \mu_0(X_i)\}^2} + V_i\{1-I_i^*\}\dfrac{\mu_0(X_i)}{1 - \mu_0(X_i)}}.
+\end{equation*}
+and $\widehat{\Psi}^*_{dr}$ is estimable from using $O_{tnd}$.
+% Using the plug-in results above an initial estimator of $\Psi$ is
+% \begin{equation*}
+%         \widehat{\Psi}_{0} = \dfrac{\sum_{i=1}^n V_i I^*_i}{\sum_{i=1}^n V_i \mu_0(X_i)\dfrac{1 - \mu_1(X_i)}{1 - \mu_0(X_i)}},
+%     \end{equation*}
+% As defined in \textcite{hines_demystifying_2022}, the one-step corrected estimator is given by
+% \begin{equation*}
+%     \widehat{\Psi}_{1} = \widehat{\Psi}_{0} + \dfrac{1}{n} \sum_{i=1}^n \chi(P_n, O_i) 
+% \end{equation*}
+% which is equal to
+% \begin{align*}
+%     \widehat{\Psi}_{1} &= \widehat{\Psi}_{0} + \dfrac{ \sum_{i=1}^n V_i I_i^*}{ \sum_{i=1}^n V_i \mu_0(X_i) \dfrac{\{1 - \mu_1(X_i)\}}{1 - \mu_0(X_i)}} - \dfrac{E_P(I^*\mid S=1, V=1)}{\left[E_P\left\{\dfrac{\mu_0(X)\{1 - \mu_1(X)\}}{1 - \mu_0(X)}\bigg| S=1, V=1\right\}\right]^2} \\
+%     &\qquad \times \bigg[ \dfrac{S(1 - V)}{\sigma}\{I^* - \mu_0(X)\}\dfrac{\pi(X)\{1 - \mu_1(X)\}}{\{1 - \pi(X)\}\{1 - \mu_0(X)\}^2} + \dfrac{S V}{\sigma}\{1-I^*\}\dfrac{\mu_0(X)}{\{1 - \mu_0(X)\}}\bigg]
+% \end{align*}
+% Specify the propensity score model $\pi(x;\alpha)$ and the outcome regression model $\mu_v(x;\beta)$. The nuisance parameters may be estimated by solving estimating equations
+%     \begin{align*}
+%         \sum_{j=1}^n X_j\{V_j - \pi(X_j;\alpha)\} &= 0;\\
+%         \sum_{j=1}^n \begin{pmatrix}
+%             X_j\\V_j
+%         \end{pmatrix}\{I^*_j - \mu_{V_j}(X_j;\beta)\}=0.
+%     \end{align*}
+%     Denote the resulting estimators as $\hat\alpha$, $\hat\beta$.
+%     \item Let $\hat \Pi$ be an estimator for $\Pi\equiv \int \dfrac{\mu_0(x)\{1 - \mu_1(x)\}}{1 - \mu_0(x)}\pi(x)f_s(x)dx$, for example,
+%     $$\hat\Pi = \dfrac{1}{n}\sum_{j=1}^n \dfrac{\mu_0(X_j;\hat\beta)\{1 - \mu_1(X_j;\hat\beta)\}}{1 - \mu_0(X_j;\hat\beta)}\pi(X_j;\hat \alpha).$$
+
+%     The initial estimator of $\Psi$ is
+%     $$\hat\Psi_0 = \dfrac{\dfrac{1}{n}\sum_{j=1}^n I^*_jV_j}{\hat\Pi}.$$
+%     \item The one-step corrected estimator is
+%     \begin{align*}
+%         \hat\Psi_1 &= \hat\Psi_0 +\dfrac{1}{n}\sum_{i=1}^n \bigg\{\dfrac{V_jI^*_j}{\hat\Pi}-\\&\qquad \dfrac{\dfrac{1}{n}\sum_{k=1}^n I^*_kV_k}{\hat\Pi^2}\bigg[S_j(1 - V_j)\{I^*_j - \mu_0(X_j;\hat\beta)\}\dfrac{\pi(X_j;\hat\alpha)\{1 - \mu_1(X_j;\hat\beta)\}}{\{1 - \pi(X_j;\hat\alpha)\}\{1 - \mu_0(X_j;\hat\beta)\}^2} + S_jV_j\{1-I^*_j\}\dfrac{\mu_0(X_j;\hat\beta)}{1-\mu_0(X_j;\hat\beta)}\bigg]\bigg\}\\
+%         &= 2\hat\Psi_0-\dfrac{\hat\Psi_0}{\hat\Pi}\dfrac{1}{n}\sum_{j=1}^n\bigg[S_j(1 - V_j)\{I^*_j - \mu_0(X_j;\hat\beta)\}\dfrac{\pi(X_j;\hat\alpha)\{1 - \mu_1(X_j;\hat\beta)\}}{\{1 - \pi(X_j;\hat\alpha)\}\{1 - \mu_0(X_j;\hat\beta)\}^2} + S_jV_j\{1-I^*_j\}\dfrac{\mu_0(X_j;\hat\beta)}{1-\mu_0(X_j;\hat\beta)}\bigg]
+%     \end{align*}
+
+\subsection{Proof of double robustness}\label{sec:dr}
+To prove the unique double robustness property of $\widehat{\Psi}^*_{dr}$, it suffices to show that 
+\begin{align*}
+    E\bigg[(1 - V_i)\{I_i^* - \mu^\dagger_0(X_i)\}\dfrac{\pi^\dagger(X_i)\{1 - \mu^\dagger_1(X_i)\}}{\{1 - \pi^\dagger(X_i)\}\{1 - \mu^\dagger_0(X_i)\}^2} + V_i\{1-I_i^*\}\dfrac{\mu^\dagger_0(X_i)}{\{1 - \mu^\dagger_0(X_i)\}}\bigg| S=1\bigg] = \dfrac{\Delta}{\sigma}
+\end{align*}
+where $\Delta$ is defined as previously, if either:
+\begin{enumerate}
+    \item $\mu_1^\dagger(X) = \mu_1(X)$ and $\mu_0^\dagger(X) = \mu_0(X)$
+    \item $\pi^\dagger(X) = \pi(X)$ and $\mu_0^\dagger(X) = \mu_0(X)$
+\end{enumerate}
+hold.
+\vspace{2em}
+
+\begin{proof}
+    Note that, by the invariance of the odds ratio, we have that
+    \begin{equation*}
+        \dfrac{1 - \mu_1(X)}{1 - \mu_0(X)} = \dfrac{\pi_0(X)}{1 - \pi_0(X)}.
+    \end{equation*}
+    First, suppose that $\mu_1^\dagger(X) = \mu_1(X)$ and $\mu_0^\dagger(X) = \mu_0(X)$. Then we have that 
+    \begin{align*}
+            &E\bigg[(1 - V)\{I^* - \mu^\dagger_0(X)\}\dfrac{\pi^\dagger(X)\{1 - \mu^\dagger_1(X)\}}{\{1 - \pi^\dagger(X)\}\{1 - \mu^\dagger_0(X)\}^2} + V\{1-I^*\}\dfrac{\mu^\dagger_0(X)}{\{1 - \mu^\dagger_0(X)\}}\bigg| S=1\bigg]\\
+            &= E\bigg[(1 - V)\{I^* - \mu_0(X)\}\dfrac{\pi^\dagger(X)\{1 - \mu_1(X)\}}{\{1 - \pi^\dagger(X)\}\{1 - \mu_0(X)\}^2} + V\{1-I^*\}\dfrac{\mu_0(X)}{\{1 - \mu_0(X)\}}\bigg| S=1\bigg] \\
+            &= E\bigg[\dfrac{(1 - V)\pi(X)}{1 - \pi(X)}\{I^* - \mu_0(X)\}\dfrac{\pi^\dagger(X)}{\{1 - \pi^\dagger(X)\}\{1 - \mu_0(X)\}} + V\{1-I^*\}\dfrac{\mu_0(X)}{\{1 - \mu_0(X)\}}\bigg| S=1\bigg] \\
+            &= E\bigg[(1 - V)\dfrac{\pi(X)}{1 - \pi(X)}\dfrac{\pi^\dagger(X)}{1 - \pi^\dagger(X)} \dfrac{I^*}{1 - \mu_0(X)} - (1 - V)\dfrac{\pi(X)}{1 - \pi(X)}\dfrac{\pi^\dagger(X)}{1 - \pi^\dagger(X)} \dfrac{\mu_0(X)}{1 - \mu_0(X)} \\
+            &\qquad +  V\dfrac{\mu_0(X)}{\{1 - \mu_0(X)\}} - I^*V \dfrac{\mu_0(X)}{\{1 - \mu_0(X)\}} \bigg| S=1\bigg] \\
+            %&= E\bigg[E(1 - V | S=1, I^*, X)\{I^* - \mu_0(X)\}\dfrac{\pi^\dagger(X)\{1 - \mu_1(X)\}}{\{1 - \pi^\dagger(X)\}\{1 - \mu_0(X)\}^2} + V\{1-I^*\}\dfrac{\mu_0(X)}{\{1 - \mu_0(X)\}}\bigg| S=1\bigg] \\
+            &= E\bigg[(1 - V) \dfrac{\pi(X)}{1 - \pi(X)}\dfrac{\dot\pi(X)}{1 - \dot\pi(X)}\bigg| S=1, I^*=1\bigg]\Pr(I^*=1\mid  S=1) \\
+            &\qquad - E\bigg[\dfrac{(1 - V)\pi(X)}{1 - \pi(X)}\dfrac{\pi^\dagger(X)\mu_0(X)}{\{1 - \pi^\dagger(X)\}\{1 - \mu_0(X)\}} + \dfrac{\mu_0(X)}{1-\mu_0(X)}\bigg| S = 1, I^* = 0 \bigg]\Pr(I^*=0\mid  S=1) \\
+            &\qquad + E\bigg[\{1-I^*\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\bigg| S = 1, V = 1\bigg] \\
+            &= E\bigg[E \{I^*-  \mu_0(X)\mid S=1, V=0, X\}\dfrac{\dot\pi(X)\{1 - \mu_1(X)\}}{\{1 - \dot\pi(X)\}\{1 - \mu_0(X)\}^2} \mid S=1, V = 0\bigg] \\
+            &\qquad \times \Pr(V=0\mid  S=1) + E\bigg[\{1-\mu_1(X)\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid  S=1, V = 1\bigg] \Pr(V =1 \mid S = 1)\\
+            &= 0 + \Pi = \Pi
+        \end{align*}
+    Second, suppose that $\pi^\dagger(X) = \pi(X)$ and $\mu_0^\dagger(X) = \mu_0(X)$. 
+\end{proof}
+    \begin{enumerate}
+        \item If $\dot\mu_v(\cdot)=\mu_v(\cdot)$ a.s. for $v=0,1$, then
+        
+    \item If $\dot\pi(\cdot)=\pi(\cdot)$ and $\dot\mu_0(\cdot)=\mu_0(\cdot)$ a.s., then 
+\begin{align*}
+    &E\bigg[ (1-V)\{I^* -  \mu_0(X)\}\dfrac{\pi(X)\{1 - \dot\mu_1(X)\}}{\{1 - \pi(X)\}\{1 - \mu_0(X)\}^2} + V\{1-I^*\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid S=1\bigg]\\
+    =& E\bigg[ \{1 - \pi(X)\}\{\mu_0(X) -  \mu_0(X)\}\dfrac{\pi(X)\{1 - \dot\mu_1(X)\}}{\{1 - \pi(X)\}\{1 - \mu_0(X)\}^2} + \pi(X)\{1-\mu_1(X)\}\dfrac{\mu_0(X)}{1-\mu_0(X)}\mid S=1\bigg]\\
+    &= \Delta
+\end{align*}
+
+
+    \end{enumerate}
+    
+    \newpage
+    \section{Direct effects of vaccination and identification of alternative estimands}
+    In the main text, we discuss the identification of the causal effect of vaccination on \textit{medically-attended illness}, defined by the causal risk ratio:
+    \[\Psi_{RRV} \equiv \dfrac{\Pr[I^1 = 2, T^1 =1 | V = 1]}{\Pr[I^0 = 2, T^0 =1 | V = 1]}.\]
+    This effect is assumed to be of substantive interest to investigators, as it is often a primary outcome in phase III vaccine trials. However, this outcome encompasses multiple component events downstream of infection, each of which may be influenced by vaccination, resulting in a non-null total effect on medically-attended illness. For example, consider a non-null effect, i.e. $\Psi_{RRV} \neq 1$ could occur if any one of the following scenarios were true:
+    \begin{itemize}
+        \item[(i)] The vaccine has an effect on exposure.
+        \item[(ii)] The vaccine has no effect on exposure, but has an effect on infection.
+        \item[(iii)] The vaccine has no effect on exposure or infection, but has an effect on the development of symptoms.
+        \item[(iv)] The vaccine has no effect on exposure, infection, or symptoms, but has effect on another intermediate outcome, such as severity.
+        \item[(v)] The vaccine has no effect on exposure, infection, symptoms, or severity, but has an effect on testing behavior when sick.
+    \end{itemize}
+    Depending on the research question, the effect on some of these components may not be clinically relevant. 
+    
+    In this section, we explore the identification of alternative estimands that focus on specific components of the process and exclude others that are not relevant. In particular, we consider certain ``biological'' effects that exclude components where changes may stem from altered human behavior due to lack of blinding. To facilitate discussion of these effects, we introduce the following notation where 
+    \begin{itemize}
+        \item $E$: exposure (0: no exposure, 1: test-negative pathogen, 2: test-positive pathogen),
+        \item $I$: infection (0: no infection, 1: test-negative infection, 2: test-positive infection),
+        \item $W$: presence of screening symptoms (0: no symptoms, 1: symptoms),
+        \item $Z$: severe sequelae of infection (0: no severe sequelae, 1: severe sequelae),
+    \end{itemize}
+    and $T$ is defined as previously. 
+    
+    
+    
+    
+    
+    We assume that exposure is necessary for infection and infection is necessary for the development of symptoms or severe disease which can be formalized as:
+    \begin{itemize}
+        \item [(A5)] \textbf{Exposure necessity for infection}. That is, $E = 0 \implies I = 0$ and $I^{e=0} = I$ if $E = 0$.
+        \item [(A6)] \textbf{Infection necessity for symptoms and severe sequelae}. That is, \\$I = 0 \implies (W = 0, Z = 0)$ and $W^{i=0} = W$ if $W = 0$ and $Z^i=Z$ if $Z=0$.
+    \end{itemize}
+    We also assume throughout
+    \begin{itemize}
+        \item [(A7)] \textbf{No effect of vaccination on exposure}. That is, $E^{v} = E$ for all $v$ in $\{0, 1\}$.
+        \item [(A7*)] \textbf{Equal effects of vaccination on exposure}. That is, 
+        \[\dfrac{\Pr[E^1=2 | V=1]}{\Pr[E^0=2 | V=1]} = \dfrac{\Pr[E^1=1 | V=1]}{\Pr[E^0=1 | V=1]}\]
+    \end{itemize}
+
+
+
+    \subsection{Effect on infection}
+
+    \[\Phi_{RRV} \equiv \dfrac{\Pr[I^1 = 2 | V = 1]}{\Pr[I^0 = 2 | V = 1]}.\]
+
+    
+    \subsection{Effect on symptomatic infection}
+    For instance, one might wish to focus on the effect of vaccination purely on symptomatic infection rather than subsequent test-seeking behavior. In such cases, the relevant estimand could be defined as:
+    \[\Theta_{RRV} \equiv \dfrac{\Pr[I^1 = 2, W^1 = 1 | V = 1]}{\Pr[I^0 = 2, W^0 = 1| V = 1]}.\]
+
+    \begin{itemize}
+        \item [(A8)] \textbf{No effect of vaccination on testing, except through infection}. That is, $T^{v, i} = T^{i}$ for all $v$ in $\{0, 1\}$.
+        \item [(A6)] \textbf{Infection necessity for symptoms and severe sequelae}. That is, \\$I = 0 \implies (W = 0, Z = 0)$ and $W^{i=0} = W$ if $W = 0$ and $Z^i=Z$ if $Z=0$.
+    \end{itemize}
+
+    \begin{itemize}
+        \item $T^{v, i} = T^{i}$ for all $v$ in $\{0, 1\}$
+    \end{itemize}
+
+    \subsection{Effect on severe sequelae}
+
+    \[\Phi_{RRV} \equiv \dfrac{\Pr[I^1 = 2 | V = 1]}{\Pr[I^0 = 2 | V = 1]}.\]
+
+   $k$ indexes the source (1: test-negative pathogen, 2: test-positive pathogen):
+
+    We can then re-create the DAG in Figure \ref{fig:dag_split} 
+
+    \begin{figure}[p]
+        \centering
+        \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+            \tikzstyle{every state}=[
+              draw = none,
+              fill = none
+            ]
+            \node[state] (x) {$X$};
+            \node[state] (v) [right of=x] {$V$};
+            \node[state] (i) [right of=v] {$I_2$};
+            \node[state] (y) [right of=i] {$W_2$};
+            \node[state] (z) [right of=y] {$Z_2$};
+            \node[state] (t) [right of=z] {$T$};
+            % \node[state] (is) [right of=t] {$I^*$};
+            \node[state] (i1) [below of=i] {$I_1$};
+            \node[state] (y1) [below of=y] {$W_1$};
+            \node[state] (z1) [below of=z] {$Z_1$};
+            \node[state] (u) [left of=i1] {$U$};
+    
+            \path[->] (x) edge node {} (v);
+            % \path[->] (x) edge [out=45, in=135] node {} (i);
+    
+            \path[->] (v) edge node {} (i);
+            \path[->] (v) edge [out=45, in=135] node {} (y);
+            \path[->] (v) edge [out=45, in=135] node {} (z);
+            \path[->] (v) edge [out=45, in=135] node {} (t);
+
+            \path[->] (i) edge [line width=2pt] node {} (y);
+            \path[->] (i1) edge [line width=2pt] node {} (y1);
+            
+            \path[->] (y) edge [line width=2pt] node {} (z);
+            \path[->] (y1) edge [line width=2pt] node {} (z1);
+
+            \path[->] (z) edge [line width=2pt] node {} (t);
+            \path[->] (z1) edge [line width=2pt] node {} (t);
+
+            % \path[->] (x) edge [out=45, in=135] node {} (t);
+    
+            \path[->] (t) edge node {} (is);
+    
+            % \path[->] (i) edge [out=45, in=135] node {} (is);
+            \path[->] (i1) edge node {} (i);
+            \path[->] (i1) edge node {} (y);
+            \path[->] (i1) edge node {} (z);
+            \path[->] (i1) edge [out=315, in=225] node {} (z1);
+            \path[->] (u) edge node {} (x);
+            \path[->] (u) edge node {} (v);
+            \path[->] (u) edge [line width=2pt] node {} (i);
+            \path[->] (u) edge [out=315, in = 270] node {} (t);
+            \path[->] (u) edge [line width=2pt] node {} (i1);
+            \end{tikzpicture}
+        \caption{Splitting $I$ node to show how $I=1$ is a negative outcome control. Dashed line is deterministic relationship as $I = 1$ and $I = 2$ are assumed to be mutually exclusive in the main text.\label{fig:dag_split}}
+    \end{figure}
+    
+    
+    \newpage
+    \section{Extended discussion of mechanisms where key assumptions hold or are violated}\label{sec:mechanisms}
+    
+    \subsection{Unmeasured health-seeking behavior}
+    Consider the case that 
+
+    \subsection{Immortal time among vaccinated}
+    Concerns have previously been raised about the potential for design-induced biases in the test-negative design resulting from failure to explicitly emulate a randomized trial. Here we show that, when the degree of design-induced bias is similar for test-positive and test-negative illnesses, they tend to cancel each other out and produce no bias in the TND estimate of vaccine effectiveness when they are equivalent. 
+    
+    Consider the emulation of a trial where events occurring in the first 28 days are excluded in both the vaccine arm and the control arm, as was specified in the original trials of the SARS-CoV-2 vaccines. This is often done because, biologically, it is believed that during this window the vaccine has not had time to provoke a sufficient immunological response and therefore provides no protection, although discarding these events may produce selection bias due to depletion of susceptibles when there is an effect. Regardless, attempts to emulate this result using a TND are challenged by the fact that the TND does not have a well-defined start of follow up and only the timing of vaccination and testing are known. Therefore, investigators instead discard cases where vaccination occurred less than 28 days prior to receiving a test, i.e. only among the vaccinated. This results in a form of immortal time bias as the vaccinated are essentially \textit{immortal} during this 28 day period. Assume for a second, to simpilify exposition, that conditional on $X$ there is no other source of confounding. Note that under our framework, this would imply that 
+\begin{equation*}
+     \frac{\Pr(I^0 = 2, T^0 = 1 | V = 1, X)}{\Pr(I^0 = 2, T^0 = 1| V = 0, X)} = \eta_2(X)
+\end{equation*}
+for some $\eta_2(X) < 1$ as the person time in the first 28 days after receiving a vaccine is differentially discarded among those who received a vaccine compared to those who did not. However, if this exclusion of person time among the vaccinated is applied independently of the test result,  the bias also applies to the incidence of test-negative illness such that
+\begin{equation*}
+     \frac{\Pr(I^0 = 1, T^0 = 1 | V = 1, X)}{\Pr(I^0 = 1, T^0 = 1| V = 0, X)} = \eta_1(X)
+\end{equation*}
+for some $\eta_1(X) < 1$. In the special case that $\eta_2(X) = \eta_1(X)$, which could occur if the risks of test-positive and test-negative illness are equal over the 28 day period, we have equi-confounding and the design-induced bias is completely removed by $\Psi^*_{om}$ and $\Psi^*_{ipw}$.
+
+    \subsection{Assortativity of vaccination}
+
+    \subsection{Correlated vaccination history}
+    Prior work on the TND suggests that the design could be biased when there is correlation in vaccination behavior for vaccines that target the test positive and test negative illnesses. As shown in the DAG in Figure X this would also violate our identifiability assumptions because it would imply the existence of a confounder that does not affect the test positive and test negative illnesses equally. However, this could be resolved by measuring and adjusting for vaccination for the test negative illness. This further highlights the need to carefully consider and, where possible, document the source of the test negative illnesses. Investigators should also regularly collect full vaccination history.
+
+
+    \begin{figure}[p]
+    \centering
+    \begin{subfigure}{0.8\linewidth}
+        \centering
+        \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+            \tikzstyle{every state}=[
+              draw = none,
+              fill = none
+            ]
+            \node[state] (x) {$X$};
+            \node[state] (v) [right of=x] {$V$};
+            \node[state] (i) [right of=v] {$I_2$};
+            \node[state] (t) [right of=i] {$T$};
+            \node[state] (is) [right of=t] {$I^*$};
+            \node[state] (i1) [below of=i] {$I_1$};
+            \node[state] (u) [below of=x] {$U$};
+            \node[state] (v1) [below of=v] {$V_1$};
+   
+            \path[->] (x) edge node {} (v);
+            \path[->] (x) edge [out=45, in=135] node {} (i);
+    
+            \path[->] (v) edge node {} (i);
+            
+            \path[->] (i) edge node {} (t);
+            \path[->] (i1) edge node {} (t);
+            \path[->] (i1) edge node {} (is);
+
+            \path[->] (x) edge [out=45, in=135] node {} (t);
+    
+            \path[->] (t) edge node {} (is);
+            \path[->] (v1) edge node {} (i1);
+
+            \path[->] (i) edge [out=45, in=135] node {} (is);
+            \path[->] (i1) edge [dashed] node {} (i);
+
+    
+            \path[->] (u) edge node {} (v1);
+            \path[->] (u) edge node {} (v);
+            % \path[->] (u) edge [line width=2pt] node {} (i);
+            % \path[->] (u) edge [line width=2pt] node {} (t);
+            % \path[->] (u) edge [line width=2pt] node {} (i1);
+            \end{tikzpicture}
+        \caption{Correlated vaccination behavior.}
+        \end{subfigure}
+        \begin{subfigure}{0.8\linewidth}
+            \centering
+            \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+                \tikzstyle{every state}=[
+                  draw = none,
+                  fill = none
+                ]
+                \node[state] (x) {$X$};
+                \node[state] (v) [right of=x] {$V$};
+                \node[state] (i) [right of=v] {$I_2$};
+                \node[state] (t) [right of=i] {$T$};
+                \node[state] (is) [right of=t] {$I^*$};
+                \node[state] (i1) [below of=i] {$I_1$};
+                \node[state] (u) [below of=v] {$U$};
+       
+                \path[->] (x) edge node {} (v);
+                \path[->] (x) edge [out=45, in=135] node {} (i);
+        
+                \path[->] (v) edge node {} (i);
+                
+                \path[->] (i) edge node {} (t);
+                \path[->] (i1) edge node {} (t);
+                \path[->] (i1) edge node {} (is);
+    
+                \path[->] (x) edge [out=45, in=135] node {} (t);
+        
+                \path[->] (t) edge node {} (is);
+    
+                \path[->] (i) edge [out=45, in=135] node {} (is);    
+        
+                \path[->] (u) edge node {} (v);
+                \path[->] (u) edge node {} (i);
+                \path[->] (u) edge node {} (t);
+                \path[->] (u) edge node {} (i1);
+                \end{tikzpicture}
+            \caption{$I_1$ and $I_2$ are not mutually exclusive.}
+            \end{subfigure}
+            \begin{subfigure}{0.8\linewidth}
+            \centering
+            \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+            \tikzstyle{every state}=[
+              draw = none,
+              fill = none
+            ]
+            \node[state] (x) {$X$};
+            \node[state] (v) [right of=x] {$V$};
+            \node[state] (i) [right of=v] {$I_2$};
+            \node[state] (t) [right of=i] {$T$};
+            \node[state] (is) [right of=t] {$I^*$};
+            \node[state] (i1) [below of=i] {$I_1$};
+            \node[state] (u) [below of=x] {$U$};
+            \node[state] (v1) [below of=v] {$V_1$};
+   
+            \path[->] (x) edge node {} (v);
+            \path[->] (x) edge [out=45, in=135] node {} (i);
+    
+            \path[->] (v) edge node {} (i);
+            
+            \path[->] (i) edge node {} (t);
+            \path[->] (i1) edge node {} (t);
+            \path[->] (i1) edge node {} (is);
+
+            \path[->] (x) edge [out=45, in=135] node {} (t);
+    
+            \path[->] (t) edge node {} (is);
+            \path[->] (v1) edge node {} (i1);
+
+            \path[->] (i) edge [out=45, in=135] node {} (is);
+            \path[->] (i1) edge [dashed] node {} (i);
+
+    
+            \path[->] (u) edge node {} (v1);
+            \path[->] (u) edge node {} (v);
+            % \path[->] (u) edge [line width=2pt] node {} (i);
+            % \path[->] (u) edge [line width=2pt] node {} (t);
+            % \path[->] (u) edge [line width=2pt] node {} (i1);
+            \end{tikzpicture}
+        \caption{Correlated vaccination behavior.}
+        \end{subfigure}
+    % \begin{subfigure}{0.8\linewidth}
+    %     \centering
+    %     \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+    %         \tikzstyle{every state}=[
+    %           draw = none,
+    %           fill = none
+    %         ]
+    %         \node[state] (x) {$X$};
+    %         \node[state] (v) [right of=x] {$V$};
+    %         \node[state] (i) [right of=v] {$\mathbbm{1}(I = 2)$};
+    %         \node[state] (t) [right of=i] {$T$};
+    %         \node[state] (is) [right of=t] {$I^*$};
+    %         \node[state] (i1) [below of=i] {$\mathbbm{1}(I = 1)$};
+    %         \node[state] (u) [below of=v] {$U$};
+    
+    %         \path[->] (x) edge node {} (v);
+    %         \path[->] (x) edge [out=45, in=135] node {} (i);
+    
+    %         \path[->] (v) edge node {} (i);
+            
+    %         \path[->] (i) edge node {} (t);
+    %         \path[->] (i1) edge node {} (t);
+    %         \path[->] (x) edge [out=45, in=135] node {} (t);
+    
+    %         \path[->] (t) edge node {} (is);
+    
+    %         \path[->] (i) edge [out=45, in=135] node {} (is);
+    
+    
+    %         \path[->] (i1) edge node {} (i);
+    
+    
+    %         \path[->] (u) edge node {} (x);
+    %         \path[->] (u) edge node {} (v);
+    %         \path[->] (u) edge node {} (i);
+    %         \path[->] (u) edge node {} (t);
+    %         \path[->] (u) edge node {} (i1);
+            
+    %         \end{tikzpicture}
+    %     \caption{Splitting $I$ node to show how $I=1$ is a negative outcome control. Solid line is deterministic relationship as $I = 1$ and $I = 2$ are mutually exclusive.}
+    %     \end{subfigure}
+    %     \begin{subfigure}{0.8\linewidth}
+    %         \centering
+    %         \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2.25cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+    %             \tikzstyle{every state}=[
+    %               draw = none,
+    %               fill = none
+    %             ]
+    %             \node[state] (x) {$X$};
+    %             \node[state] (v) [right of=x] {$V$};
+    %             \node[state] (i) [right of=v] {$I$};
+    %             \node[state] (z) [right of=i] {$Z$};
+
+    %             \node[state] (t) [right of=z] {$T$};
+    %             \node[state] (is) [right of=t] {$I^*$};
+    %             \node[state] (u) [below of=v] {$U$};
+        
+    %             \path[->] (x) edge node {} (v);
+    %             \path[->] (x) edge [out=45, in=135] node {} (i);
+    %             \path[->] (x) edge [out=45, in=135] node {} (t);
+                
+    %             \path[->] (v) edge node {} (i);
+                
+    %             \path[->] (i) edge node {} (z);
+    %             \path[->] (i) edge [out=45, in=135] node {} (is);
+        
+    %             \path[->] (t) edge node {} (is);
+        
+    %             \path[->] (u) edge node {} (x);
+    %             \path[->] (u) edge node {} (v);
+    %             \path[->] (u) edge node {} (i);
+    %             \path[->] (u) edge node {} (t);
+                
+    %             \end{tikzpicture}
+    %         \caption{Causal directed-acyclic graph for the test-negative design}
+    %     \end{subfigure}
+    %\caption{A}\label{fig:dags}
+\end{figure}
+\clearpage
+
+
+% \subsection{What if test-positive and test-negative infections are not mutually exclusive?}
+% Define $I_1$ as an indicator of a symptomatic test-negative infection and $I_2$ as an indicator of a symptomatic test-positive infection. We allow for the possibility that $\Pr(I_1 = 1, I_2 = 1) > 0$, but still assume that the symptom screen is effective such that, for any individual $i$, $\mathbbm 1(I_{i,1} + I_{i,2}) = 1$ when $S_i = 1$. We use the following modified assumption set:
+% \begin{itemize}
+%     \item[(A1$^\ddagger$)] Consistency of potential outcomes. For all individuals $i$ and for $v \in \{0, 1\}$, we have $I_{2i}^v = I_{2i}$, $I_{1i}^v = I_{1i}$, and $T_i^v = T_i$ when $V_i = v$.
+%     \item[(A2$^\ddagger$)] No effect of vaccination on test-negative symptomatic illness  among the vaccinated. That is, $\Pr(I_1^0 = 1 | V = 1, X) = \Pr(I_1^1 = 1 | V = 1, X).$
+%     \item[(A3$^\ddagger$)] Odds ratio equi-confounding. Degree of unmeasured confounding bias on the odds ratio scale is the same for test-positive and test-negative illnesses, i.e. 
+%         $$\beta_2(X) = \beta_1(X), $$
+%         $$ \text{where } \beta_i(X) = \log \frac{\Pr(I^0_i = 1, T^0 = 1 | V = 1, X)\Pr(I^0_i = 0, T^0 = 1 | V = 0, X)}{\Pr(I^0_i = 0, T^0 = 1 | V = 1, X)\Pr(I^0_i = 1, T^0 = 1| V = 0, X)}.$$
+%     \item[(A4$^\ddagger$)] Overlap of vaccination among test-positives and test-negatives. Define $\mathcal{S}_i(v)$ as the support of the law of $(I^v_i, T^v = 1, V = v, X)$, then for $v$ in $\{0,1\}$, then it must be that $\mathcal{S}_2(1) \subseteq \mathcal{S}_2(0)$ and $\mathcal{S}_2(v) \subseteq \mathcal{S}_1(v).$
+%     \item[(A5$^\ddagger$)] No direct effect of vaccination on test-seeking behavior among the vaccinated. That is, for $i$ in $\{1,2\}$, $\Pr[T^1 = 1 | I^1_i = 1, V = 1, X] = \Pr[T^0 = 1 | I^0_i = 1, V = 1, X].$
+% \end{itemize}
+
+% Here, we show that, under assumptions A1$^\ddagger$-A5$^\ddagger$, the causal odds ratio among the vaccinated remains identified in the test-negative design.
+
+% \begin{theorem}
+%     If the test-negative and test-positive illnesses are not mutually exclusive, then, under assumptions A1$^\ddagger$-A5$^\ddagger$, the causal odds ratio among the vaccinated, 
+%     \begin{equation*}
+%         \Phi_{ORV} \equiv \dfrac{\Pr(I^1_2=1, T = 1|V=1)\Pr(I^1_2=0, T = 1|V=1)}{\Pr(I^0_2=0, T = 1|V=1)\Pr(I^0_2=1, T = 1|V=1)},
+%     \end{equation*}
+%     is identified by $\Psi^*_{om}$ and $\Psi^*_{ipw}$ (as defined in Lemma \ref{lemma2}) in the test-negative design.
+%     \end{theorem}
+    
+    % \begin{proof}
+    % \begin{align*}
+    %     \Psi_{om}^* &= \dfrac{\Pr(I^* = 1 | S = 1, V = 1)}{E\left\{ \dfrac{\Pr(I^* = 0 | S = 1, V = 1, X)}{\Pr(I^* = 0 | S = 1, V = 0, X)} \Pr(I^* = 1 | S = 1, V = 0, X) \bigg| S = 1, V = 1\right\}} \\
+    %     &= \dfrac{\Pr(I_2 = 1 | S = 1, V = 1)}{E\left\{ \dfrac{\Pr(I_1 = 1, I_2 = 0  | S = 1, V = 1, X)}{\Pr(I_1 = 1, I_2 = 0 | S = 1, V = 0, X)} \Pr(I_2 = 1 | S = 1, V = 0, X) \bigg| S = 1, V = 1\right\}} 
+    % \end{align*}
+    % \begin{align*}
+    %     \Phi_{ORV} &= \dfrac{\Pr(I^1_2=1|V=1)\Pr(I^0_2=0|V=1)}{\Pr(I^1_2=0|V=1)\Pr(I^0_2=1|V=1)} \\
+    %     &=\dfrac{\Pr(I^1_2=1, T^1 = 1|V=1)\Pr(I^0_2=0, T^0 = 1|V=1)}{\Pr(I^1_2=0, T^1 = 1|V=1)\Pr(I^0_2=1, T^0 = 1|V=1)} \\
+    %     &=\dfrac{\dfrac{\Pr(I^1_2=1, T^1 = 1|V=1)}{\Pr(I^1_2=0, T^1 = 1|V=1)}}{E\left\{\dfrac{\Pr(I^0_2=1, T^0 =1|V=1, X)}{\Pr(I^0_2=0, T^0 = 1|V=1, X)}\bigg| V = 1\right\}} \\
+    %     &=\dfrac{\dfrac{\Pr(I^1_2=1, T^1 = 1|V=1)}{\Pr(I^1_2=0, T^1 = 1|V=1)}}{E\left\{\dfrac{\dfrac{\Pr(I^0_1=1, T^0 = 1|V=1, X)}{\Pr(I^0_1=0, T^0 = 1|V=1, X)}}{\dfrac{\Pr(I^0_1=1, T^0 = 1|V=0, X)}{\Pr(I^0_1=0, T^0 = 1|V=0, X)}}\dfrac{\Pr(I^0_2=1, T^0 = 1|V=0, X)}{\Pr(I^0_2=0, T^0 = 1|V=0, X)}\bigg| V = 1\right\}} \\
+    %     &=\dfrac{\dfrac{\Pr(I^1_2=1| T^1 = 1, V=1)}{\Pr(I^1_2=0 | T^1 = 1, V=1)}}{E\left\{\dfrac{\dfrac{\Pr(I^0_1=1 | T^0 = 1, V=1, X)}{\Pr(I^0_1=0 | T^0 = 1, V=1, X)}}{\dfrac{\Pr(I^0_1=1 | T^0 = 1, V=0, X)}{\Pr(I^0_1=0 | T^0 = 1, V=0, X)}}\dfrac{\Pr(I^0_2=1 | T^0 = 1, V=0, X)}{\Pr(I^0_2=0 | T^0 = 1,   V=0, X)}\bigg| V = 1\right\}} \\
+    %     &=\dfrac{\dfrac{\Pr(I^1_2=1|V=1)}{\Pr(I^1_2=0|V=1)}}{E\left\{\dfrac{\Pr(I^1_1=1|V=1, X)\Pr(I^0_1=0|V=0, X)}{\Pr(I^1_1=0|V=1, X)\Pr(I^0_1=1|V=0, X)}\dfrac{\Pr(I^0_2=1|V=0, X)}{\Pr(I^0_2=0|V=0, X)}\bigg| V = 1\right\}} \\
+    %     &=\dfrac{\dfrac{\Pr(I_2=1|V=1)}{\Pr(I_2=0|V=1)}}{E\left\{\dfrac{\Pr(I_1=1|V=1, X)\Pr(I_1=0|V=0, X)}{\Pr(I_1=0|V=1, X)\Pr(I_1=1|V=0, X)}\dfrac{\Pr(I_2=1|V=0, X)}{\Pr(I_2=0|V=0, X)}\bigg| V = 1\right\}}
+    % \end{align*}
+    % For the first expression, note that by Assumption A3 and exclusivity of test-negative and test-positive illnesses
+    % \begin{align*}
+    %     \dfrac{\Pr(I^0 = 2 | V = 1, X)}{\Pr(I^0 = 2 | V = 0, X)} &= \dfrac{\Pr(I^0 = 1 | V = 1, X)}{\Pr(I^0 = 1 | V = 0, X)} \\
+    %     &= \dfrac{\Pr(I^1 = 1 | V = 1, X)}{\Pr(I^0 = 1 | V = 0, X)} \\
+    %     &= \dfrac{\Pr(I = 1 | V = 1, X)}{\Pr(I = 1 | V = 0, X)} \\
+    % \end{align*}
+    % where the first line is by Assumption A3 and exclusivity of test-negative and test-positive illnesses. The second line is by Assumption A2. And the last line applies consistency. This implies
+    % \begin{equation*}
+    %     \alpha_2^0(X) = \alpha_1(X)
+    % \end{equation*}
+    % and, therefore, combining with the derivation of Theorem 1, we have
+    % \begin{align*}
+    %     \Psi &= \dfrac{\Pr(I = 2 | V = 1)}{E\left\{ \exp\{\alpha^0_2(X)\} \Pr(I = 2 | V = 0, X) \Big| V = 1 \right\}} \\
+    %     &= \dfrac{\Pr(I = 2 | V = 1)}{E\left\{ \exp\{\alpha_1(X)\} \Pr(I = 2 | V = 0, X) \Big| V = 1 \right\}}.
+    % \end{align*}
+    
+    % For the second expression, note first that, by the invariance of odds ratios, Assumptions A2 and A3 imply
+    % \begin{equation*}
+    %     \dfrac{\Pr(V = 1 | I^0 = 2, X)}{\Pr(V = 0 | I^0 = 2, X)} = \dfrac{\Pr(V = 1 | I = 1, X)}{\Pr(V = 0 | I = 1, X)}
+    % \end{equation*}
+    % and by consequence 
+    % \begin{equation*}
+    %     \dfrac{\pi^0_2(X)}{1 - \pi^0_2(X)} = \dfrac{\pi_1(X)}{1 - \pi_1(X)}.
+    % \end{equation*}
+    % Thus, again, continuing the derivation in Theorem 1, we have 
+    % \begin{align*}
+    %     \Psi &= \dfrac{E\{V \mathbbm 1 (I = 2)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2) \dfrac{\pi^0_2(X)}{1-\pi^0_2(X)}\right\}} \\
+    %     &= \dfrac{E\{V \mathbbm 1 (I = 2)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2) \dfrac{\pi_1(X)}{1-\pi_1(X)}\right\}}.
+    % \end{align*}
+    % \end{proof}
+    \newpage
+
+% \begin{align*}
+%     \Pr[I^* = 1 | S = 1, X, V] &= \Pr[I_2 = 1 | S = 1, X, V]\\
+%     \Pr[I^* = 0 | S = 1, X, V] &= \Pr[I_1 = 1 | S = 1, X, V] - \Pr[I_2 = 1, I_1 = 1 | S = 1, X, V] 
+% \end{align*}
+% \begin{align*}
+%     \Pr[I_2 = 1 | S = 1, X, V] &= \Pr[I^* = 1 | S = 1, X, V] \\
+%     \Pr[I_2 = 0 | S = 1, X, V] &= \Pr[I^* = 0 | S = 1, X, V] \\
+%     \Pr[I_1 = 1 | S = 1, X, V] &= \Pr[I^* = 0 | S = 1, X, V] - \Pr[I_2 = 1, I_1 = 1 | S = 1, X, V] \\
+%     \Pr[I_1 = 0 | S = 1, X, V] &= \Pr[I^* = 1 | S = 1, X, V]  - \Pr[I_2 = 1, I_1 = 1 | S = 1, X, V] 
+% \end{align*}
+% \begin{align*}
+%     \Pr[I_2 = 1 | S = 1, X, V] &= \Pr[I^* = 1 | S = 1, X, V] \\
+%     \Pr[I_2 = 0 | S = 1, X, V] &= \Pr[I^* = 0 | S = 1, X, V] \\
+%     \Pr[I_1 = 1 | S = 1, X, V] &= \Pr[I_2 = 0 | S = 1, X, V] - \Pr[I_2 = 1, I_1 = 1 | S = 1, X, V] \\
+%     \Pr[I_1 = 0 | S = 1, X, V] &= \Pr[I_2      = 1 | S = 1, X, V]  - \Pr[I_2 = 1, I_1 = 1 | S = 1, X, V] 
+% \end{align*}
+% % \begin{align*}
+% %     \Pr[I_1 = 1 | S = 1, X, V] &= \Pr[I^* = 0 | S = 1, X, V] + \Pr[I_2 = 1, I_1 = 1 | S = 1, X, V] \\
+% %     \Pr[I_1 = 0 | S = 1, X, V] &= \Pr[I^* = 1 | S = 1, X, V] - \Pr[I_2 = 1, I_1 = 1 | S = 1, X, V] 
+% % \end{align*}
+% % and 
+% % \begin{align*}
+% %     \Pr[I_2 = 1 | S = 1, X, V] &= \Pr[I^* = 1 | S = 1, X, V] \\
+% %     \Pr[I_2 = 0 | S = 1, X, V] &= \Pr[I^* = 0 | S = 1, X, V] 
+% % \end{align*}
+% In this case, Assumption (4) is 
+% $$OR_2(X) = OR_1(X), $$
+% $$ \text{where } OR_i(X) = \frac{\Pr[I^0_i = 1, T^0 = 1 | V = 1, X]\Pr[I^0_i = 0, T^0 = 1 | V = 0, X]}{\Pr[I^0_i = 0, T^0 = 1 | V = 1, X]\Pr[I^0_i = 1, T^0 = 1| V = 0, X]}.$$
+% First, we show that, when $I_1$ and $I_2$ are not mutually exclusive the causal risk ratio is not identified. Following from our previous proof, we have that 
+% \begin{align*}
+%     \psi_{rrv}(X) &= \phi(X) \times \dfrac{\Pr[I^0_2 = 0, T^0 = 1 | V = 1, X]}{\Pr[I_2 = 0, T = 1 | V = 0, X]}\\
+%     \Pr[I_2^0 = 2, T^0 = 1 | V = 1, X] &= \dfrac{\Pr[I_1 = 1, T = 1 | V = 1, X]\Pr[I_1 = 0, T = 1 | V = 0, X]}{\Pr[I_1 = 0, T = 1 | V = 1, X] \Pr[I_1 = 1, T = 1 | V = 0, X]}\\
+%     & \quad \quad \times  \dfrac{\Pr[I^0_2 = 0, T^0 = 1 | V = 1, X]}{\Pr[I_2 = 0, T = 1 | V = 0, X]} \Pr[I_2 = 1, T = 1 | V = 0, X]
+% \end{align*}
+
+% Here we show that, under these conditions, the conditional odds ratio in the TND identifies the conditional causal odds ratio, i.e.
+% \begin{equation*}
+%      \psi_{orv}(X) &\equiv \dfrac{\Pr[I^1_2 = 1, T^1 = 1 | V = 1, X]\Pr[I^0_2 = 0, T^0 = 1 | V = 1, X]}{\Pr[I^1_2 = 0, T^1 = 1 | V = 1, X]\Pr[I^0_2 = 1, T^0 = 1 | V = 1, X]}. 
+% \end{equation*}
+
+% \begin{align*}
+%         \psi_{orv}(X) &= \dfrac{\Pr[I^1_2 = 1, T^1 = 1 | V = 1, X]\Pr[I^0_2 = 0, T^0 = 1 | V = 1, X]}{\Pr[I^1_2 = 0, T^1 = 1 | V = 1, X]\Pr[I^0_2 = 1, T^0 = 1 | V = 1, X]} \\
+%         &=  \dfrac{\Pr[I_2 = 1, T = 1 | V = 1, X]\Pr[I^0_2 = 0, T^0 = 1 | V = 1, X]}{\Pr[I_2 = 0, T = 1 | V = 1, X]\Pr[I^0_2 = 1, T^0 = 1 | V = 1, X]} \\
+%         &=  \dfrac{\Pr[I_2 = 1, T = 1 | V = 1, X]\Pr[I^0_2 = 0, T^0 = 1 | V = 0, X]}{\Pr[I_2 = 0, T = 1 | V = 1, X]\Pr[I^0_2 = 1, T^0 = 1 | V = 0, X]} \\ & \quad \quad \times \dfrac{\Pr[I^0_1 = 0, T^0 = 1 | V = 1, X]\Pr[I^0_1 = 1, T^0 = 1 | V = 0, X]}{\Pr[I^0_1 = 1, T^0 = 1 | V = 1, X]\Pr[I^0_1 = 0, T^0 = 1| V = 0, X]} \\
+%         &=  \dfrac{\Pr[I_2 = 1, T = 1 | V = 1, X]\Pr[I_2 = 0, T = 1 | V = 0, X]}{\Pr[I_2 = 0, T = 1 | V = 1, X]\Pr[I_2 = 1, T = 1 | V = 0, X]} \\ & \quad \quad \times \dfrac{\Pr[I_1 = 0, T = 1 | V = 1, X]\Pr[I_1 = 1, T = 1 | V = 0, X]}{\Pr[I_1 = 1, T = 1 | V = 1, X]\Pr[I_1 = 0, T = 1| V = 0, X]} \\
+%         &=  \dfrac{\Pr[I_2 = 1 | I \neq 0, T = 1, V = 1, X]\Pr[I_2 =0 |  I \neq 0, T = 1, V = 0, X]}{\Pr[I_2 = 0 |  I \neq 0, T = 1, V = 1, X]\Pr[I_2 = 1 |  I \neq 0, T = 1, V = 0, X]} \\ & \quad \quad \times \dfrac{\Pr[I_1 = 0 |  I \neq 0, T = 1, V = 1, X]\Pr[I_1 = 1 |  I \neq 0, T = 1, V = 0, X]}{\Pr[I_1 = 1 |  I \neq 0, T = 1, V = 1, X]\Pr[I_1 = 0 |  I \neq 0, T = 1, V = 0, X]}\\
+%         &=  \dfrac{\Pr[I_2 = 1 | S = 1, V = 1, X]\Pr[I_2 =0 |  S = 1, V = 0, X]}{\Pr[I_2 = 0 |  S = 1, V = 1, X]\Pr[I_2 = 1 | S = 1, V = 0, X]} \\ & \quad \quad \times \dfrac{\Pr[I_1 = 0 |  S = 1, V = 1, X]\Pr[I_1 = 1 |  S = 1, V = 0, X]}{\Pr[I_1 = 1 |  S = 1, V = 1, X]\Pr[I_1 = 0 |  S = 1, V = 0, X]}\\
+%         &=  \dfrac{\Pr[I^* = 1 | S = 1, V = 1, X]}{\Pr[I^* = 0|  S = 1, V = 1, X]} \dfrac{\Pr[I^* = 0 |  S = 1, V = 0, X]}{\Pr[I^* = 1 | S = 1, V = 0, X]}\\
+% \end{align*}  
+    
+% Note that in this case, Assumption (4) becomes 
+% \begin{itemize}
+%      \item[(A4)] Odds ratio equi-confounding. Degree of unmeasured confounding bias on the odds ratio scale is the same for all symptomatic illness regardless if $I_1$ or $I_2$ is cause, i.e. 
+%     $$OR_2(X) = OR_1(X), $$
+%     $$ \text{where } OR_i(X) = \frac{\Pr[I^0_i = 1, T^0 = 1 | V = 1, X]\Pr[I^0_i = 0, T^0 = 1 | V = 0, X]}{\Pr[I^0_i = 0, T^0 = 1 | V = 1, X]\Pr[I^0_i = 1, T^0 = 1| V = 0, X]}.$$
+% \end{itemize}
+% Consider the conditional odds ratio for the effect of vaccination among the vaccinated, i.e.
+%     \begin{align*}
+%         \psi_{orv}(X) &\equiv \dfrac{\Pr[I^1_2 = 1, T^1 = 1 | V = 1, X]\Pr[I^0_2 = 0, T^0 = 1 | V = 1, X]}{\Pr[I^1_2 = 0, T^1 = 1 | V = 1, X]\Pr[I^0_2 = 1, T^0 = 1 | V = 1, X]} \\
+%         &=  \dfrac{\Pr[I_2 = 1, T = 1 | V = 1, X]\Pr[I^0_2 = 0, T^0 = 1 | V = 1, X]}{\Pr[I_2 = 0, T = 1 | V = 1, X]\Pr[I^0_2 = 1, T^0 = 1 | V = 1, X]} \\
+%         &=  \dfrac{\Pr[I_2 = 1, T = 1 | V = 1, X]\Pr[I^0_2 = 1, T^0 = 1 | V = 0, X]}{\Pr[I_2 = 0, T = 1 | V = 1, X]\Pr[I^0_2 = 0, T^0 = 1 | V = 0, X]} \\ & \quad \quad \times \dfrac{\Pr[I^0_1 = 1, T^0 = 1 | V = 1, X]\Pr[I^0_1 = 0, T^0 = 1 | V = 0, X]}{\Pr[I^0_1 = 0, T^0 = 1 | V = 1, X]\Pr[I^0_1 = 1, T^0 = 1| V = 0, X]} \\
+%         &=  \dfrac{\Pr[I_2 = 1, T = 1 | V = 1, X]\Pr[I_2 = 1, T = 1 | V = 0, X]}{\Pr[I_2 = 0, T = 1 | V = 1, X]\Pr[I_2 = 0, T = 1 | V = 0, X]} \\ & \quad \quad \times \dfrac{\Pr[I_1 = 1, T = 1 | V = 1, X]\Pr[I_1 = 0, T = 1 | V = 0, X]}{\Pr[I_1 = 0, T = 1 | V = 1, X]\Pr[I_1 = 1, T = 1| V = 0, X]}
+%     \end{align*}        
+% Under the consistency assumption (A1) the numerator is equal to $\Pr[I = 2, T = 1 | V = 1, X]$. Focusing on the denominator, under equi-confounding (A3)
+% \begin{equation*}
+% \Pr[I^0 = 2, T^0 = 1  | V = 1, X] = \frac{\Pr[I^0 = 1, T^0 = 1  | V = 1, X]}{\Pr[I^0 = 1, T^0 = 1  | V = 0, X]}\Pr[I^0 = 2, T^0 = 1 | V = 0, X]
+% \end{equation*}
+% and then by (A1) and (A2) with (A4) ensuring overlap
+%     \begin{equation*}
+%      \Pr[I^0 = 2, T^0 = 1  | V = 1, X] = \frac{\Pr[I = 1, T = 1  | V = 1, X]}{\Pr[I = 1, T = 1  | V = 0, X]}\Pr[I = 2, T = 1 | V = 0, X]
+%     \end{equation*}
+% Plugging back into the expression for $\psi_{rrv}(X)$, we find the following identifying expression 
+%     \begin{equation*}
+%          \phi(X) \equiv \dfrac{\dfrac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 1, T = 1 | V = 1, X]}}{\dfrac{\Pr[I = 2, T = 1 | V = 0, X]}{\Pr[I = 1, T = 1 | V = 0, X]}}
+%     \end{equation*}
+% which is the ratio of the odds of symptomatic infection with the vaccine pathogen versus symptomatic infection with another pathogen in the vaccinated and unvaccinated. It is also strictly written in terms of the observables. A key insight is that $\frac{\Pr[I = 1, T =1  | V = 0, X]}{\Pr[I = 1, T = 1 | V = 1, X]}$ acts as a proxy for $\frac{\Pr[I^0 = 2, T =1  | V = 0, X]}{\Pr[I^0 = 2, T = 1 | V = 1, X]}$ essentially a ``parallel trend'' for $I=2$ in absence of vaccination.
+
+% Recall that, in a test-negative study, we only observe test results among the symptomatic and tested, i.e. samples $\{(X_i, V_i, S_i = 1, I^*_i) : i = 1, \ldots, n\}$ where $S = \mathbb{I}(I \neq 0, T = 1)$. However, we can show that 
+%     \begin{align*}
+%          \phi(X) &= \dfrac{\dfrac{\Pr[I^* = 1 | S = 1, V = 1, X]}{\Pr[I^* = 0 | S = 1, V = 1, X]}}{\dfrac{\Pr[I^* = 1 | S = 1, V = 0, X]}{\Pr[I^* = 0 | S = 1, V = 0, X]}}
+%     \end{align*}    
+% which is the odds ratio comparing odds of testing positive for vaccinated and unvaccinated among the tested only.
+
+\newpage 
+\subsection{What if there is a direct effect of vaccination on testing behavior?}\label{sec:de_testing}
+Unlike in a placebo-controlled trial, participants in a test-negative design are generally aware of their vaccination status. It is therefore possible that this knowledge could affect their testing behavior in a number of ways which would violate Assumption A5. For instance, some individuals may be less likely to get tested when vaccinated because they feel more protected or perceive the risk of illness to be lower. Here, we consider identifiability under a weaker assumption A5*:
+\begin{itemize}
+    \item[(A5*)] Equivalent effects of vaccination on test-seeking behavior for test-positive and test-negative illnesses among the vaccinated. That is, 
+    \begin{equation}
+    \dfrac{\Pr(T^1 = 1 | I^1 = 1, V = 1, X)}{\Pr(T^0 = 1 | I^0 = 1, V = 1, X)} = \dfrac{\Pr(T^1 = 1 | I^1 = 2, V = 1, X)}{\Pr(T^0 = 1 | I^0 = 2, V = 1, X)}.
+\end{equation}
+\end{itemize}
+This assumption allows for vaccination to affect testing behavior provided it does so similarly for test-positive and test-negative illnesses. Together with assumption A3 it implies
+\begin{equation*}
+    \dfrac{\Pr(T = 1 | I = 1, V = 1, X)}{\Pr(T = 1 | I = 1, V = 0, X)} = \dfrac{\Pr(T = 1 | I = 2, V = 1, X)}{\Pr(T = 1 | I = 2, V = 0, X)}.
+\end{equation*}
+It may be plausible given that participants may not know which infection they have prior to receiving a test. Note that, it would still be violated if vaccination reduced severity or altered symptoms of infection, and therefore willingness to seek a test, for $I=2$ but not $I=1$. In Corollary 3, we show that under this assumption we can still identify the causal risk ratio among the vaccinated in the test-negative study. 
+\vspace{1em}
+
+% \begin{equation}
+%     \dfrac{\Pr(T^1 = 1 | I^1 = 1, V = 1, X)}{\Pr(T^0 = 1 | I^0 = 1, V = 1, X)} = \dfrac{\Pr(T^1 = 1 | I^1 = 2, V = 1, X)}{\Pr(T^0 = 1 | I^0 = 2, V = 1, X)}
+% \end{equation}
+
+% \begin{align*}
+%     \Pr&(T^1 = 1 | I^1 = 1, V = 1, X) \\
+%     &= \dfrac{\Pr(T^1 = 1 | I^1 = 2, V = 1, X)}{\Pr(T^0 = 1 | I^0 = 2, V = 1, X)}\Pr(T^0 = 1 | I^0 = 1, V = 1, X) \\
+%     &= \dfrac{\Pr(T^1 = 1 | I^1 = 2, V = 1, X)\Pr(T^0 = 1 | I^0 = 1, V = 0, X)\Pr(T^0 = 1 | I^0 = 1, V = 1, X)}{\Pr(T^0 = 1 | I^0 = 1, V = 1, X)\Pr(T^0 = 1 | I^0 = 2, V = 0, X)} \\
+%      &= \dfrac{\Pr(T^1 = 1 | I^1 = 2, V = 1, X)\Pr(T^0 = 1 | I^0 = 1, V = 0, X)}{\Pr(T^0 = 1 | I^0 = 2, V = 0, X)} \\
+% \end{align*}
+
+% \begin{align*}
+%     \Pr&(T^0 = 1 | I^0 = 1, V = 1, X) \\
+%     &= \dfrac{\Pr(T^0 = 1 | I^0 = 2, V = 1, X)}{\Pr(T^1 = 1 | I^1 = 2, V = 1, X)} \Pr(T^1 = 1 | I^1 = 1, V = 1, X)\\
+%     &= \dfrac{\Pr(T^0 = 1 | I^0 = 1, V = 1, X)\Pr(T^0 = 1 | I^0 = 2, V = 0, X)\Pr(T^1 = 1 | I^1 = 1, V = 1, X)}{\Pr(T^1 = 1 | I^1 = 2, V = 1, X)\Pr(T^0 = 1 | I^0 = 1, V = 0, X)} \\
+%      1 &= \dfrac{\Pr(T^0 = 1 | I^0 = 2, V = 0, X)\Pr(T^1 = 1 | I^1 = 1, V = 1, X)}{\Pr(T^1 = 1 | I^1 = 2, V = 1, X)\Pr(T^0 = 1 | I^0 = 1, V = 0, X)} \\
+% \end{align*}
+    
+
+\begin{corollary}
+    Under assumptions A1-A4 and alternative assumption A5* that direct effects of vaccination on testing behavior are the same for test-positive and test-negative illnesses, $\Psi$ is identified by $\Psi^\dagger_{om}$ and $\Psi^\dagger_{ipw}$ (as defined in Lemma \ref{lemma2}) in the full cohort as well as $\Psi^*_{om}$ and $\Psi^*_{ipw}$ (as defined in Lemma \ref{lemma2}) in the test-negative design.
+\end{corollary}
+    
+    \begin{proof}
+        Define $\gamma(X)$ as 
+        \begin{equation*}
+            \gamma(X) \equiv \dfrac{\Pr(T = 1 | I = 1, V = 1, X)}{\Pr(T = 1 | I = 1, V = 0, X)} \dfrac{\Pr(T = 1 | I = 2, V = 0, X)}{\Pr(T = 1 | I = 2, V = 1, X)},
+        \end{equation*}
+        and note that by Assumption A5*, $\gamma(X) = 1$. First, we show that $\Psi$ is identified by $\Psi^\dagger_{om}$ and therefore by Corollary 2 by $\Psi^*_{om}$. We have
+        \begin{align*}
+            \Psi &= \dfrac{\Pr(I^1=2|V=1)}{\Pr(I^0=2|V=1)} \\
+            &= \dfrac{\Pr(I^1=2|V=1)}{E\left\{\Pr(I^0=2|V=1, X) | V= 1 \right\}} \\
+            &= \dfrac{\Pr(I^1=2|V=1)}{E\left\{\dfrac{\Pr(I^0=1|V=1, X)}{\Pr(I^0=1|V=0, X)}\Pr(I^0=2|V=0, X) \bigg| V= 1 \right\}} \text{\textcolor{red}{(I don't think this is correct?)}}\\
+            &= \dfrac{\Pr(I^1=2|V=1)}{E\left\{\dfrac{\Pr(I^1=1|V=1, X)}{\Pr(I^0=1|V=0, X)}\Pr(I^0=2|V=0, X) \bigg| V= 1 \right\}} \\
+            &= \dfrac{\Pr(I=2|V=1)}{E\left\{\dfrac{\Pr(I=1|V=1, X)}{\Pr(I=1|V=0, X)}\Pr(I=2|V=0, X) \gamma(X) \bigg| V= 1 \right\}} \\
+            &= \dfrac{\Pr(I=2|V=1)}{E\left\{\dfrac{\Pr(I=1, T=1|V=1, X)}{\Pr(I=1, T = 1|V=0, X)} \dfrac{\Pr(I=2, T=1|V=0, X)}{\Pr(T^ = 1 | I = 2, V = 1, X)}\bigg| V= 1 \right\}} \\
+            &= \dfrac{\Pr(I=2, T=1 |V=1)}{E\left\{\dfrac{\Pr(I=1, T=1|V=1, X)}{\Pr(I=1, T= 1|V=0, X)} \Pr(I=2, T=1|V=0, X) \bigg| V= 1 \right\}} \\
+            &= \Psi^\dagger_{om}.
+        \end{align*}
+        The first line follows by definition. The second applies the law of iterated expectations. The third applies assumption A3. The fourth applies assumption A2. The fifth applies new assumption A5*. The sixth replaces the product of conditionals with the joint distribution. The seventh reverses the law of iterated expectations. 
+
+        Next, we show that $\Psi$ is identified by $\Psi^\dagger_{ipw}$ and therefore by Corollary 2 by $\Psi^*_{ipw}$. Note that, by the invariance of the odds ratio, 
+        \begin{equation*}
+            \gamma(X) = \dfrac{\Pr(V = 1 | I = 1, T = 1, X)}{\Pr(V = 0 | I = 1, T = 1, X)} \dfrac{\Pr(V = 0 | I = 2, T = 1, X)}{\Pr(V = 1 | I = 2, T = 1, X)},
+        \end{equation*}
+        We have
+        \begin{align*}
+        \Psi &= \dfrac{\Pr(I^1=2|V=1)}{\Pr(I^0=2|V=1)} \\
+        &= \dfrac{E\left\{\dfrac{V}{\Pr(V=1)} \mathbbm 1 (I^1 = 2)\right\}}{E\left\{\dfrac{V}{\Pr(V=1)}\mathbbm 1 (I^0 = 2)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) E(V | I^0 = 2, T^0 = 1, X)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) \pi^{0\dagger}_2(X)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I^1 = 2, T^1 = 1)\}}{E\left\{\mathbbm 1 (I^0 = 2, T^0 = 1) \dfrac{\pi^{0\dagger}_2(X)}{1-\pi^{0\dagger}_2(X)}E(1-V|I^0 = 2, T^0 = 1, X)\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2, T = 1) \dfrac{\pi^{0\dagger}_2(X)}{1-\pi^{0\dagger}_2(X)}\right\}} \\
+        &= \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{(1 - V)\mathbbm 1 (I = 2, T = 1) \dfrac{\pi^\dagger_1(X)}{1-\pi^\dagger_1(X)}\right\}}.
+    \end{align*}
+    \end{proof}
+
+\newpage
+
+\section{Identification when test is imperfect}\label{sec:testing}
+In the main text, we assumed the availability of a perfect test such that $I^*_i = \mathbbm 1 (I_i = 2, T_i = 1)$ for all individuals. In the absence of such a test, here we describe the potential for bias due to misclassification of case status which has also been described previously \cite{sullivan_theoretical_2016}. Because most studies employ real-time reverse-transcription polymerase chain reaction (RT-PCR), false positives are unlikely as most RT-PCR tests have specificity approaching 100\%. Therefore, misclassification of test-positives is probably rare, perhaps due to sample contamination or data entry errors. False negatives may be be more likely as test sensitivity is generally lower due to the fact that (1) some of those infected with test-positive illness may not shed detectable virus or viral RNA; (2) some may seek care after shedding has ceased; or (3) sample quality may be compromised due to swab quality or inadequate storage. If sample collection is sufficient such that the source of the test-negative infection can be identified via RT-PCR, then sensitivity with respect to the test-positive illness can be improved by limiting to test-negative controls with an identified cause. In the case that misclassification is nondifferential with respect to vaccination, bias is likely to be minimal due to high specificity. However, care should be taken as test errors must be independent of potential confounders and effect modifiers for the bias to be strictly towards the null. 
+
+
+%\subsection{Relationship to vaccination mechanisms} \label{sec:vaccine_modelling}
+
+\newpage
+\section{A nonparametric odds ratio model}\label{sec:or_model}
+Following \textcite{tchetgen_universal_2023}, we parameterize a unit's contribution to the likelihood for the potential outcome under no treatment $\mathbbm 1 (I^0 = 2, T^0 = 1)$ conditional on $V$ and covariates $X$ and assuming independent sampling. For convenience, we define the following tri-level outcome:
+$$Y := \begin{cases} 
+        Y = 2 & \text{when } I = 2 \text{ and } T = 1, \\
+        Y = 1 & \text{when } I = 1 \text{ and } T = 1, \\
+        Y = 0 & \text{when } T = 0.
+        \end{cases}$$
+Essentially, $Y=2$ is testing positive for the pathogen of interest, $Y=1$ is testing negative, and $Y=0$ is not receiving a test (either because an individual has no sypmtomatic infection or because they did not seek care). Let
+\begin{align*}
+    h(y, x) &= f(Y^0 = y | V = 0, X = x) \\
+    \beta(y,  x) &= \log \dfrac{f(Y^0 = y | V = 1, X = x)f(Y^0 = y_{ref} | V = 0, X = x)}{f(Y^0 = y_{ref} | V = 1, X = x)f(Y^0 = y | V = 0, X = x)}
+\end{align*}
+where $h(y, x) $ is the conditional density among the unvaccinated and the function $ \beta(y,  x)$ is the log of the generalized odds ratio function with $\beta(y_{ref},  x) = 0$ for user-specified reference values $y_{ref}$. Here we use $y_{ref} = 0$. Thus, $\beta(y,  x) = 0$ implies no unmeasured confounding for symptomatic infection or testing given $X = x$ and $\beta(y,  x) \neq 0$ encodes the degree of unmeasured confounding bias at the distributional level. 
+
+This parameterization implies:
+\begin{align*}
+    f(Y^0 = y | V = 1, X = x) \propto h(y, x) \exp\{\beta(y, x)\}
+\end{align*}
+with 
+\begin{align*}
+    f(Y^0 = y | V = 1, X = x)  = \dfrac{h(y, x) \exp\{\beta(y, x)\}}{\int h(y, x) \exp\{\beta(y, x)\} \;dy}
+\end{align*}
+where $\int h(y, x) \exp\{\beta(y, x)\} \;dy$ is a proportionality or normalizing constant, ensuring the left-hand side is a proper density. This parameterization can, in principle, represent any likelihood function one might encounter in practice and therefore imposes no restrictions on the data generation process (i.e. it is completely nonparameteric). 
+
+For our focal outcome $Y = 2$ we have:
+\begin{align*}
+    \Pr(Y^0 = 2 | V = 1, X = x) = \dfrac{\Pr(Y^0 = 2 | V = 1, X = x)\exp\{\beta(2, x)\}}{\int f(Y^0=y | V = 0, X = x)\exp\{\beta(y, x)\} \;dy}.
+\end{align*}
+Because $Y$ has only three levels the denominator may be written as
+\begin{align*}
+    \int & f(Y^0=y | V = 0, X = x) \exp\{\beta(y, x)\} \;dy =  \\
+    &= \sum_{y=0}^2\Pr(Y^0=y| V = 0, X = x)\exp\{\beta(y, x)\} \\
+    &= \dfrac{\Pr(Y^0=0| V = 0, X = x)}{\Pr(Y^0=0| V = 1, X = x)} \bigg\{\Pr(Y^0=2| V = 1, X = x) + \Pr(Y^0=1| V = 1, X = x) \\
+    &\qquad   + \Pr(Y^0=0| V = 1, X = x) \bigg\} \\
+    &= \dfrac{\Pr(Y^0=0| V = 0, X = x)}{\Pr(Y^0=0| V = 1, X = x)}
+\end{align*}
+and therefore 
+\begin{align*}
+    \Pr(Y^0 = 2 | V = 1, X = x) = \Pr(Y^0 = 2 | V = 0, X = x)\exp\{\beta(2, x)\}\dfrac{\Pr(Y^0=0| V = 1, X = x)}{\Pr(Y^0=0| V = 0, X = x)}.
+\end{align*}
+Under Assumption \ref{app_ass3}, $\beta(2, x) = \beta(1, x)$ and thus we have: 
+\begin{align*}
+    \Pr(Y^0 = 2 | V = 1, X = x) = \Pr(Y^0 = 2 | V = 0, X = x)\dfrac{\Pr(Y^0 = 1 | V = 1, X = x)}{\Pr(Y^0 = 1| V = 0, X = x)}.
+\end{align*}
+Re-arranging and returning to our original notation,  therefore we have 
+\begin{align*}
+    \dfrac{\Pr(I^0 = 2, T^0 = 1 | V = 1, X = x)}{\Pr(I^0 = 2, T^0 = 1 | V = 0, X = x)} = \dfrac{\Pr(I^0 = 1, T^0 = 1 | V = 1, X = x)}{\Pr(I^0 = 1, T^0 = 1 | V = 0, X = x)},
+\end{align*}
+which is expression \ref{eqn:a3_simplified} in the main text. 
+
+By the invariance of odds ratios 
+\begin{align*}
+    \beta(y, x) = \log \dfrac{\Pr(V = 1 | Y^0 = y, X = x)\Pr(V = 0 | Y^0 = 0, X = x)}{\Pr(V = 0 | Y^0 = y, X = x)\Pr(V = 1 | Y^0 = 0, X = x)},
+\end{align*}
+and therefore we have that
+\begin{align*}
+    \log \dfrac{\pi(y, x)}{1 - \pi(y, x)} = \eta(x) + \beta(y, x)
+\end{align*}
+where
+\begin{align*}
+    &\pi(y, x) = \Pr(V = 1 | Y^0 = y, X = x), \\
+    &\eta(x) = \log \dfrac{\Pr(V = 1 | Y^0 = 0, X = x)}{\Pr(V = 0 | Y^0 = 0, X = x)}.
+\end{align*}
+Under Assumption \ref{app_ass3}, again $\beta(2, x) = \beta(1, x)$ implying: 
+\begin{align*}
+    \dfrac{\Pr(V = 1 | Y^0 = 2, X = x)}{\Pr(V = 0 | Y^0 = 2, X = x)} = \dfrac{\Pr(V = 1 | Y^0 = 1, X = x)}{\Pr(V = 0 | Y^0 = 1, X = x)},
+\end{align*}
+and, returning to original notation,
+\begin{align*}
+    \frac{\Pr(V = 1 | I^0 = 2, T^0 = 1, X)}{\Pr(V = 0 | I^0 = 2, T^0 = 1, X)} =\frac{\Pr(V = 1 | I^0 = 1, T^0 = 1, X)}{\Pr(V = 0 | I^0 = 1, T^0 = 1, X)},
+\end{align*}
+which is also discussed in the main text. 
+
+Combining the two results above we have that
+\begin{align*}
+    \log \dfrac{\pi(y, x)}{1 - \pi(y, x)} = \eta(x) + \beta(y, x)
+\end{align*}
+and 
+\begin{align*}
+    \log \dfrac{\mu(y, x)}{1 - \mu(y, x)} = \zeta(x) + \beta(y, x)
+\end{align*}
+where
+\begin{align*}
+    &\mu(y, x) = \Pr(Y^0 = y | V = 1, X = x). 
+\end{align*}
+and
+Under outcome-dependent sampling 
+\begin{align*}
+    \log \dfrac{\Pr(I^* = 1 | S = 1, V, X)}{\Pr(I^* = 0 | S = 1, V, X)} &= \eta(X) + \alpha (X) \\
+    \eta(X) &= \log \dfrac{\Pr(I^* = 1 | S = 1, V=0, X)}{\Pr(I^* = 0 | S = 1, V=0, X)} \\
+    \eta(X) + \alpha(X) &= \log \dfrac{\Pr(I^* = 1 | S = 1, V=1, X)}{\Pr(I^* = 0 | S = 1, V=1, X)} \\
+    \alpha(X) &= \log \dfrac{\Pr(I^* = 1 | S = 1, V=1, X)\Pr(I^* = 0 | S = 1, V=0, X)}{\Pr(I^* = 0 | S = 1, V=1, X)\Pr(I^* = 1 | S = 1, V=0, X)} \\
+\end{align*}
+% Define the following:
+% \begin{description}
+%     \item[$\lambda$:] Force of infection 
+%     \item[$\pi$:] Probability of symptoms given infection
+%     \item[$P$:] Total population 
+%     \item[$v$:] Proportion vaccinated
+%     \item[$\mu$:] Probability of care-seeking given symptoms
+%     \item[$\theta(t):$] Hazard ratio for infection given 
+% \end{description}
+% The rate of ascertaining test-positive, vaccinated persons is
+% $$
+% \Lambda_{V I}(t)=\lambda_I \pi_I \mu_V[(1-\varphi) e^{-\lambda_I t} + \varphi \theta e^{-\theta \lambda_I t}] v P .
+% $$
+
+% $$
+% \Lambda_{U I}(t)=\lambda_I \pi_I \mu_U e^{-\lambda_I t}(1-v) P .
+% $$
+
+% Test-negative vaccinated and unvaccinated persons are ascertained at the rates
+% $$
+% \Lambda_{V N}(t)=\lambda_N \pi_N \mu_V v P
+% $$
+% and
+% $$
+% \Lambda_{U N}(t)=\lambda_N \pi_N \mu_U(1-v) P,
+% $$
+% respectively, assuming vaccination does not affect susceptibility to the test-negative conditions.
+
+% Test-negative studies typically measure the odds ratio of vaccination among the test-positive and test-negative subjects, similar to the exposure odds ratio in case-control studies, using cumulative cases $(C)$. For the test-positive outcome,
+% $$
+% \begin{gathered}
+% C_{V I}(t)=\pi_I \mu_V\left[(1-\varphi)\left(1-e^{-\lambda_I t}\right)+\varphi\left(1-e^{-\theta \lambda_I t}\right)\right] v P \\
+% C_{U I}(t)=\pi_I \mu_U\left(1-e^{-\lambda_I t}\right)(1-v) P .
+% \end{gathered}
+% $$
+
+% Under the assumption that test-negative infections are not immunizing, cumulative cases are proportional to the incidence rate and study duration:
+% $$
+% \begin{gathered}
+% C_{V N}(t)=\lambda_N \pi_N \mu_V v P t \\
+% C_{U N}(t)=\lambda_N \pi_N \mu_U(1-v) P t .
+% \end{gathered}
+% $$
+
+% We consider the case of immunizing test-negative outcomes in Web Appendix 1. Using the vaccine-exposure odds ratio measured from cumulative cases,
+% $$
+% \begin{aligned}
+% 1-O R^C(t) & =1-\frac{C_{V I}(t) C_{U N}(t)}{C_{U I}(t) C_{V N}(t)} \\
+% & =1-\frac{(1-\varphi)\left(1-e^{-\lambda_I t}\right)+\varphi\left(1-e^{-\theta \lambda_I t}\right)}{1-e^{-\lambda_I t}} \\
+% & =\varphi\left(1-\frac{1-e^{-\theta \lambda_I t}}{1-e^{-\lambda_I t}}\right) .
+% \end{aligned}
+% $$
+
+\newpage 
+\section{Simulation details}\label{sec:moresim}
+Here, we provide additional details on the data generation process and estimation methods for the simulation study described in the main text. We also present additional results. 
+
+Our data generation process is a special case of the nonparametric structural equation model implied by the single world intervention graph (SWIG) in Figure X representing the data as observed in the test negative design under a hypothetical intervention that sets $V$ to $v$. More specifically, we generate data according to  
+\begin{align*}
+    X, U &\sim \text{Unif}(0,1)\\
+    V\mid X, U & \sim \text{Bernoulli}(\expit(\alpha_0 + \alpha_X X + \alpha_U U))\\
+    I^v \mid V, X, U &\sim \text{Multinomial}(1-p_1(v, X, U) - p_2(v, X, U), p_1(v, X, U), p_2(v, X, U))\\
+    T^v\mid I^v=i, V, X, U &\sim \text{Bernoulli}(\mathbbm 1(i>0)\exp\{(\tau_{1} + \tau_{1V}v) \mathbbm 1(i=1) + (\tau_{2} + \tau_{2V} v + \tau_{2U} U ) \mathbbm 1(i=2) \\&\qquad \qquad\qquad + \tau_X X + \tau_U U \})
+\end{align*}
+where $U$ is an unmeasured confounder and
+\begin{align*}
+    p_1(v, X, U) & = \Pr[I^v = 1 | X, U] = \exp(\beta_{10} + \beta_{1V}v + \beta_{1X}X + \beta_{1VX}vX + \beta_{1U}U) \\
+    p_2(v, X, U) & = \Pr[I^v = 2 | X, U] = \exp(\beta_{20} + \beta_{2V}v + \beta_{2X}X + \beta_{2VX}vX + \beta_{2U}U).
+\end{align*}
+Under this process, potential outcomes $(I^v, T^v)$ for $v=0,1$ and $i=1, 2$ are generated from:
+\begin{align*}
+    \Pr[I^v=0, T^v=1\mid V, X, U] &= 0\\
+    \Pr[I^v=i, T^v=1\mid V, X, U] &= p_i(v, X, U)\exp\{\tau_i + \tau_{iV} v + \tau_X X + \tau_U U \\&\qquad \qquad\qquad + \tau_{2U}U\mathbbm 1(i=2) \}.
+\end{align*}
+This implies the conditional independence $(I^v, T^v)\indep V\mid X, U$ holds for $v=0,1$, meaning that conditioning on $U$ and $X$ is sufficient to control confounding. Furthermore, we have:
+\begin{align*}
+    \dfrac{\Pr[I^0=2, T^0=1 \mid V=1,X]}{\Pr[I^0=2, T^0=1\mid V=0,X]}=\dfrac{\E[\exp\{(\tau_U  + \tau_{2U}+\beta_{2U})U\}\mid V=1, X]}{\E[\exp\{(\tau_U  + \tau_{2U}+\beta_{2U})U\}\mid V=0, X]},
+\end{align*}
+and 
+\begin{align*}
+    \dfrac{\Pr[I^0=1, T^0=1 \mid V=1,X]}{\Pr[I^0=1, T^0=1\mid V=0,X]}=\dfrac{\E[\exp\{(\tau_U  +\beta_{1U})U\}\mid V=1, X]}{\E[\exp\{(\tau_U +\beta_{1U})U\}\mid V=0, X]}.
+\end{align*}
+This implies that Assumption \ref{ass3} holds when $\beta_{2U}=\beta_{1U}$ and $\tau_{2U}=0$. Following the previous discussion, Assumption \ref{ass3} can be viewed as composed of two sub conditions (\ref{ass3a} and \ref{ass3b}): the unmeasured confounder exerts an equivalent effect on $I=1$ and $I=2$ ($\beta_{1U}=\beta_{2U}$), and there is no interaction between the unmeasured confounder and the source of illness for the probability of testing on the multiplicative scale ($\tau_{2U}=0$). Furthermore, $\beta_{1V}=0$ controls whether there is a direct effect of vaccination on $I = 1$, i.e. Assumption \ref{ass2}. Without this assumption, we can at best identify the ratio of vaccine effects on the two illness outcomes, i.e. $\exp(\beta_{2V}-\beta_{1V})$. The parameters $\tau_{1V}$ and $\tau_{2V}$ control whether there is a direct effect of vaccination on $T$ and whether these effects differ between test-negative and test-positive illnesses, i.e. Assumption \ref{ass2}. Under TND sampling with $S=\mathbbm{1}(I \neq 0, T = 1)$, it can be shown that
+\begin{align*}
+    \Pr[I^*=1 \mid U, X, V, S=1] &= \expit\{(\beta_{20}-\beta_{10}+\tau_2 - \tau_1) + \beta_{2V}V\\ &\qquad\qquad+(\beta_{2X}-\beta_{1X})X+\beta_{2VX}VX + (\beta_{2U} - \beta_{1U}U)\},
+\end{align*}
+which follows a logistic regression model that does not depend on $U$ when $\beta_{1U}=\beta_{2U}$. Finally, under this setup, the causal risk ratio for medically-attended illness is 
+\begin{align*}
+    \Psi_{RRV} &= \dfrac{Pr[I^1=2, T^1=1\mid V=1]}{Pr[I^0=2, T^0=1\mid V=1]}\\
+    &= \dfrac{E[\Pr\{I^1=2, T^1=1\mid V=1, U, X\}\mid V=1]}{E[\Pr\{I^0=2, T^0=1\mid V=1, U, X\}\mid V=1]}\\
+    &= \dfrac{E\{\exp(\beta_{20} + \beta_{2V} + \beta_{2X}X + \beta_{2VX}X + \beta_{2U}U + \tau_2 + \tau_{2V} + \tau_X X + \tau_U U + \tau_{2U} U)\mid V=1\}}{E\{\exp(\beta_{20} +  \beta_{2X}X  + \beta_{2U}U + \tau_2 + \tau_X X + \tau_U U + \tau_{2U} U)\mid V=1\}}\\
+    &= \exp(\beta_{2V} + \tau_{2V}) \dfrac{E\{\exp\{(\beta_{2X} + \beta_{2VX} + \tau_X) X + (\beta_{2U} + \tau_U + \tau_{2U}) U\}\mid V=1\}}{E\{\exp\{ (\beta_{2X} + \tau_X)X  + (\beta_{2U} + \tau_U + \tau_{2U}) U\}\mid V=1\}}.
+\end{align*}
+
+
+\begin{figure}[t]
+    \centering
+    \begin{tikzpicture}
+        
+        \tikzset{line width=1pt,inner sep=5pt,
+            %	%swig vsplit={gap=3pt, inner line width right=0.4pt},
+            ell/.style={draw, inner sep=1.5pt,line width=1pt}}
+        
+        \node[name=V, shape=swig vsplit]{ \nodepart{left}{$V$} \nodepart{right}{$v$} };
+
+        \node (Vname) at (0, 0.5-1.5) {Vaccination};
+        
+        
+        \node[shape=ellipse,ell] (I) at (2.5,0) {$I^v$};
+        \node (Iname) at (2.5,0.5-1.5) {Illness};
+        
+        
+        \node[shape=ellipse,ell] (T) at (5,0) {$T^v$};
+        \node (Tname) at (5,0.5-1.5) {Testing};
+        
+        
+        
+        \node[shape=ellipse,ell] (U) at (2.5,1.5+1) {$U,X$};
+        %			\node (HSname) at (0,1.5+0.5+0.5) {Unmeasured};
+        \node (Uname) at (2.5,1.5+0.5+0.5+1) {Measured \& unmeasured};
+        \node (Uname2) at (2.5,1.5+0.5+1) {confounding};
+        \draw[-stealth, line width = 0.5pt] (U) to (-0.2, 0.31);
+            \draw[-stealth, line width=0.5pt, bend right](V) to (T);
+
+
+        \foreach \from/\to in {V/I, I/T, U/I, U/T}
+        \draw[-stealth, line width = 0.5pt] (\from) -- (\to);
+        %%%NCs
+    
+                
+    \end{tikzpicture}
+    \caption{A Single-World Intervention Graph (SWIG) for causal relationship between variables of a test-negative design in the simulation.}
+\end{figure} 
+
+ We generate a target population of $N = 15,000$ resulting in TND samples of test-positive cases and test-negative controls of between $2000$ and $3000$. We consider nine scenarios: 
+ \begin{enumerate}
+    \item No unmeasured confounding.
+    \item Unmeasured confounding, but assumptions \ref{ass1}-\ref{ass4} hold.
+    \item Direct effect of vaccination on $I=1$.
+    \item Equi-confounding is violated.
+    \item Equi-selection is violated.
+    \item Equal effects of vaccination on testing.
+    \item Unequal effects of vaccination on testing.
+    %\item Infections $I=1$ and $I=2$ are not mutually exclusive.
+    \item All assumptions hold but there is effect modification by covariates $X$.
+ \end{enumerate}
+ Parameter values for all scenarios are shown in Table \ref{tab:simparams}. For each scenario, we generate 1000 replicates and estimate the causal risk ratio among the vaccinated using the proposed estimators $\widehat{\Psi}_{om}^*$, $\widehat{\Psi}_{ipw}^*$, and $\widehat{\Psi}_{dr}^*$ as well as the conventional logistic regression estimator and calculate the bias and coverage of 95\% confidence intervals based on the true value. For comparison, we also estimate the causal risk ratio among the vaccinated assuming one had access to the full sample in the target population, as in a cohort study, using the following estimators
+ \begin{equation}\label{eqn:cohort_estimator}
+    \widehat{\Psi}_{cohort} = \dfrac{\sum_{i=1}^N\widehat{\mu}_1(X_i)}{\sum_{i=1}^N\widehat{\mu}_0(X_i)}
+ \end{equation}
+ and 
+ \begin{equation}\label{eqn:cohort_u_estimator}
+    \widehat{\Psi}_{cohort,U} = \dfrac{\sum_{i=1}^N\widehat{\mu}_1(X_i, U_i)}{\sum_{i=1}^N\widehat{\mu}_0(X_i, U_i)}
+ \end{equation}
+ where $\mu_v(X) = \Pr(I=2, T=1 | X, V=v)$ and $\mu_v(X,U) = \Pr(I=2, T=1 | X, U, V=v)$
+ The first estimator represents the typical case that the covariate $U$ is unmeasured, and the second represents the hypothetical case where $U$ is available, allowing for conditioning on a sufficient adjustment set. Finally, we include estimates from the difference-in-differences estimator, $\widehat{\Psi}_{om}$, suggested in Appendix \ref{sec:app_estimation}, that uses the full sample instead of restricting to those tested. More details on naming convention and model specification for each estimation method are provided in Table \ref{tab:methods}. For all estimators other than TND, we estimate 95\% confidence intervals using stacked estimating equations with numerical approximations for derivatives obtained using `geex' package in R.
+
+
+
+\begin{table}[p]
+    \centering
+    \caption{Parameter values for the data generation processes in each scenario for the simulation study.}\label{tab:simparams}
+    \begin{tabular}{cccccccccc}
+        \toprule
+        & \multicolumn{9}{c}{Scenario} \\
+        \cmidrule{2-10}
+        Parameter & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+        \midrule
+        $\alpha_0$ & -0.9 & -0.9 & -0.9 & -0.9 & -0.9 & -0.9 & -0.9 & -0.9 & -0.9 \\
+        $\alpha_X$ & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 \\
+        $\alpha_U$ & 0 & \textbf{2} & \textbf{2} & \textbf{2} & \textbf{2} & \textbf{2} & \textbf{2} & \textbf{2} & \textbf{2} \\
+        $\beta_{10}$ & -2.1 & -2.1 & -2.1 & -2.1 & -2.1 & -2.1 & -2.1 & -2.1 & -2.1 \\
+        $\beta_{1V}$ & 0 & 0 & \textbf{0.1} & 0 & 0 & 0 & 0 & 0 & 0 \\
+        $\beta_{1X}$ & -0.5 & -0.5 & -0.5 & -0.5 & -0.5 & -0.5 & -0.5 & -0.5 & -0.5 \\
+        $\beta_{1VX}$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        $\beta_{1U}$ & 1 & 1 & 1 & \textbf{0.25} & 1 & 1 & 1 & 1 & 1 \\
+        $\beta_{20}$ & -2.4 & -2.4 & -2.4 & -2.4 & -2.4 & -2.4 & -2.4 & -2.4 & -2.4 \\
+        $\beta_{2V}$ & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & \textbf{-0.25} \\
+        $\beta_{2X}$ & -0.625 & -0.625 & -0.625 & -0.625 & -0.625 & -0.625 & -0.625 & -0.625 & -0.625 \\
+        $\beta_{2VX}$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \textbf{-1.5} \\
+        $\beta_{2U}$ & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+        $\tau_1$ & -1.1 & -1.1 & -1.1 & -1.1 & -1.1 & -1.1 & -1.1 & -1.1 & -1.1 \\
+        $\tau_2$ & -0.6 & -0.6 & -0.6 & -0.6 & -0.6 & -0.6 & -0.6 & -0.6 & -0.6 \\
+        $\tau_{1V}$ & 0 & 0 & 0 & 0 & 0 & \textbf{-0.25} & \textbf{-0.25} & 0 & 0 \\
+        $\tau_{2V}$ & 0 & 0 & 0 & 0 & 0 & 0 & \textbf{-0.25} & 0 & 0 \\
+        $\tau_X$ & 0.25 & 0.25 & 0.25 & 0.25 & 0.25 & 0.25 & 0.25 & 0.25 & 0.25 \\
+        $\tau_U$ & 0.25 & 0.25 & 0.25 & 0.25 & 0.25 & 0.25 & 0.25 & 0.25 & 0.25 \\
+        $\tau_{2U}$ & 0 & 0  & 0  & 0 & \textbf{-2}  & 0  & 0  & 0  & 0  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[p]
+    \centering
+    \caption{Estimation methods for simulation study.}\label{tab:methods}
+    \begin{tabular}{llp{3in}}
+        \toprule
+        Name & Estimator & Methods \\
+        \midrule
+        TND, logit & $\widehat{\Psi}_{om}^*(X)$ & conventional approach to TND based on coefficient from correctly-specified logistic regression of $I^*$ on $(1, V, X)'$. \\
+        \addlinespace[1em]
+        TND, om & $\widehat{\Psi}^*_{om}$ & Proposed estimator in expression \ref{eqn:om_estimator}. Nuisance terms $\mu_v^*(X)$ estimated via logistic regression of $I^*$ on $(1, V, X, VX)'$.  \\
+        \addlinespace[1em]
+        TND, ipw & $\widehat{\Psi}^*_{ipw}$ & Proposed estimator in expression \ref{eqn:ipw_estimator}. Nuisance term $\pi_0^*(X)$ estimated via logistic regression of $V$ on $(1, X)'$ among those with $I^*=0$. \\
+        \addlinespace[1em]
+        TND, dr & $\widehat{\Psi}^*_{dr}$ & Proposed estimator in expression \ref{eqn:dr_estimator}. Nuisance terms $\mu_v^*(X)$ and $\pi_0^*(X)$ estimated as above. \\
+        \addlinespace[1em]
+        DiD & $\widehat{\Psi}_{om}$ &  Alternative estimator introduced in expression \ref{eqn:om_estimator_cohort}. Nuisance terms $\mu_v(X)$ estimated via logistic regression of $\mathbbm 1 (I=2, T=1)$ on $(1, V, X, VX)'$ in the full sample. \\
+        \addlinespace[1em]
+        cohort, U unmeasured & $\widehat{\Psi}_{cohort}$ & Standardization estimator in expression \ref{eqn:cohort_estimator} assuming $U$ is unavailable. Nuisance terms $\mu_v(X)$ estimated via logistic regression of $\mathbbm 1 (I=2, T=1)$ on $(1, V, X, VX)'$ in the full sample. \\ 
+        \addlinespace[1em]
+        cohort, U measured & $\widehat{\Psi}_{cohort,U}$ & Standardization estimator in expression \ref{eqn:cohort_u_estimator} assuming $U$ is available. Nuisance terms $\mu_v(X,U)$ estimated via logistic regression of $\mathbbm 1 (I=2, T=1)$ on $(1, V, X, VX, U)'$ in the full sample. \\ 
+        \bottomrule
+    \end{tabular}
+\end{table}
+% $\varphi$
+\end{appendix}
+

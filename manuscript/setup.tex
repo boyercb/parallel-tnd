@@ -2,6 +2,7 @@
     amssymb,
     amsmath,
     amsfonts,
+    amsthm,
     calc,
     eurosym,
     geometry,
@@ -27,7 +28,8 @@
     authblk,
     makecell,
     bbm,
-    threeparttable}
+    threeparttable, 
+    enumitem}
 
 
 \usepackage[
@@ -47,10 +49,12 @@
 \AtEveryBibitem{\clearlist{publisher}}
 
 \usepackage{pgf,tikz}
-\usetikzlibrary{arrows, automata}
+\usetikzlibrary{arrows,automata}
 \usetikzlibrary{shapes.geometric,positioning}
 \usetikzlibrary{positioning,calc}
-
+\usetikzlibrary{arrows,shapes.arrows,shapes.geometric,
+shapes.multipart,decorations.pathmorphing,positioning,
+swigs}
 \usepackage{siunitx}
 \newcolumntype{d}{S[input-symbols = ()]}
 
@@ -62,9 +66,12 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{corollary}{Corollary}
 \newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}
 \newtheorem{definition}{Definition}
+\newtheorem*{remark}{Remark}
 
-\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+%\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
 
 \newtheorem{hyp}{Hypothesis}
 \newtheorem{subhyp}{Hypothesis}[hyp]
@@ -138,6 +145,8 @@
     }%
   }%
 }
+\newcommand{\vast}{\bBigg@{4}}
+\newcommand{\Vast}{\bBigg@{5}}
 \makeatother
 
 
