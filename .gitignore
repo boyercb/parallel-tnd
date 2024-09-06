@@ -40,20 +40,19 @@ vignettes/*.pdf
 
 .DS_Store
 
-4_manuscripts/*.aux
-4_manuscripts/*.bbl
-4_manuscripts/*.bcf
-4_manuscripts/*.blg
-4_manuscripts/*.fdb_latexmk
-4_manuscripts/*.fls
-4_manuscripts/*.log
-4_manuscripts/*.out
-4_manuscripts/*.run.xml
-4_manuscripts/*.synctex.gz
-4_manuscripts/*.synctex*
-4_manuscripts/*.pdf
-4_manuscripts/*.docx
+manuscript/*.aux
+manuscript/*.bbl
+manuscript/*.bcf
+manuscript/*.blg
+manuscript/*.fdb_latexmk
+manuscript/*.fls
+manuscript/*.log
+manuscript/*.out
+manuscript/*.run.xml
+manuscript/*.synctex.gz
+manuscript/*.synctex*
+manuscript/*.pdf
+manuscript/*.docx
 
-katherine.*
-
+__archive/
 
