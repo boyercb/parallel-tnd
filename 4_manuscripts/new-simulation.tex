@@ -16,7 +16,8 @@
 \usepackage{bbm}
 
 
-\usepackage{pgf,tikz} \usetikzlibrary{arrows,shapes.arrows,shapes.geometric,shapes.multipart, decorations.pathmorphing,positioning,shapes.swigs,}
+\usepackage{pgf,tikz} 
+\usetikzlibrary{arrows,shapes.arrows,shapes.geometric,shapes.multipart,decorations.pathmorphing,positioning,shapes.swigs}
 
 \def\ll{\lambda}
 \def\LL{\Lambda}
@@ -82,15 +83,15 @@ The SWIG implies $I^v, T^v\indep V\mid U, X$ for $v=0,1$. Consider the following
 \begin{align*}
     X, U &\sim Unif(0,1)\\
     V\mid U, X & \sim Bernoulli(\expit(\alpha_0 + \alpha_U U + \alpha_X X))\\
-    I \mid V, U, X &\sim Multinomial(1-p_1(X, U, V), p_1(X, U, V), p_2(X, U, V))\\
-    T\mid I, V,  U, X &\sim Bernoulli(\mathbbm 1(I>0)\exp\{\tau_{1}\mathbbm 1(I=1) + \tau_{2}\mathbbm 1(I=2)+\tau_V V + \tau_U U + \tau_X X\})
+    I^v \mid  U, X &\sim Multinomial(1-p_1(X, U, v), p_1(X, U, v), p_2(X, U, v))\\
+    T^v\mid I^v,  U, X &\sim Bernoulli(\mathbbm 1(I^v>0)\exp\{\tau_{1}\mathbbm 1(I^v=1) + \tau_{2}\mathbbm 1(I^v=2)+\tau_V v  + \tau_U U + \tau_{2U}\mathbbm 1(I^v=2) U +  \tau_X X\})
 \end{align*}
 
 where \begin{align*}
-    p_1(X, U, V) &= P(I=1\mid X, U, V)=\exp(\beta_{10} + \beta_{1V}V + \beta_{1X}X + \beta_{1U}U)\\
-    p_2(X, U, V) &= P(I=2\mid X, U, V)=\exp(\beta_{20} + \beta_{2V}V + \beta_{2X}X + \beta_{2U}U)\\
+    p_1(X, U, V) &= P(I=1\mid X, U, V)=\exp(\beta_{10} + \beta_{1V}V + \beta_{1X}X + \beta_{1VX}VX + \beta_{1U}U)\\
+    p_2(X, U, V) &= P(I=2\mid X, U, V)=\exp(\beta_{20} + \beta_{2V}V + \beta_{2X}X + \beta_{2VX}VX + \beta_{2U}U)\\
 \end{align*}
-Note that $\beta_{1V}=0$ so the vaccine has no effect on the risk of cause 1. The distribution of $T$ is set such that only ill subjects will be tested. 
+Note that $\beta_{1V}=\beta_{1VX}=0$ so the vaccine has no effect on the risk of cause 1. The distribution of $T$ is set such that only ill subjects will be tested. 
 
 We show that the simulation setting satisfies Assumption (A4).
 
@@ -98,29 +99,73 @@ For $i=1,2$ and $v,v'=0,1$, we have
 \begin{align*}
     & P(I^v=i,T^v=1\mid V=v', X)\\
     =& E\{P(I^v=i,T^v=1\mid V=v, U, X)\mid V=v', X\}\\
-    =& E\{\exp(\beta_{i0}+\beta_{iV}v+\beta_{iU}U + \beta_{iX}X+\tau_i + \tau_V v + \tau_U U + \tau_X X)\mid V=v', X\}\\
-    =& \exp(\beta_{i0} + \beta_{iV}v + \beta_{iX}X + \tau_i + \tau_V v  + \tau_X X)E\{\exp(\tau_U U+\beta_{iU}U)\mid V=v', X\}.
+    =& E\{\exp(\beta_{i0}+\beta_{iV}v+ \beta_{iX}X+\beta_{iVX}vX + \beta_{iU}U +\tau_i + \tau_V v + \tau_U U +  \tau_{2U}\mathbbm 1(i=2) U + \tau_X X)\mid V=v', X\}\\
+    =& \exp(\beta_{i0} + \beta_{iV}v  +\beta_{iX}X +\beta_{iVX}vX + \tau_i + \tau_V v  + \tau_X X)E\{\exp(\tau_U U+  \tau_{2U}\mathbbm 1(i=2) U +\beta_{iU}U)\mid V=v', X\}.
 \end{align*}
 
 Therefore
 \begin{align*}
-\dfrac{P(I^0=2\mid V=1,X)}{P(I^0=2\mid V=0,X)}=\dfrac{E\{\exp(\tau_U U+\beta_{2U}U)\mid V=1, X\}}{E\{\exp(\tau_U U+\beta_{2U}U)\mid V=0, X\}}, \quad \dfrac{P(I^0=1\mid V=1,X)}{P(I^0=1\mid V=0,X)}=\dfrac{E\{\exp(\tau_U U+\beta_{1U}U)\mid V=1, X\}}{E\{\exp(\tau_U U+\beta_{1U}U)\mid V=0, X\}}
+&\dfrac{P(I^0=2, T^0=1\mid V=1,X)}{P(I^0=2, T^0=1 \mid V=0,X)}=\dfrac{E\{\exp(\tau_U U+ \tau_{2U} U 
+ + \beta_{2U}U)\mid V=1, X\}}{E\{\exp(\tau_U U+\tau_{2U} U + \beta_{2U}U)\mid V=0, X\}},\\ 
+ &\dfrac{P(I^0=1, T^0=1\mid V=1,X)}{P(I^0=1, T^0=1\mid V=0,X)}=\dfrac{E\{\exp(\tau_U U+\beta_{1U}U)\mid V=1, X\}}{E\{\exp(\tau_U U+\beta_{1U}U)\mid V=0, X\}}
 \end{align*}
-and Assumption (A4a) holds if $\beta_{2U}=\beta_{1U}$.
+and Assumption (A4) holds if $\beta_{2U}=\beta_{1U}$ and $\tau_{2U}=0$.
+
+We further verify Assumption A5. For $i=1, 2$,
+\begin{align*}
+    & Pr(T^v=1\mid I^v=i, V=1, X) \\&= E\{Pr(T^v=1\mid I^v=i, V=1, U, X)\mid I^v=i, V=1, X\}\\
+    &= E\{Pr(T^v=1\mid I^v=i,  U, X)\mid I^v=i, V=1, X\}\\
+    &= E[\exp\{\tau_{i}+\tau_V v  + \tau_U U + \tau_{2U}\mathbbm 1(i=2) U +  \tau_X X\}\mid I^v=i, V=1, X]\\
+    &= \exp\{\tau_{i}+\tau_V v +  \tau_X X\}E[\exp\{\tau_U U + \tau_{2U}\mathbbm 1(i=2) U\}\mid I^v=i, V=1, X]\\
+    &= \exp\{\tau_{i}+\tau_V v + \tau_X X\}\int \exp\{\tau_U u + \tau_{2U}\mathbbm 1(i=2) u \}f(u\mid I^v=i, V=1, X)du\\
+    &= \exp\{\tau_{i}+\tau_V v +  \tau_X X\}\int \exp\{\tau_U u + \tau_{2U}\mathbbm 1(i=2) u \}\times\\
+    &\qquad \dfrac{Pr(I^v=i\mid V=1, U=u, X)Pr(V=1\mid U=u, X)f(u\mid X)}{\int Pr(I^v=i\mid V=1, U=s, X)Pr(V=1\mid U=s, X)f(s\mid X) ds}du\\
+\end{align*}
+
+Hence
+\begin{align*}
+    Pr(T^1=1\mid I^1=i, V=1, X) &= \exp\{\tau_{i}+\tau_V +  \tau_X X\}\int \exp\{\tau_U u + \tau_{2U}\mathbbm 1(i=2) u \}\times\\
+    &\qquad \dfrac{Pr(I^1=i\mid V=1, U=u, X)Pr(V=1\mid U=u, X)f(u\mid X)}{\int Pr(I^1=i\mid V=1, U=s, X)Pr(V=1\mid U=s, X)f(s\mid X) ds}du\\
+    &= \exp\{\tau_{i}+\tau_V  +  \tau_X X\}\int \exp\{\tau_U u + \tau_{2U}\mathbbm 1(i=2) u \}\times\\
+    &\qquad \dfrac{\exp(\beta_{iV} + \beta_{iVX}X)Pr(I^0=i\mid V=1, U=u, X)Pr(V=1\mid U=u, X)f(u\mid X)}{\exp(\beta_{iV} + \beta_{iVX}X)\int Pr(I^0=i\mid V=1, U=s, X)Pr(V=1\mid U=s, X)f(s\mid X) ds}du\\
+    &= \exp\{\tau_{i}+\tau_V + \tau_X X\}\int \exp\{\tau_U u + \tau_{2U}\mathbbm 1(i=2) u \}\times\\
+    &\qquad \dfrac{Pr(I^0=i\mid V=1, U=u, X)Pr(V=1\mid U=u, X)f(u\mid X)}{\int Pr(I^0=i\mid V=1, U=s, X)Pr(V=1\mid U=s, X)f(s\mid X) ds}du
+\end{align*}
+
+and 
+\begin{align*}
+    Pr(T^0=1\mid I^0=i, V=1, X) &= \exp\{\tau_{i} +  \tau_X X\}\int \exp\{\tau_U u + \tau_{2U}\mathbbm 1(i=2) u \}\times\\
+    &\qquad \dfrac{Pr(I^0=i\mid V=1, U=u, X)Pr(V=1\mid U=u, X)f(u\mid X)}{\int Pr(I^0=i\mid V=1, U=s, X)Pr(V=1\mid U=s, X)f(s\mid X) ds}du
+\end{align*}
+So Assumption A5 holds if $\tau_V = 0$.
 
 
 Finally, the probability of having the illness of interest in the study sample is
 \begin{align*}
     &P(I=2\mid V, U, X, T=1)\\
     = &\dfrac{P(I=2\mid V, U, X)P(T=1\mid I=2, V, U, X)}{P(I=2\mid V, U, X)P(T=1\mid I=2, V, U, X) + P(I=1\mid V, U, X)P(T=1\mid I=1, V, U, X)}\\
-    =& \exp(\beta_{20}+\beta_{2V}V+\beta_{2U}U + \beta_{2X}X)\exp(\tau_2 + \tau_V V + \tau_U U + \tau_X X)/\\
-    &\quad \{ \exp(\beta_{20}+\beta_{2V}V+\beta_{2U}U + \beta_{2X}X)\exp(\tau_2 + \tau_V V + \tau_U U + \tau_X X) +\\
+    =& \exp(\beta_{20}+\beta_{2V}V+\beta_{2U}U + \beta_{2X}X + \beta_{2VX}VX)\exp(\tau_2 + \tau_V V + \tau_U U + \tau_X X)/\\
+    &\quad \{ \exp(\beta_{20}+\beta_{2V}V+\beta_{2U}U + \beta_{2X}X + \beta_{2VX}VX)\exp(\tau_2 + \tau_V V + \tau_U U + \tau_X X) +\\
     &\quad \exp(\beta_{10}+\beta_{1U}U + \beta_{1X}X)\exp(\tau_1 + \tau_V V + \tau_U U + \tau_X X)\}\\
-    =& \expit\{(\beta_{20}-\beta_{10}+\tau_2 - \tau_1) + \beta_{2V}V+(\beta_{2X}-\beta_{1X})X\},
+    =& \expit\{(\beta_{20}-\beta_{10}+\tau_2 - \tau_1) + \beta_{2V}V+(\beta_{2X}-\beta_{1X})X+\beta_{2VX}VX\},
 \end{align*}
 which follows a logistic regression model that does not depend on $U$ ($\beta_{1U}=\beta_{2U}$).
 
-\bibliographystyle{plainnat}
-\bibliography{sample}
+On the other hand, we can show that, for $i=1,2$,
+\begin{align*}
+    & P(V=1\mid I=i, U, X, T=1)= \expit\{(\alpha_0 + \tau_V) + \alpha_U U + (\alpha_X + \beta_{iVX})X\}
+\end{align*}
+and therefore $P(V=1\mid I, X, T=1)$ does not correspond to any familiar regression models.
+
+In the above data generating mechanism, the risk ratio among the tested is
+
+\begin{align*}
+    \Psi_{RRV} &= \dfrac{Pr[I^1=2\mid V=1]}{Pr[I^0=2\mid V=1]}\\
+    &= \dfrac{E[Pr\{I^1=2\mid V=1, U, X\}\mid V=1]}{E[Pr\{I^0=2\mid V=1, U, X\}\mid V=1]}\\
+    &= \dfrac{E[Pr\{I=2\mid V=1, U, X\}\mid V=1]}{E[Pr\{I=2\mid V=0, U, X\}\mid V=1]}\\
+    &= \dfrac{E\{\exp(\beta_{20} + \beta_{2V} + \beta_{2X}X + \beta_{2VX}X + \beta_{2U}U)\mid V=1\}}{E\{\exp(\beta_{20} +  \beta_{2X}X  + \beta_{2U}U)\mid V=1\}}\\
+\end{align*}
+
+
 
 \end{document}

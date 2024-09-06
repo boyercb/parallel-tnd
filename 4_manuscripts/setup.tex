@@ -2,6 +2,7 @@
     amssymb,
     amsmath,
     amsfonts,
+    amsthm,
     calc,
     eurosym,
     geometry,
@@ -27,7 +28,8 @@
     authblk,
     makecell,
     bbm,
-    threeparttable}
+    threeparttable, 
+    enumitem}
 
 
 \usepackage[
@@ -62,7 +64,10 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{corollary}{Corollary}
 \newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}
 \newtheorem{definition}{Definition}
+\newtheorem*{remark}{Remark}
 
 \newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
 
@@ -138,6 +143,8 @@
     }%
   }%
 }
+\newcommand{\vast}{\bBigg@{4}}
+\newcommand{\Vast}{\bBigg@{5}}
 \makeatother
 
 
