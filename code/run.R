@@ -4,6 +4,7 @@ library(progressr)
 library(survival)
 library(lmtest)
 library(sandwich)
+library(readr)
 
 source("code/datagen.R")
 source("code/estimators.R")
@@ -265,7 +266,7 @@ with_progress({
   p("scenario 9: effect heterogeneity", class = "sticky")
 
   sim9 <- dgp9[, .(
-    RR = unlist(runsim(.SD, p,  exp(-1))),
+    RR = unlist(runsim(.SD, p,  0.5539383)),
     type = types
   ), by = sim]
 })
@@ -285,8 +286,6 @@ sims <- list(
 
 sims <- rbindlist(sims, idcol = TRUE)
 
-sim_results <-
-  sims[, .(est = mean(RR), sd = sd(RR)),
-       by = list(.id, type)]
+write_rds(sims, "data/sims.rds")
 
 
