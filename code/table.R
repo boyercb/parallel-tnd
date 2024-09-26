@@ -63,7 +63,7 @@ sim_results |>
     format = "latex",
     digits = 3,
     booktabs = TRUE,
-    align = "lddddddd",
+    align = c("l", rep("d", 7)),
     col.names = c(
       "Statistic",
       "{\\TableHead{TND,\\\\logit}}",
