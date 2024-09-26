@@ -56,3 +56,5 @@ manuscript/*.docx
 
 __archive/
 
+*.rds
+
