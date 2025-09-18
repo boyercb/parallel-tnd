@@ -7,17 +7,24 @@
 \begin{document}
 %TC:ignore
 \begin{titlepage}
-\title{Identifying vaccine effectiveness in the test-negative design under an equi-confounding assumption}
-\author[1]{Christopher Boyer}%\thanks{email: \href{mailto:cboyer@hsph.harvard.edu}{cboyer@hsph.harvard.edu}}}
-\author[2]{Kendrick Qijun Li}
-\author[3]{...}
-\affil[1]{Department of Epidemiology, Harvard T.H. Chan School of Public Health, Boston, MA.}
-\affil[2]{Department of Biostatistics, St. Jude Children's Research Hospital, Memphis, TN.}
+\title{Identification and estimation of vaccine effectiveness in the test-negative design under equi-confounding}
+\author{}
+% \author[1,2]{Christopher B. Boyer\thanks{Corresponding author, email: \href{mailto:boyerc5@ccf.org}{boyerc5@ccf.org}}}
+% \author[3]{Kendrick Qijun Li}
+% \author[4]{Xu Shi}
+% \author[5]{Eric J. Tchetgen Tchetgen}
+% \affil[1]{Department of Quantitative Health Sciences, Cleveland Clinic, Cleveland, OH.}
+% \affil[2]{Department of Medicine, Cleveland Clinic Lerner College of Medicine of Case Western Reserve University, Cleveland, OH.}
+% \affil[3]{Department of Biostatistics, St. Jude Children's Research Hospital, Memphis, TN.}
+% \affil[4]{Department of Biostatistics, University of Michigan, Ann Arbor, MI.}
+% \affil[5]{Department of Statistics and Data Science, The Wharton School, University of Pennsylvania, Philadelphia, PA.}
+
+
 \date{\today\vspace{-1em}}
 \maketitle
 
 \begin{abstract}
-    The test-negative design (TND) is frequently used to evaluate vaccine effectiveness in real-world settings. In a TND study, individuals with similar symptoms who seek care are tested for the disease of interest, and vaccine effectiveness is estimated by comparing the vaccination history of test-positive cases and test-negative controls. Traditional approaches justify the TND by assuming either (a) receiving a test is a perfect proxy for unmeasured health-seeking behavior or (b) vaccination is unconfounded given measured covariates ---both of which may be unrealistic. In this paper, we return to the original motivation for the TND and propose an alternative justification based on the assumption of \textit{odds ratio equi-confounding}, where unmeasured confounders influence test-positive and test-negative individuals equivalently on the odds ratio scale. We discuss the implications of this assumption for TND design and provide alternative estimators for the marginal risk ratio among the vaccinated, using outcome modeling, inverse probability weighting, and an efficient influence function to accommodate flexible machine learning models. We present proofs of our results and conduct a simulation study to evaluate the empirical performance of these estimators when our assumptions hold and when they are violated.
+The test-negative design (TND) is widely used to evaluate vaccine effectiveness in real-world settings. In a TND study, individuals with similar symptoms who seek care are tested, and effectiveness is estimated by comparing vaccination histories of test-positive cases and test-negative controls. The TND is often justified on the grounds that it reduces confounding due to unmeasured health-seeking behavior, although this has not been formally described using potential outcomes. At the same time, concerns persist that conditioning on test receipt can introduce selection bias. We provide a formal justification of the TND under an assumption of odds ratio equi-confounding, where unmeasured confounders affect test-positive and test-negative individuals equivalently on the odds ratio scale. Health-seeking behavior is one plausible example. We also show that these results hold under the outcome-dependent sampling used in TNDs. We discuss the design implications of the equi-confounding assumption and provide alternative estimators for the marginal risk ratio among the vaccinated under equi-confounding, including outcome modeling and inverse probability weighting estimators as well as a semiparametric estimator that is doubly robust.  When equi-confounding does not hold, we suggest a straightforward sensitivity analysis that parameterizes the magnitude of the deviation on the odds ratio scale. A simulation study evaluates the empirical performance of our proposed estimators under a wide range of scenarios. Finally, we discuss broader uses of test-negative outcomes to de-bias cohort studies in which testing is triggered by symptoms.
 
 \noindent \\
 \noindent\textbf{Keywords:} test-negative design, vaccine effectiveness, causal inference, observational studies, unmeasured confounding, equi-confounding, odds ratios, selection bias
@@ -30,236 +37,263 @@
 %TC:endignore
 
 %\doublespacing
+\doparttoc % Tell to minitoc to generate a toc for the parts
+\faketableofcontents % Run a fake tableofcontents command for the partocs
 
-\section{Introduction} \label{sec:introduction}
-Post-market evaluation of vaccine effectiveness is critical for understanding how vaccines perform in real-world settings \cite{patel_postlicensure_2020}. As population immunity changes and pathogens undergo antigenic mutation or selection, pre-market randomized trial estimates may lose relevance over time \cite{hitchings_effectiveness_2021,israel_elapsed_2021}. Investigators may also want to evaluate vaccine performance in certain subpopulations that were either ineligible or underrepresented \cite{olson_effectiveness_2022}, assess outcomes and safety signals that may have been underpowered \cite{thompson_effectiveness_2021}, or compare vaccine formulations head-to-head or against other therapeutics not considered in the original trials \cite{skowronski_two-dose_2022}. Often, these evaluations must rely on observational data \cite{chua_use_2020-1,dean_covid-19_2021}. Under these circumstances, the test-negative design (TND) is a cost-effective and efficient study design for estimating vaccine effectiveness \cite{sullivan_potential_2014,jackson_test-negative_2013}. 
- 
-In the literature, the term ``test-negative design'' has sometimes been applied loosely to any study where individuals who test positive for a disease of interest are compared with those who test negative. However, not all such studies are methodologically equivalent. Here, we focus on the canonical design with the following criteria: patients with acute respiratory illness are prospectively recruited using a unified symptom screen through hospitals or other care facilities, consented, and a laboratory test for the pathogen of interest is performed. Detailed information about their demographic, medical, and vaccination history is collected via a questionnaire at enrollment or through linked medical and vaccination records. Those who test positive form the ``cases'' and those who test negative are the ``controls''. Vaccine effectiveness is then estimated via the case status odds ratio among those screened and tested.
+\part{} % Start the document part
 
-This version of the TND has been previously championed on the grounds that it is robust to unmeasured confounding by healthcare-seeking behavior  --- a common source of bias in observational evaluations of vaccines and in particular seasonal influenza vaccines \cite{jackson_test-negative_2013}. Because participants seek a test conditional on the same symptom set but without knowledge of the causative agent, it was claimed the design effectively restricts to care-seekers, thereby precluding it as potential confounder \cite{jackson_test-negative_2013}. It was also suggested that, by limiting to individuals who actually received a test, the TND may be less subject to measurement error \cite{jackson_test-negative_2013}. Subsequent work pointed out that the TND (i) is subject to residual confounding when healthcare-seeking is nonbinary or when there are other factors affecting vaccine uptake and risk of infection \cite{sullivan_theoretical_2016,lewnard_theoretical_2021,lipsitch_observational_2016}, (ii) is subject to possible selection bias due to conditioning on the post exposure outcome of receiving a test \cite{sullivan_theoretical_2016,lipsitch_observational_2016}, and (iii) is biased when vaccination has a direct effect on testing behavior \cite{foppa_case_2013}. 
+\section*{Introduction} \label{sec:introduction}
+Post-market evaluation of vaccine effectiveness is critical for understanding how vaccines perform in real-world settings, especially as population immunity changes or pathogens undergo antigenic mutation or selection \cite{patel_postlicensure_2020,hitchings_effectiveness_2021,israel_elapsed_2021}. These studies can also assess effectiveness in subpopulations that were ineligible or underrepresented \cite{olson_effectiveness_2022}, evaluate outcomes and safety signals that may have been underpowered \cite{thompson_effectiveness_2021}, or compare vaccine formulations not considered in the original trials \cite{skowronski_two-dose_2022}. Often, these evaluations must rely on observational data \cite{chua_use_2020-1,dean_covid-19_2021}. 
 
-More recently, \textcite{schnitzer_estimands_2022} introduced a formal causal framework for the TND based on potential outcomes, allowing for a more precise discussion of causal identification in the TND. In follow-up work, they showed that both the marginal and conditional causal risk ratios can be identified using data from a TND and suggest efficient estimators, but require that observed covariates are sufficient to ensure no unmeasured confounding or selection bias \cite{jiang_tnddr_2023}. However, this assumption is contrary to the original motivation for the TND as it requires the absence of residual unmeasured confounding. Thus, a question remains as to whether the TND may be formally justified under weaker assumptions.
+The test-negative design (TND) is a common and cost-efficient study design for estimating vaccine effectiveness \cite{sullivan_potential_2014,jackson_test-negative_2013}. In its canonical form, patients with acute respiratory illness are prospectively screened and recruited based on a unified symptom set through hospitals or other care facilities and tested for the pathogen of interest. Vaccination history and other detailed covariate information are collected at enrollment or through linked medical or vaccination records. Effectiveness is then estimated by comparing the odds of vaccination among test-positive (cases) and test-negative (controls) individuals.
 
-In this article, we return to the original motivation and show that the TND may be justified under a less restrictive alternative assumption that unmeasured confounding is equivalent for test-positive cases and test-negative controls on the odds ratio scale. This assumption builds on the insight that infection with another respiratory illness, if unaffected by focal vaccination, is effectively a negative outcome control \cite{lipsitch_negative_2010,shi_selective_2020}. Therefore any observed differences in the incidence of test negative illnesses between vaccinated and unvaccinated individuals likely reflect residual confounding. Under the  assumption of confounding equivalence, we can then use the difference in test-negative illness to de-bias our estimate of vaccine effectiveness, similar to the bias correction approach of the parallel trends assumption in the difference-in-differences literature \cite{sofer_negative_2016,park_universal_2023,tchetgen_universal_2023}. As we show, this approach remains valid under the outcome-dependent sampling of the TND, where only those who are tested are sampled, if we further assume that (potentially unobserved) determinants of care-seeking behavior are equivalent for test-positive and test-negative illnesses, which could be justified given the causative agent is unknown to individuals prior to receiving a test.  When our assumptions hold, we show that the traditional odds ratio estimator from the TND identifies the conditional causal risk ratio \textit{among the vaccinated} in the population. We also derive new estimators of the marginal risk ratio among the vaccinated, including those based on outcome modeling and inverse probability weighting. We discuss the implications of our assumptions for the design of TNDs and provide proofs of our results as well as simulations to illustrate the consequences when our assumptions are violated. We also propose a sensitivity analysis to evaluate the impact when the odds ratio equi-confounding assumption does not hold.
+The TND has been previously promoted as a way to reduce confounding due to unmeasured healthcare-seeking behavior  --- a common source of bias in observational evaluations of vaccines \cite{jackson_test-negative_2013}. Because participants seek a test conditional on the same symptoms but without knowledge of the causative agent, the design effectively restricts to ``care-seekers'', thereby precluding it as potential confounder \cite{jackson_test-negative_2013}. Subsequent work pointed out that the TND (i) may not be robust to unmeasured healthcare-seeking when it is nonbinary or when there are other factors affecting vaccine uptake and risk of infection \cite{sullivan_theoretical_2016,lewnard_theoretical_2021,lipsitch_observational_2016} and (ii) is subject to possible selection bias due to conditioning on receiving a test \cite{sullivan_theoretical_2016,lipsitch_observational_2016}.
 
-\section{Setup and observed data} \label{sec:setup}
-Let $X$ represent a vector of baseline covariates, $V$ an indicator of vaccination status (1: vaccinated, 0: unvaccinated), and $I$ a categorical indicator of symptomatic illness where
-        $$I := \begin{cases} 
-        I = 2 & \text{when symptomatic illness is caused by the pathogen of interest}, \\
-        I = 1 & \text{when symptomatic illness is caused by something else}, \\
-        I = 0 & \text{when no symptomatic illness}.
-        \end{cases}$$
- Implicit here is the assumption that the infection events represented by $I = 1$ and $I = 2$ are mutually exclusive. For convenience, throughout we use the term ``symptomatic'' illness to mean the presence of the pre-specified symptom set used to screen for inclusion in the TND study. Let $T$ be an indicator of receiving a test for the pathogen of interest (1: tested, 0: not tested), and $I^*$ the result of the test (1: positive, 0: negative). For now, assume that the test is perfect, such that for all individuals, $I^*_i = \mathbbm{1}(I_i = 2, T_i = 1)$, where $\mathbbm{1}(\cdot)$ is the indicator function. Extensions to cases where the test is imperfect are covered in Appendix \ref{sec:testing} but also have been considered previously \cite{jackson2015effects, sullivan_theoretical_2016}. Throughout we denote by $I^v$ the potential outcome under an intervention that sets vaccination to $V=v$. 
-    
-We assume the data from the TND are independent realizations of 
-$$O = \{(X_i, V_i, S_i = 1, I^*_i) : i = 1, \ldots, n\}$$
-where $S$ is an indicator of selection into test-negative design under potentially biased sampling from the underlying target population. Selection is minimally based on presenting with a set of pre-specified symptoms at a health facility and receiving a test, i.e. $S = \mathbbm{1}(I \neq 0, T = 1)$, but could be extended to include other criteria such as hospitalization or severe disease. We assume that the symptom screen is effective such that everyone tested has either $I=1$ or $I=2$. Vaccination status and associated covariates may be retrospectively assessed at the time of testing or, preferably, pulled from outside sources such as vaccine registries or healthcare databases. 
+More recently, \textcite{schnitzer_estimands_2022} and \textcite{jiang_tnddr_2023} introduced a formal causal framework for the TND based on potential outcomes, allowing for a more precise discussion of identification of marginal and conditional vaccine effects in the TND. However, contrary to the original motivation for the TND, they require that observed covariates are sufficient to ensure no unmeasured confounding or selection bias. Thus, a question remains as to whether the TND may be formally justified under weaker assumptions.
 
-\section{Causal estimands for the test-negative design} \label{sec:estimands}
-In a TND study, a common target parameter is the causal risk ratio,
+In this article, we revisit the original motivation and show that the TND may be justified under a less restrictive assumption that unmeasured confounding is equivalent for test-positive cases and test-negative controls on the odds ratio scale. This assumption builds on the insight that infection with another respiratory illness, if unaffected by focal vaccination, is essentially a negative outcome control \cite{lipsitch_negative_2010,shi_selective_2020,piccininni_using_2024}. Therefore, any observed difference in the incidence of test negative illnesses between vaccinated and unvaccinated individuals likely reflects residual confounding. Under the assumption of confounding equivalence, we can  use the difference in test-negative illness to de-bias our estimate of vaccine effectiveness, similar to the bias correction via the parallel trends assumption in the difference-in-differences literature \cite{sofer_negative_2016,park_universal_2023,tchetgen_universal_2023}. As we show, this approach is valid under the outcome-dependent sampling of the TND, where only those who are tested are sampled. When our assumptions hold, we show that the traditional odds ratio estimator identifies the conditional causal risk ratio \textit{among the vaccinated}. We also derive new estimators of the marginal risk ratio among the vaccinated, including those based on outcome modeling and inverse probability weighting. We discuss the implications of our assumptions for the design of TNDs and provide proofs of our results as well as simulations to illustrate the consequences when our assumptions are violated. We also propose a sensitivity analysis to evaluate the impact of deviations from equi-confounding on our effect estimates. Finally, although our focus is on the TND, we show how our bias adjustment approach under equi-confounding applies more broadly to cohort studies with symptom-triggered testing, i.e., where the outcome is only ascertained for those who seek a test after developing symptoms.
+
+\section*{Setup and observed data} \label{sec:setup}
+Let $X$ represent a vector of baseline covariates, $V$ an indicator of vaccination status (1: vaccinated, 0: unvaccinated), and $Y$ a tri-level outcome at the end of follow up where:
+$$Y:= \begin{cases}
+    Y = 2 & \text{test positive case}, \\
+    Y = 1 & \text{test negative case}, \\
+    Y = 0 & \text{not tested}.
+\end{cases}
+$$
+For simplicity, we consider the original TND setting in which a vaccination campaign occurs prior to a seasonal outbreak, and thus vaccination is a point treatment. 
+
+The outcome $Y$ is only meaningful with additional context about the testing regime in the population of interest. We introduce two additional variables that jointly define this regime. First, a categorical indicator $I$ of symptomatic infection (2: caused by pathogen of interest, 1: other cause, 0: no symptoms), where symptoms are the pre-specified set used to screen for inclusion in the TND study. Second, an indicator of receiving a test at a health facility $T$ (1: tested, 0: not tested). 
+
+We further assume:
+\begin{enumerate}
+    \item[(i)] The chance of co-infection or repeated infections of different origin are negligible over the follow up interval such that $I = 1$ and $I = 2$ are mutually exclusive events;
+    \item[(ii)] individuals are screened for symptoms prior to testing such that $T_i = 1 \implies I_i \neq 0$ for every individual $i$;
+    \item[(iii)] all screened individuals are tested;
+    \item[(iv)] the test is perfect such that $Y_i = 2 \implies I_i = 2$ and $Y_i = 1 \implies I_i = 1$ for every individual $i$.
+\end{enumerate}
+These assumptions can be relaxed (e.g., we discuss imperfect testing in \ref{sec:testing}). Under this testing regime, we have that $Y = I \times T$  and we consider $Y \neq 0$ to define \textit{medically attended illness}, i.e., symptomatic infection severe enough to warrant medical attention. Finally, let $Y^v$, $I^v$ and $T^v$ denote the potential outcomes of $Y$, $I$ and $T$ respectively under $V=v$ for $v=0,1$. 
+
+The observed TND data are $n$ independent realizations 
+$$O_{\text{TND}} = \{(X_i, V_i, S_i = 1, Y_i)\}_{i=1}^n,$$
+from the law of $(X, V, Y) \mid S = 1$ where $S$ denotes selection into the TND study with $S = \mathbbm 1(Y \neq 0)$ under the testing regime.
+
+For comparison, we also define data from a hypothetical cohort, i.e. $N$ independent realizations 
+$$O_{\text{cohort}} = \{(X_i, V_i, Y_i)\}_{i=1}^N,$$
+from the law of $(X, V, Y)$, under the same screening and testing regime. TND data can be recovered by restricting the cohort to those tested, but not vice versa. 
+
+\section*{Causal estimands for the test-negative design} \label{sec:estimands}
+In a TND study, the primary estimand is the marginal causal risk ratio,
 \begin{equation*}
-    \Psi_{RR} \equiv \dfrac{\Pr[I^1 = 2, T^1 = 1]}{\Pr[I^0 = 2, T^0 = 1]},
+    RR \equiv \dfrac{\Pr[Y^1 = 2]}{\Pr[Y^0 = 2]},
 \end{equation*}
-which contrasts the joint probability of symptomatic infection and receipt of a test (i.e. seeking medical care) in the population underlying the TND if everyone were vaccinated compared to if they were unvaccinated, with \textit{vaccine effectiveness} defined as $1 - \Psi_{RR}$. In some cases, the causal odds ratio is the focus instead of the risk ratio, although this is often combined with an assumption ---either explicit or implicit--- that symptomatic infection is rare in the population underlying the TND over the follow up period, in which case the odds ratio approximates the risk ratio. Following the literature, we refer to the joint outcome $\mathbbm{1}(I^1 = 2, T^1 = 1)$ as \textit{medically-attended illness}, presuming that inclusion in the TND necessitates symptomatic infection severe enough to require medical care. 
+comparing the probability of medically attended illness due to the pathogen of interest if everyone were vaccinated versus unvaccinated in the population underlying the TND, with causal \textit{vaccine effectiveness} (VE) defined as $1 - RR$. Occasionally, the causal odds ratio is  presented as the target parameter instead of the risk ratio. However, this is often combined with an assumption ---either explicit or implicit--- that symptomatic infection is rare, in which case the odds ratio approximates the risk ratio. 
 
-Under the assumption that the measured covariates, $X$, are sufficient to control confounding and selection bias, \Citeauthor*{schnitzer_estimands_2022} \cite{schnitzer_estimands_2022} showed that the odds ratio comparing vaccination among test-positive cases and test-negative controls under the biased sampling of the test-negative design is a consistent estimator of $\Psi_{RR}$. When unconfoundedness does not hold, $\Psi_{RR}$ is not identified. However, we establish that the causal risk ratio \textit{among the vaccinated}, i.e.
+Under the assumption that the measured covariates $X$ suffice to control confounding and selection bias, \Citeauthor*{schnitzer_estimands_2022} \cite{schnitzer_estimands_2022} showed that $RR$ can be identified by the odds ratio comparing vaccination among test-positive cases and test-negative controls using TND data. When unconfoundedness does not hold, $RR$ is generally not identified. However, we show that an alternative estimand of interest, the causal risk ratio \textit{among the vaccinated}, i.e.
 \begin{equation*}
-    \Psi_{RRV} \equiv \dfrac{\Pr[I^1 = 2, T^1 =1 | V = 1]}{\Pr[I^0 = 2, T^0 =1 | V = 1]} .
+    \Psi \equiv \dfrac{\Pr[Y^1=2 | V = 1]}{\Pr[Y^0 = 2 | V = 1]},
 \end{equation*}
-may nevertheless be point identified under reasonable conditions on the risk ratio scale. The parameter $\Psi_{RRV}$ is analogous to the average treatment effect on the treated (ATT) in the causal inference literature, though expressed as a ratio rather than a difference. Causal vaccine effectiveness (VE) can therefore be defined as $1-\Psi_{RRV}$, which can be interpreted as the proportion of medically-attended illness prevented by vaccination among the vaccinated subjects. When vaccination provides constant protection for everyone, $\Psi_{RRV}$ will coincide with the causal risk ratio in the full population, i.e. $\Psi_{RR} = \Psi_{RRV}$. However, when protection is heterogeneous, the causal risk ratio in the full population becomes a weighted average of the causal risk ratio among the vaccinated and unvaccinated.
+may nevertheless be point identified. The parameter $\Psi$ is analogous to the average treatment effect on the treated (ATT) in the causal inference literature. Similarly, we can define a modified VE as $1-\Psi$, interpreted as the proportion of medically attended illness prevented by vaccination among the vaccinated subjects. When protection is homogeneous, $\Psi$ coincides with the causal risk ratio, i.e. $RR = \Psi$; otherwise, when protection is heterogeneous, $RR$ is a weighted average of the causal risk ratios among the vaccinated and unvaccinated. 
 
-% When there is no direct effect of vaccination on testing (formalized below), then $\Psi_{RR}$ is equivalent to the causal risk ratio for \textit{testing positive} with symptomatic illness,
-% \begin{equation*}
-%     \Psi_{RR} = \dfrac{\Pr[I^1 = 2, T^1 = 1]}{\Pr[I^0 = 2, T^0 = 1]}.
-% \end{equation*}
-% Note, this would be true, for instance, in a double-blind placebo-controlled randomized trial in which participants present naturally for testing when they develop symptoms rather than being randomly sampled and tested regardless of symptoms on a given follow up day. In previous work, the joint outcome is sometimes referred to as medically-attended illness \cite{jackson_test-negative_2013}, under the presumption that to receive a test requires sufficiently acute disease to warrant seeking care. 
+We also consider the \textit{conditional} causal risk ratio among the vaccinated, i.e. 
+\begin{equation*}
+    \Psi(X) \equiv \frac{\Pr[Y^1 = 2 | V = 1, X]}{\Pr[Y^0 = 2 | V = 1, X]}.
+\end{equation*}
+which is the estimand targeted by traditional logistic regression estimator in a TND study when effect homogeneity is assumed or when heterogeneity is modeled via inclusion of product terms. While $\Psi$ is our preferred estimand, we use $\Psi(X)$ to first present our identification arguments in simplified form.
 
-\section{Identification} \label{sec:identification}
-\subsection{Identifiability conditions} \label{sec:conditions}
-    To identify the causal risk ratio among the vaccinated, $\Psi_{RRV}$, we rely on the following conditions
+\section*{Illustrative example} \label{sec:roadmap}
+To build intuition, we start with a brief account of the identification of the conditional risk ratio among the vaccinated, $\Psi(X)$, before turning to formal results for $\Psi$. 
+
+\subsection*{Decomposition of the conditional causal risk ratio among the vaccinated}
+Consider the estimand $\Psi(X)$. Multiplying by unity in the form of $\frac{\Pr[Y^0 = 2 | V = 0, X]}{\Pr[Y^0 = 2 | V = 0, X]}$ and applying consistency of potential outcomes (Assumption \ref{ass1} below), we can write:
+\begin{align} \label{eqn:decomposition}
+    \Psi(X) &=\underbrace{\frac{\Pr[Y = 2| V = 1, X]}{\Pr[Y = 2 | V = 0, X]}}_{\text{observed risk ratio}} \times \underbrace{\frac{\Pr[Y^0 = 2 | V = 0, X]}{\Pr[Y^0 = 2 | V = 1, X]}}_{\text{de-biasing term}}.
+\end{align}
+This decomposition expresses $\Psi(X)$ as the product of two terms: the (crude) observed risk ratio and a de-biasing term. The de-biasing term quantifies the degree of unmeasured confounding between the vaccinated and unvaccinated on the ratio scale, i.e., the net influence of all unmeasured causes of vaccination and the outcome. When there is no unmeasured confounding, the de-biasing term equals one and the observed risk ratio equals the causal risk ratio among the vaccinated. Conversely, in the presence of unmeasured confounding, the de-biasing term is the quantity necessary to remove bias from the observed risk ratio. However, without additional assumptions, this term (in particular the denominator) cannot be identified from the observed data. 
+
+\subsection*{The test-negative illness as a proxy for unmeasured confounding}
+To identify the de-biasing term, $\frac{\Pr[Y^0 = 2 | V = 0, X]}{\Pr[Y^0 = 2 | V = 1, X]}$, we seek a proxy outcome that could be used in place of test-positive illness for bias correction. A natural choice is another infection that produces the same symptoms and shares many of the same confounders, but is itself unaffected by focal vaccination. In a TND this is the role of the test-negative illness. When the net effect of all unmeasured factors $U$ is equivalent on the ratio scale for test-positive and test-negative illness after conditioning on covariates $X$, i.e. when
+\begin{equation}\label{eqn:proxy}
+     \dfrac{\Pr[Y^0 = 2  | V = 1, X]}{\Pr[Y^0 = 2 | V = 0, X]} = \frac{\Pr[Y^0 = 1 | V = 1, X]}{\Pr[Y^0 = 1 | V = 0, X]},
+\end{equation}
+we call this \textit{odds ratio equi-confounding} (Assumption \ref{ass3} below; Note in this case, because the illnesses are also assumed to be mutually exclusive, the odds ratio scale is also the risk ratio scale). Furthermore, if vaccination does not affect the test-negative outcome then 
+\begin{equation}\label{eqn:no_effect}
+     \frac{\Pr[Y^0 = 1 | V = 1, X]}{\Pr[Y^0 = 1 | V = 0, X]} = \frac{\Pr[Y = 1 | V = 1, X]}{\Pr[Y = 1 | V = 0, X]},
+\end{equation}
+implying that the de-biasing term is identified by the ratio of test-negative outcome comparing the vaccinated to unvaccinated.
+
+\subsection*{Identification under cohort and outcome-dependent sampling}
+Substituting $\frac{\Pr[Y = 1 | V = 1, X]}{\Pr[Y = 1 | V = 0, X]}$ for the de-biasing term in our original decomposition of $\Psi(X)$, we derive the following expression:
+    \begin{equation}\label{eqn:or_estimand}
+         \Psi_{om}(X) \equiv \dfrac{\Pr[Y = 2 | V = 1, X]/\Pr[Y = 1 | V = 1, X]}{\Pr[Y = 2 | V = 0, X]/\Pr[Y = 1 | V = 0, X]},
+    \end{equation}
+where the subscript \textit{om} is used to signify that $\Psi_{om}(X)$ is amenable to estimation via outcome modeling in contrast to inverse probability weighting estimands to be defined later. We note that $\Psi_{om}$ is the familiar difference-in-differences estimand on the multiplicative scale, with test-negative illness playing the role of the pre-treatment outcome --- essentially acting as a ``parallel'' trend for test-positive illness in the absence of vaccination. Importantly, $\Psi_{om}(X)$ is expressed solely in terms of observable quantities, meaning it could, in principle, be estimated using data from the underlying cohort. However, it is not identified under the sampling design of the TND which implicitly conditions on $S_i = 1$. 
+
+Nevertheless, under the invariance of the odds ratio \cite{breslow_regression_1976}, we can show that $\Psi_{om}(X)$ is equivalent to
+\begin{equation}\label{eqn:or_estimand_tnd}
+    \Psi^*_{om}(X) = \dfrac{\Pr[Y = 2 | S = 1, V = 1, X]/\Pr[Y = 1 | S = 1, V = 1, X]}{\Pr[Y = 2 | S = 1, V = 0, X]/\Pr[Y = 1 | S = 1, V = 0, X]}
+\end{equation}  
+which is identified under the sampling design of the TND. As discussed further in section \ref{sec:estimation}, $\Psi^*_{om}(X)$ is identical to the conditional odds ratio estimand commonly targeted in TND studies \cite{jackson_test-negative_2013}, suggesting that estimates from existing studies could be reinterpreted and justified under the equi-confounding conditions established here.
+
+\section*{Identification} \label{sec:identification}
+We now return to the marginal causal risk ratio among the vaccinated, $\Psi$, and formalize our identifiability conditions.
+
+\subsection*{Identifiability conditions} \label{sec:conditions}
+    To identify the causal risk ratio among the vaccinated, $\Psi$, we rely on the following conditions
 \begin{enumerate}[label=\upshape(A\arabic*), ref=A\arabic*]
-    \item\label{ass1} \textit{Consistency of potential outcomes}. For all individuals $i$ and for $v \in \{0, 1\}$, we have $I_i^v = I_i$ and $T_i^v = T_i$ when $V_i = v$. 
-    \item\label{ass2} \textit{No effect of vaccination on testing negative and symptomatic among the vaccinated}. That is, $\Pr[I^0 = 1, T^0=1 | V = 1, X] = \Pr[I^1 = 1, T^1=1 | V = 1, X].$
+    \item\label{ass1} \textit{Consistency of potential outcomes}. For all individuals $i$ and for $v \in \{0, 1\}$, we have $Y_i^v = Y_i$ when $V_i = v$. 
+    \item\label{ass2} \textit{No effect of vaccination on testing negative and symptomatic among the vaccinated}. That is, $\Pr[Y^0=1 | V = 1, X] = \Pr[Y^1=1 | V = 1, X].$
     \item\label{ass3} \textit{Odds ratio equi-confounding}. Degree of unmeasured confounding bias on the odds ratio scale is the same for test-positive and test-negative illnesses, i.e. 
     $$OR_2(X) = OR_1(X), $$
-    $$ \text{where } OR_i(X) = \frac{\Pr[I^0 = i, T^0 = 1 | V = 1, X]\Pr[T^0 = 0 | V = 0, X]}{\Pr[T^0 = 0 | V = 1, X]\Pr[I^0 = i, T^0 = 1| V = 0, X]}.$$
-    \item\label{ass4} \textit{Overlap of vaccination among test-positives and test-negatives}. Define $\mathcal{S}_i(v)$ as the support of the law of $(I^0 = i, T^0 = 1, V = v, X)$, then for $v$ in $\{0,1\}$, then it must be that $\mathcal{S}_2(1) \subseteq \mathcal{S}_2(0)$ and $\mathcal{S}_2(v) \subseteq \mathcal{S}_1(v).$
+    $$ \text{where } OR_y(X) = \frac{\Pr[Y^0 = y | V = 1, X]\Pr[Y^0 = 0 | V = 0, X]}{\Pr[Y^0 = 0 | V = 1, X]\Pr[Y^0 = y | V = 0, X]}.$$
+    \item\label{ass4} \textit{Overlap of vaccination among test-positives and test-negatives}. Define $\mathcal{S}_y(v)$ as the support of the law of $(Y^0 = y, V = v, X)$, then for $v$ in $\{0,1\}$, then it must be that $\mathcal{S}_2(1) \subseteq \mathcal{S}_2(0)$ and $\mathcal{S}_2(v) \subseteq \mathcal{S}_1(v).$
     %\item[(A5)] No direct effect of vaccination on test-seeking behavior among the vaccinated. That is, for $i$ in $\{1,2\}$, $\Pr[T^1 = 1 | I^1 = i, V = 1, X] = \Pr[T^0 = 1 | I^0 = i, V = 1, X].$
 \end{enumerate}
 
-Assumption \ref{ass1} is a well-known identifiability condition in the causal inference literature discussed in more detail elsewhere \cite{hernan_causal_2020}. Assumption \ref{ass2} has two implications. First, it implies that the vaccine does not offer any cross-protection against other types of infection which may cause the same symptoms, including any short-term, nonspecific protection via activation of the immune system. Second, it requires that an individual's decision to seek care and get tested is unaffected by their vaccination status, though it may depend on other measured and unmeasured factors. In theory, \ref{ass2} could be evaluated in a randomized trial by comparing the incidence of testing negative (or testing positive for specific non-target pathogens) across the vaccine and comparison arms. However, in practice, trials may not be adequately powered to rule out small effects. In placebo-controlled trials, differences in care-seeking are minimized through the blinding of the participant to their vaccination status. Both aspects of \ref{ass2} have been invoked in previous literature on analysis of TND studies \cite{jackson_test-negative_2013,feng_assessment_2017,schnitzer_estimands_2022}. In Appendix \ref{sec:de_testing}, we show that Assumption \ref{ass2} can be further relaxed if the effect of vaccination on testing is equivalent for test-positive and test-negative illnesses.
+Assumption \ref{ass1} is a well-known identifiability condition discussed in more detail elsewhere \cite{hernan_causal_2020}. Assumption \ref{ass2} has two implications. First, it implies that the vaccine does not offer any cross-protection against other types of infection which may cause the same symptoms, including any short-term, nonspecific protection via activation of the immune system. Second, it requires that an individual's decision to seek care and get tested is unaffected by their vaccination status, though it may depend on other measured and unmeasured factors. In theory, Assumption \ref{ass2} could be evaluated in a randomized trial by comparing the incidence of testing negative (or testing positive for specific non-target pathogens) across arms. However, in practice, trials may not be adequately powered to rule out small effects. Both aspects of Assumption \ref{ass2} have been invoked in previous literature on analysis of TND studies \cite{jackson_test-negative_2013,feng_assessment_2017,schnitzer_estimands_2022}. In \ref{sec:de_testing}, we show that Assumption \ref{ass2} can be further relaxed if the effect of vaccination on testing is equivalent for test-positive and test-negative illnesses and an alternative estimand is considered.
 
-Assumption \ref{ass3} is the key assumption of this paper and offers an alternative to the strict no unmeasured confounding (i.e. conditional independence) assumption suggested previously \cite{schnitzer_estimands_2022}. It states that the degree of unmeasured confounding on the odds ratio scale is the same for test-positive and test-negative illnesses. Notably, it does not require unmeasured confounders to be binary or even related to health-seeking specifically, although health-seeking behavior is likely a credible candidate for satisfying this condition. \citeauthor{lewnard_measurement_2018} briefly mentioned a similar condition, although not in a formal causal framework \cite{lewnard_measurement_2018}. The assumption is also similar to a recently suggested scale-independent alternative to the parallel trend assumption in the difference-in-differences literature \cite{park_universal_2023,tchetgen_universal_2023}. We discuss the underlying parameterization in more detail in Appendix \ref{sec:or_model}. When $I = 1$ and $I = 2$ are mutually exclusive, assumption  \ref{ass3} simplifies to
-\begin{equation}\label{eqn:a3_simplified}
-    \frac{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 0, X]} =\frac{\Pr[I^0 = 1, T^0 = 1 | V = 1, X]}{\Pr[I^0 = 1, T^0 = 1 | V = 0, X]}.
-\end{equation}
-Further, by factorizing, we can split \ref{ass3} into two parts, emphasizing the dual influences of confounding and selection:
+Assumption \ref{ass3} is our key assumption and an alternative to the strict no unmeasured confounding (i.e. conditional independence) assumption suggested previously \cite{schnitzer_estimands_2022}. It states that the degree of unmeasured confounding on the odds ratio scale is the same for test-positive and test-negative illnesses. Notably, it does not require unmeasured confounders to be binary or even related to health-seeking specifically, although health-seeking behavior is likely a credible candidate for satisfying this condition. \citeauthor{lewnard_measurement_2018} mentioned a similar condition previously, although not in a formal causal framework \cite{lewnard_measurement_2018}. The assumption is also similar to a recently suggested scale-independent alternative to the parallel trend assumption in the difference-in-differences literature \cite{park_universal_2023,tchetgen_universal_2023}. We discuss the underlying parameterization in more detail in \ref{sec:or_model}. In  \ref{sec:mechanisms}, we also explore potential structural sources of equi-confounding ---including health-seeking behavior and immortal time--- as well as example violations, such as correlated vaccine-seeking  \cite{payne_impact_2023} and at home testing \cite{qasmieh2024magnitude} and how these may be resolved. When infections are mutually exclusive, Assumption \ref{ass3} simplifies to risk ratio equivalence in Equation \ref{eqn:proxy}.
+Further, recalling $Y = I \times T$, we can split Assumption \ref{ass3}  into:
 \begin{enumerate}[label=\upshape(A3\alph*), ref=A3\alph*]
     \item\label{ass3a}  \textit{Odds ratio equi-confounding}. Degree of unmeasured confounding bias on the odds ratio scale is the same for symptomatic illness regardless if $I=1$ or $I=2$ is cause, i.e. 
     $$\frac{\Pr[I^0 = 2 | V = 1, X]}{\Pr[I^0 = 2 | V = 0, X]} =\frac{\Pr[I^0 = 1 | V = 1, X]}{\Pr[I^0 = 1 | V = 0, X]}.$$
     \item\label{ass3b} \textit{Odds ratio equi-selection}. Degree of unmeasured selection bias, e.g. receiving a test were the subjects not vaccinated, on the odds ratio scale is the same for all symptomatic illness regardless if $I=1$ or $I=2$ is cause, i.e. 
     $$\frac{\Pr[T^0 = 1 | I^0 = 2, V = 1, X]}{\Pr[T^0 = 1 | I^0 = 2, V = 0, X]} =\frac{\Pr[T^0 = 1 | I^0 = 1, V = 1, X]}{\Pr[T^0 = 1 | I^0 = 1, V = 0, X]}.$$
 \end{enumerate}
-Assumptions \ref{ass3a} and \ref{ass3b} are stronger than \ref{ass3} alone as \ref{ass3} allows, in principle, for situations in which the factored terms in \ref{ass3a} and \ref{ass3b} are both unequal but they cancel when multiplied such that \ref{ass3} still holds. However, whether such a mechanism is likely to occur in practice is doubtful.
+Assumptions \ref{ass3a} and \ref{ass3b} are technically stronger than \ref{ass3} alone as \ref{ass3} allows, in principle, for situations in which the terms in Assumptions \ref{ass3a} and \ref{ass3b} are both unequal but  cancel when multiplied. 
 
-Finally, Assumption \ref{ass4} is similar to, although less restrictive than, the well-known positivity condition in causal inference \cite{hernan_causal_2020}. Specifically, \ref{ass4} requires overlap of vaccination propensity between the observed vaccinated and unvaccinated among the test positive cases as well as overlap of vaccination propensity across test-positive cases and test-negative controls within observed vaccination groups. Taken together, the conditions $\mathcal{S}_2(1) \subseteq \mathcal{S}_2(0)$ and $\mathcal{S}_2(v) \subseteq \mathcal{S}_1(v)$ ensure that the odds ratios $OR_2(X)$ and $OR_1(X)$ are well-defined (i.e. nonzero in numerator and denominator).
+Finally, Assumption \ref{ass4} is similar to, although less restrictive than, the well-known positivity condition in causal inference \cite{hernan_causal_2020}. Specifically, Assumption \ref{ass4} requires overlap of vaccination propensity between the observed vaccinated and unvaccinated among the test positive cases as well as overlap of vaccination propensity across test-positive cases and test-negative controls within observed vaccination groups. 
 
-% \subsection{Graphical criteria} \label{sec:graphical}
-The causal directed acyclic graphs (DAGs) in Figure \ref{fig:dags} illustrate possible data generating mechanisms underlying the TND. In these graphs, we introduce $U$, representing a potential unmeasured confounder, to the previous setup. Figures \ref{fig:dag_a} and \ref{fig:dag_b} show mechanisms discussed previously in the TND literature. Figure \ref{fig:dag_a} is a modified version of the DAG in \citeauthor{schnitzer_estimands_2022} \cite{schnitzer_estimands_2022}, where the lack of an arrow from $U$ to $V$ indicates no unmeasured confounding or selection bias. Assumption \ref{ass2} is also shown by the lack of a direct arrow from $V$ to $T$, implying no direct effect of vaccination on testing behavior. Figure \ref{fig:dag_b} is a modified version of the DAG in \citeauthor{sullivan_theoretical_2016} \cite{sullivan_theoretical_2016}, where $U$ is binary health seeking behavior that is synonymous with receiving a test and therefore effectively conditioned on by conditioning on testing.  
+The causal directed acyclic graphs (DAG) in Figure \ref{fig:dag} shows a possible mechanism satisfying the identifiability conditions above.
+%Taken together, the conditions $\mathcal{S}_2(1) \subseteq \mathcal{S}_2(0)$ and $\mathcal{S}_2(v) \subseteq \mathcal{S}_1(v)$ ensure that the odds ratios $OR_2(X)$ and $OR_1(X)$ are well-defined (i.e. nonzero in numerator and denominator).
 
-The DAG in Figure \ref{fig:dag_c} shows a possible mechanism satisfying the identifiability conditions in this study. It includes the possibility of unmeasured confounding and selection bias, as there is now an arrow from $U$ to $V$; however, as shown by the bold arrows, $U$ is assumed to act equivalently, on the odds scale, for the test positive and test negative illnesses. This condition imposes a parametric restriction on the allowable data generation mechanisms implied by the DAG and as such requires nonstandard notation. The DAGs in Figures \ref{fig:dag_d} and \ref{fig:dag_e} depict alternative mechanisms in which only equi-confounding, Assumption \ref{ass3a}, or equi-selection, Assumption \ref{ass3b}, are assumed. In Figure \ref{fig:dag_split}, we show an alternative DAG that splits the $I$ node into $I_1 = \mathbbm{1}(I = 1)$ and $I_2 = \mathbbm{1}(I = 2)$ with the dashed arrow between them representing the deterministic relationship as they are assumed to be mutually exclusive. This graph allows us to show Assumption \ref{ass2} by the lack of a directed arrow between $V$ and $I_1$. 
+% \subsection*{Graphical criteria} \label{sec:graphical}
+%The causal directed acyclic graphs (DAGs) in Figure \ref{fig:dags} illustrate possible data generating mechanisms underlying the TND. In these graphs, we introduce $U$, representing a potential unmeasured confounder, to the previous setup. Figures \ref{fig:dag_a} and \ref{fig:dag_b} show mechanisms discussed previously in the TND literature. Figure \ref{fig:dag_a} is a modified version of the DAG in \citeauthor{schnitzer_estimands_2022} \cite{schnitzer_estimands_2022}, where the lack of an arrow from $U$ to $V$ indicates no unmeasured confounding or selection bias. Assumption \ref{ass2} is also shown by the lack of a direct arrow from $V$ to $T$, implying no direct effect of vaccination on testing behavior. Figure \ref{fig:dag_b} is a modified version of the DAG in \citeauthor{sullivan_theoretical_2016} \cite{sullivan_theoretical_2016}, where $U$ is binary health seeking behavior that is synonymous with receiving a test and therefore effectively conditioned on by conditioning on testing.  
 
-\subsection{The test-negative illness as a proxy for unmeasured confounding} \label{sec:effect_among_vaccinated}
-To build intuition about the role of conditions \ref{ass1} - \ref{ass4}, consider briefly the identification of the \textit{conditional} causal risk ratio among the vaccinated, i.e.
-\begin{equation*}
-    \Psi_{RRV}(X) \equiv \frac{\Pr[I^1 = 2, T^1 = 1 | V = 1, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}.
-\end{equation*}
-Multiplying by one in the form of $\frac{\Pr[I^0 = 2, T^0 = 1| V = 0, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 0, X]}$ and applying consistency (Assumption \ref{ass1}), we can decompose $\Psi_{RRV}(X)$ as follows:
-\begin{align} \label{eqn:decomposition}
-    \Psi_{RRV}(X) &=\underbrace{\frac{\Pr[I = 2, T = 1 | V = 1, X]}{\Pr[I = 2, T = 1 | V = 0, X]}}_{\text{observed risk ratio}} \times \underbrace{\frac{\Pr[I^0 = 2, T^0 = 1 | V = 0, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 1, X]}}_{\text{de-biasing term}}.
-\end{align}
-This equation shows $\Psi_{RRV}(X)$ can be written as the product of two terms: the (crude) observed risk ratio and a de-biasing term. The de-biasing term represents the ratio of the potential outcomes if vaccination were withheld between those who were, in fact, vaccinated and those who were not. When there is no unmeasured confounding, the de-biasing term equals one and the observed risk ratio equals the causal risk ratio among the vaccinated. Conversely, in the presence of unmeasured confounding, the de-biasing term is the quantity necessary to remove bias from the observed risk ratio. However, without additional assumptions, this term cannot be identified from the observed data. 
+%The DAG in Figure \ref{fig:dag_c} shows a possible mechanism satisfying the identifiability conditions in this study. It includes the possibility of unmeasured confounding and selection bias, as there is now an arrow from $U$ to $V$; however, as shown by the bold arrows, $U$ is assumed to act equivalently, on the odds scale, for the test positive and test negative illnesses. This condition imposes a parametric restriction on the allowable data generation mechanisms implied by the DAG and as such requires nonstandard notation. The DAGs in Figures \ref{fig:dag_d} and \ref{fig:dag_e} depict alternative mechanisms in which only equi-confounding, Assumption \ref{ass3a}, or equi-selection, Assumption \ref{ass3b}, are assumed. In Figure \ref{fig:dag_split}, we show an alternative DAG that splits the $I$ node into $I_1 = \mathbbm{1}(I = 1)$ and $I_2 = \mathbbm{1}(I = 2)$ with the dashed arrow between them representing the deterministic relationship as they are assumed to be mutually exclusive. This graph allows us to show Assumption \ref{ass2} by the lack of a directed arrow between $V$ and $I_1$. 
 
-One approach is to find a proxy for the debiasing term $\Pr[I^0 = 2, T^0 = 1 | V = 0, X]/\Pr[I^0 = 2, T^0 = 1 | V = 1, X]$ that is identifiable and could therefore be used for bias correction. A natural choice is another related infection (for instance one producing the same symptoms) that shares many of the same hidden factors confounding the relationship between vaccination and focal infection and testing. In a TND this is the role of the test-negative illness. By design, those testing negative in the TND demonstrate a similar propensity for infection and for seeking care when symptomatic. Assuming the vaccine has no effect on the test negative illness (Assumption \ref{ass2}), any observed difference in the incidence of test-negative illness between the vaccinated and unvaccinated, after conditioning on measured covariates $X$, must reflect residual unmeasured confounding. Under equi-confounding (Assumption \ref{ass3}) it is assumed that the ratio of test-negative illness in vaccinated and unvaccinated individuals is a perfect proxy for the de-biasing term:
-\begin{equation}\label{eqn:proxy}
-     \dfrac{\Pr[I^0 = 2, T^0 = 1  | V = 1, X]}{\Pr[I^0 = 2, T^0 = 1 | V = 0, X]} = \frac{\Pr[I = 1, T = 1  | V = 1, X]}{\Pr[I = 1, T = 1  | V = 0, X]}.
-\end{equation}
-In structural terms, \ref{ass3} implies that any unmeasured factors $U$ exert identical effects on both test-positive and test-negative illness on the odds ratio scale (Note in this case, because the illnesses are also assumed to be mutually exclusive, the odds ratio scale is also the risk ratio scale). 
 
-By substituting the result in Equation \ref{eqn:proxy} for the de-biasing term in our original decomposition of $\Psi_{RRV}(X)$, we derive the following expression:
-    \begin{equation}\label{eqn:or_estimand}
-         \Psi_{om}(X) \equiv \dfrac{\Pr[I = 2, T = 1 | V = 1, X]/\Pr[I = 1, T = 1 | V = 1, X]}{\Pr[I = 2, T = 1 | V = 0, X]/\Pr[I = 1, T = 1 | V = 0, X]},
-    \end{equation}
-This equation is the familiar difference-in-differences estimand on the multiplicative scale, where test-negative illness is used in place of the pre-treatment outcome --- essentially acting as a ``parallel'' trend for test-positive illness in the absence of vaccination. Importantly, $\Psi_{om}(X)$ is expressed solely in terms of observable quantities, meaning it could, in principle, be estimated using data from the underlying cohort. However, it is not identified under the sampling design of the TND. 
-
-Nevertheless, by applying the same logic as \textcite{breslow_regression_1976}, we can show that $\Psi_{om}(X)$ is equivalent to
-\begin{equation}\label{eqn:or_estimand_tnd}
-    \Psi^*_{om}(X) = \dfrac{\Pr[I^* = 1 | S = 1, V = 1, X]/\Pr[I^* = 0 | S = 1, V = 1, X]}{\Pr[I^* = 1 | S = 1, V = 0, X]/\Pr[I^* = 0 | S = 1, V = 0, X]}
-\end{equation}  
-which is identified in the TND. As discussed below, $\Psi^*_{om}(X)$ is identical to the conditional odds ratio estimand commonly targeted in TND studies \cite{jackson_test-negative_2013}, suggesting that estimates from existing studies could be reinterpreted and justified under the equi-confounding conditions established here.
-
-\subsection{Identification in a cohort study}
-Consider again the primary estimand of interest, the marginal risk ratio among the vaccinated, $\Psi_{RRV}$. We apply similar logic to establish our main identification results. Our first proposition shows that, under  assumptions \ref{app_ass1} - \ref{app_ass4}, $\Psi_{RRV}$ is identifiable under cohort sampling. 
+\subsection*{Identification in a cohort study}
+Our first proposition shows that, under  Assumptions \ref{ass1} - \ref{ass4}, $\Psi$ is identifiable under cohort sampling. 
 \begin{proposition}\label{prop1}
-    Given assumptions \ref{app_ass1} - \ref{app_ass4}, $\Psi_{RRV}$ is identifiable under cohort sampling, i.e. 
-    $$O_{cohort} = \{(X_i, V_i, I_i, T_i) : i = 1, \ldots, N\},$$ 
-    by the expressions 
+    Given Assumptions \ref{ass1} - \ref{ass4}, $\Psi$ is identifiable under cohort sampling, i.e. $O_{cohort} = \{(X_i, V_i, Y_i)\}_{i=1}^N,$ by the expressions 
     \begin{equation}\label{eqn:om_estimand}
-        \Psi_{om} \equiv \dfrac{\Pr(I = 2, T = 1 | V = 1)}{E\left\{\Pr(I = 2, T = 1 | V = 0, X) \exp\{\alpha_1(X)\} \Big| V = 1 \right\}}
+        \Psi_{om} \equiv \dfrac{\E[V \mathbbm 1 (Y = 2)]}{\E\left[V \mathbbm 1(Y = 1) \dfrac{\Pr[Y = 2 | V = 0, X]}{\Pr[Y = 1 | V = 0, X]}  \right]}
     \end{equation}
     and 
     \begin{equation}\label{eqn:ipw_estimand}
-        \Psi_{ipw} \equiv \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{ (1 - V) \mathbbm 1(I = 2, T = 1) \dfrac{\pi_1(X)}{1 - \pi_1(X)}\right\}}
+        \Psi_{ipw} \equiv \dfrac{\E[V \mathbbm 1 (Y = 2)]}{\E\left[ (1 - V) \mathbbm 1(Y = 2) \dfrac{\Pr[V=1|Y = 1, X]}{\Pr[V=0|Y = 1, X]}\right]}.
     \end{equation}
-    where $\alpha_1(X) = \log \dfrac{\Pr(I = 1, T = 1 | V = 1, X)}{\Pr(I = 1, T = 1 | V = 0, X)}$ and $\pi_1(X) = \Pr(V = 1| I = 1, T = 1, X)$.
+    % \begin{equation}\label{eqn:ipw_estimand}
+    %     \Psi_{ipw} \equiv \dfrac{\E[V \mathbbm 1 (Y = 2)]}{\E\left[ (1 - V) \mathbbm 1(Y = 2) \dfrac{\pi_1(X)}{1 - \pi_1(X)}\right]}
+    % \end{equation}
+    %where $\pi_y(X) = \Pr[V = 1| Y = y, X]$ and $\mu_v(X) = \Pr[Y = 2$.
     \end{proposition}
-
     \begin{proof}
-        Proof of Proposition 1 is deferred to Appendix \ref{sec:proof1}.
+        Proof of Proposition 1 is deferred to \ref{sec:proofs}.
     \end{proof}
-    
-%  \begin{equation}\label{eqn:om_estimand}
-%     \Psi_{om} \equiv \dfrac{\Pr(I = 2, T = 1 | V = 1)}{E\left\{\Pr(I = 2, T = 1 | V = 0, X) \dfrac{\Pr(I = 1, T = 1 | V = 1, X)}{\Pr(I = 1, T = 1 | V = 0, X)} \Big| V = 1 \right\}},
-%  \end{equation}
-% and 
-% \begin{equation}\label{eqn:ipw_estimand}
-%     \Psi_{ipw} \equiv \dfrac{E\{V \mathbbm 1 (I = 2, T = 1)\}}{E\left\{ (1 - V) \mathbbm 1(I = 2, T = 1) \dfrac{\Pr(V = 1| I = 1, T = 1, X)}{\Pr(V = 0| I = 1, T = 1, X)}\right\}},
-% \end{equation}
-The first expression is a generalization of the result for $\Psi_{om}(X)$ discussed earlier, where the de-biasing term is now standardized over the distribution of $X$ among the vaccinated. The second expression offers an alternative representation of the de-biasing term based on the invariance property of the odds ratio. By combining this property with conditions \ref{ass1} - \ref{ass4}, we can show that expression \ref{eqn:proxy} is equivalent to
-$$\frac{\Pr[I^0 = 2,  T^0 = 1| V = 1, X]}{\Pr[I^0 = 2,  T^0 = 1 | V = 0, X]} = \frac{\Pr[V = 1 | I^0 = 2, T^0 = 1, X]}{\Pr[V = 0 | I^0 = 2, T^0 = 1, X]} =\frac{\Pr[V = 1 | I = 1, T = 1, X]}{\Pr[V = 0 | I = 1, T = 1, X]}.$$
-Thus, the odds of vaccination among the test-negative controls may be viewed as another proxy for the de-biasing term. Following standard terminology in causal inference \cite{robins_estimating_1992}, we refer to expression \ref{eqn:om_estimand} as the \textit{outcome-modeling} estimand and expression \ref{eqn:ipw_estimand} as the \textit{inverse-probability weighting} estimand.
+
+Expression \ref{eqn:om_estimand} is a generalization of the result for $\Psi_{om}(X)$ discussed earlier, where the de-biasing term is now standardized over the distribution of $X$ among the vaccinated. Expression \ref{eqn:ipw_estimand} offers an alternative representation of the de-biasing term based on Assumptions \ref{ass1} - \ref{ass4} and the invariance property of the odds ratio, as 
+$$\frac{\Pr[Y^0 = 2| V = 1, X]}{\Pr[Y^0 = 2 | V = 0, X]} = \frac{\Pr[V = 1 | Y^0 = 2,  X]}{\Pr[V = 0 | Y^0 = 2, X]} =\frac{\Pr[V = 1 | Y = 1, X]}{\Pr[V = 0 | Y = 1, X]}.$$
+Following standard terminology \cite{robins_estimating_1992}, we refer to Expression \ref{eqn:om_estimand} as the \textit{outcome-modeling} estimand and Expression \ref{eqn:ipw_estimand} as the \textit{inverse-probability weighting} estimand.
 
 \begin{remark}
-The quantity $\pi_2(X) \equiv \Pr[V = 1 | I^0 = 2, T^0 = 1, X]$ is sometimes referred to as the \textit{extended propensity score} (EPS) function, as it extends the standard propensity score by conditioning on the treatment-free potential outcome --- in this case $I^0 = 2$ and $T^0 = 1$. As shown in previous work \cite{tchetgen_single_2023}, in the presence of unmeasured confounding, knowledge of the EPS is sufficient to identify the average treatment effect among the treated. 
+The quantity $\Pr[V = 1 | Y^0 = 2, X]$ is sometimes referred to as the \textit{extended propensity score} function, as it extends the standard propensity score to allow for unmeasured confounding by conditioning on the treatment-free potential outcome --- in this case $Y^0 = 2$. As shown previously \cite{tchetgen_single_2023}, in the presence of unmeasured confounding, knowledge of the extended propensity score is sufficient to identify treatment effects among the treated. Similarly knowledge of $\Pr[V = 1 | Y^1 = 2, X]$ would permit identification of treatment effects among the untreated, and knowledge of both would permit the identification of the overall effect \cite{tchetgen_single_2023}.
 \end{remark}
 
 \begin{remark}
-Recent work by \textcite{li2024comparison} compares the performance of the TND with modern approaches to the analysis of cohort studies, such as target trial emulation. However, it is unclear whether these comparators always target the same estimands. Expressions \ref{eqn:or_estimand}, \ref{eqn:om_estimand}, and \ref{eqn:ipw_estimand} suggest an alternative analysis that could be conducted in the cohort ---essentially a difference-in-differences analysis comparing test-positive and test-negative outcomes--- that would target $\Psi_{RRV}$. Such an analysis could offer a more direct comparison with the TND estimators introduced below. In fact, in a cohort study, alternative estimates of absolute risk differences could be derived under our identifiability conditions (see Section X of the Appendix)
+Recent work by \textcite{li2024comparison} compares the performance of the TND with analyses in the full cohort using target trial emulation. However, it is unclear whether these designs target the same estimand. Indeed, Expressions \ref{eqn:or_estimand}, \ref{eqn:om_estimand}, and \ref{eqn:ipw_estimand} suggest an alternative analysis in the cohort ---essentially a difference-in-differences analysis comparing test-positive and test-negative outcomes--- would target $\Psi$ and could offer a more direct comparison with the TND estimators introduced in this paper. We also note that, in a cohort study, alternative estimates of absolute risk differences could be derived under equi-confounding.
 \end{remark}
 
-\subsection{Identification under outcome-dependent sampling in a TND}
+\subsection*{Identification under outcome-dependent sampling in a TND}
 
-Expressions \ref{eqn:om_estimand} and \ref{eqn:ipw_estimand} require knowledge of the absolute probability of receiving a test. However, in a TND we observe only individuals who pass the symptom screen and are tested. Despite this, the next proposition shows that $\Psi_{RRV}$ remains identifiable under the outcome-dependent sampling scheme of the TND. 
+Expressions \ref{eqn:om_estimand} and \ref{eqn:ipw_estimand} require absolute probabilities that cannot be estimated under the outcome-dependent sampling scheme of the TND. Nonetheless, the next proposition shows that $\Psi$ remains identifiable 
  \begin{proposition}\label{prop2}
-      Under test-negative sampling, i.e. 
-      $$O_{TND} = \{(X_i, V_i, S_i=1, I^*_i) : i = 1, \ldots, n\},$$ 
-      with selection $S = \mathbbm 1(I\neq 0, T = 1)$, $\Psi_{om}$ and $\Psi_{ipw}$ are equivalent to 
+      Under test-negative sampling, i.e. $O_{TND} = \{(X_i, V_i, S_i=1, Y_i)\}_{i=1}^n,$ with selection $S = \mathbbm 1(Y\neq 0)$, $\Psi_{om}$ and $\Psi_{ipw}$ are equivalent to 
     \begin{equation}\label{eqn:om_estimand_tnd}
-        \Psi_{om}^* = \dfrac{\Pr(I^* = 1 | S = 1, V = 1)}{E\left\{  \Pr(I^* = 1 | S = 1, V = 0, X) \exp\{\alpha^*_1(X)\}\Big| S = 1, V = 1 \right\}}
+        \Psi_{om}^* = \dfrac{\E[V \mathbbm 1 (Y = 2)|S =1]}{\E\left[V\mathbbm 1 (Y = 1) \dfrac{\Pr[Y = 2 | S = 1, V = 0, X]}{\Pr[Y = 1| S = 1, V = 0, X]}\Big| S = 1 \right]}
     \end{equation}
     and 
-    \begin{equation}\label{eqn:ipw_estimand_tnd}
-        \Psi_{ipw}^* = \dfrac{E\{VI^*|S =1\}}{E\left\{ (1 - V) I^* \dfrac{\pi^*_0(X)}{1 - \pi^*_0(X)} \bigg| S = 1\right\}}
+     \begin{equation}\label{eqn:ipw_estimand_tnd}
+        \Psi_{ipw}^* = \dfrac{\E[V \mathbbm 1 (Y = 2)|S =1]}{\E\left[ (1 - V) \mathbbm 1 (Y = 2) \dfrac{\Pr[V=1 | S=1, Y=1, X]}{\Pr[V=0 | S=1, Y=1, X]} \bigg| S = 1\right]}.
     \end{equation}
-    where $\alpha^*_1(X) = \log \dfrac{\Pr(I^* = 0 | S = 1, V = 1, X)}{\Pr(I^* = 0| S = 1, V = 0, X)}$ and $\pi^*_0(X) = \Pr(V = 1| S = 1, I^* = 0, X)$. Therefore by Proposition \ref{prop1} and assuming conditions \ref{ass1}-\ref{ass4} hold, $\Psi_{om}^*$ and $\Psi_{ipw}^*$ are also identifying expressions for $\Psi_{RRV}$.
+    Therefore by Proposition \ref{prop1} and assuming conditions \ref{ass1}-\ref{ass4} hold, $\Psi_{om}^*$ and $\Psi_{ipw}^*$ are also identifying expressions for $\Psi$.
  \end{proposition}
  \begin{proof}
-    See Appendix \ref{sec:proof2}.
+    Proof of Proposition 2 is deferred to \ref{sec:proofs}.
  \end{proof}
     
- Expressions \ref{eqn:om_estimand_tnd} and  \ref{eqn:ipw_estimand_tnd} condition on selection in the TND and are thus identifiable based on the observed data. As before, we refer to expression \ref{eqn:om_estimand_tnd} as the outcome-modeling estimand of the TND and expression \ref{eqn:ipw_estimand_tnd} as the inverse-probability weighting estimand of the TND.
+ Expressions \ref{eqn:om_estimand_tnd} and \ref{eqn:ipw_estimand_tnd} only require conditional probabilities among the tested and thus are identifiable in a TND. As before, we refer to Expression \ref{eqn:om_estimand_tnd} as the outcome-modeling estimand of the TND and Expression \ref{eqn:ipw_estimand_tnd} as the inverse-probability weighting estimand of the TND.
 
  \begin{remark}
-     Comparing expressions \ref{eqn:om_estimand} and \ref{eqn:om_estimand_tnd}, we note that the ``sampling scheme'' of the TND can be viewed as outcome-dependent or case-control sampling of an outcome ($I=2, T=1$) and corresponding negative outcome control ($I=1, T =1$). 
+     Comparing Expressions \ref{eqn:om_estimand} and \ref{eqn:om_estimand_tnd}, we note that the ``sampling scheme'' of the TND can be viewed as outcome-dependent or case-control sampling of an outcome of interest ($Y=2$) and a corresponding negative outcome control ($Y=1$). 
  \end{remark}
 
  \begin{remark}
      Expressions \ref{eqn:om_estimand_tnd} and  \ref{eqn:ipw_estimand_tnd} resemble those proposed assuming unconfoundedness \cite{jiang_tnddr_2023}. In that work, the authors introduce a class of marginal estimands in a TND that can be written as 
      \begin{equation*}
-         \dfrac{E\left[\Pr[I^* = 1 | V = 1, X = x, S = 1]\omega_1(x) | S = 1 \right]}{E\left[\Pr[I^* = 1 | V = 0, X = x, S = 1]\omega_0(x) | S = 1\right]}
+         \dfrac{\E\left[\Pr[Y=2 | V = 1, X = x, S = 1]\omega_1(x) | S = 1 \right]}{\E\left[\Pr[Y=2 | V = 0, X = x, S = 1]\omega_0(x) | S = 1\right]}
      \end{equation*}
-     where $\omega_v(x)$ are ``de-biasing weights'' used to adjust for bias due to outcome-dependent sampling. They describe weights based on both outcome-modeling and inverse probability weighting. We note that the denominator of both \ref{eqn:om_estimand_tnd} and  \ref{eqn:ipw_estimand_tnd} has a similar form, using alternative weights 
+     where $\omega_v(x)$ are ``de-biasing weights'' used to adjust for bias due to outcome-dependent sampling. They describe weights based on both outcome-modeling and inverse probability weighting. We note that the denominators of Expressions \ref{eqn:om_estimand_tnd} and  \ref{eqn:ipw_estimand_tnd} both have a similar form, using alternative weights 
      \begin{equation*}
-         \omega_0(x) \equiv \dfrac{\Pr(I^* = 0 | S = 1, V = 1, X)}{\Pr(I^* = 0| S = 1, V = 0, X)} = \dfrac{\Pr(V=1 | S = 1, I^* = 0, X)}{\Pr(V=0| S = 1, I^* = 0, X)}
+         \omega_0(x) \equiv \dfrac{\Pr[Y = 1 | S = 1, V = 1, X]}{\Pr[Y=1| S = 1, V = 0, X]} = \dfrac{\Pr[V=1 | S = 1, Y = 1, X]}{\Pr[V=0| S = 1, Y = 1, X]}
      \end{equation*}
      However, these weights simultaneously address outcome-dependent sampling and adjust for unmeasured equi-confounding. 
  \end{remark}
 
-\section{Estimation}\label{sec:estimation}
-The traditional approach to estimating vaccine effectiveness in a TND involves logistic regression of $I^*$ conditional on $X$ and $V$, such as:
-$$\log \left\{\dfrac{\Pr[I^* = 1 | S = 1, V, X]}{\Pr[I^* = 0 | S = 1, V, X]}\right\} = \gamma_0 + \gamma_1 V + \gamma_2^t X,$$
-where effectiveness is defined as one minus the odds ratio comparing vaccinated and unvaccinated, i.e. $VE = 1 - \exp(\gamma_1)$. As we have shown, $\exp(\gamma_1)$ is equal to $\Psi^*_{om}(X)$, and by extension, the conditional causal risk ratio among the vaccinated, $\Psi_{RRV}(X)$, under identifiability conditions \ref{ass1} - \ref{ass4} and correct model specification. 
+\section*{Estimation}\label{sec:estimation}
+We now describe estimation strategies for the causal risk ratio among the vaccinated in a TND, based on the identifying expressions in Proposition \ref{prop2}. However, we describe in \ref{sec:app_estimation} estimators based on the results in Proposition \ref{prop1} in a cohort study. For convenience, we define an indicator for test positive case in the TND sample $Y^* = \mathbbm 1 (Y = 2)$.
 
-Alternatively, expressions (\ref{eqn:om_estimand_tnd}) and (\ref{eqn:ipw_estimand_tnd}) suggest two plug-in estimators valid under effect modification. Expression (\ref{eqn:om_estimand_tnd}) suggests the plug-in estimator:
+Traditionally in a TND, the analyst performs a logistic regression of $Y$ conditional on $X$ and $V$, such as:
+$$\log \left\{\dfrac{\Pr[Y^*=1 | S = 1, V, X]}{\Pr[Y^* = 0 | S = 1, V, X]}\right\} = \gamma_0 + \gamma_1 V + \gamma_2^\prime X,$$
+where $\gamma_1$ is the focal coefficient. As we have shown, $\exp(\gamma_1)$ is equal to $\Psi^*_{om}(X)$, and by extension, the conditional causal risk ratio among the vaccinated, $\Psi(X)$, under identifiability Assumptions \ref{ass1} - \ref{ass4} and correct model specification. 
+
+Alternatively, Expressions \ref{eqn:om_estimand_tnd} and \ref{eqn:ipw_estimand_tnd} suggest two plug-in estimators valid under effect modification. Expression \ref{eqn:om_estimand_tnd} suggests the plug-in estimator:
 \begin{equation}\label{eqn:om_estimator}
-    \widehat{\Psi}_{om}^* = \dfrac{\sum_{i=1}^n V_i I^*_i}{\sum_{i=1}^n V_i \widehat{\mu}_0(X_i)\dfrac{1 - \widehat{\mu}^*_1(X_i)}{1 - \widehat{\mu}^*_0(X_i)}},
+    \widehat{\Psi}_{om}^* = \dfrac{\sum_{i=1}^n V_i Y^*_i}{\sum_{i=1}^n V_i (1 - Y_i^*)\dfrac{\widehat{\mu}^*_0(X_i)}{1 - \widehat{\mu}^*_0(X_i)}},
 \end{equation}
-where $\mu^*_v(X) = \Pr(I^*=1\mid S=1, V=v, X)$ is the probability of testing positive among those with vaccine status $V =v$ in the TND sample. This could be obtained, for instance, via a logistic regression of $I^*$ conditional on $X$ and $V$.
+where $\mu^*_v(X) = \Pr[Y^* =1 \mid S=1, V=v, X]$ is the probability of testing positive among those with vaccine status $V =v$ in the TND sample. This could be obtained, for instance, via a logistic regression of $Y^*$ conditional on $X$ and $V$.
 
-Expression (\ref{eqn:ipw_estimand_tnd}), on the other hand, suggests the plug-in estimator:
+Expression \ref{eqn:ipw_estimand_tnd}, on the other hand, suggests the plug-in estimator:
 \begin{equation}\label{eqn:ipw_estimator}
-    \widehat{\Psi}_{ipw}^* = \dfrac{\sum_{i=1}^n V_i I^*_i}{\sum_{i=1}^n (1 - V_i) I^*_i \dfrac{\widehat\pi_0(X_i)}{1 - \widehat\pi_0(X_i)}},
+    \widehat{\Psi}_{ipw}^* = \dfrac{\sum_{i=1}^n V_i Y^*_i}{\sum_{i=1}^n (1 - V_i) Y^*_i \dfrac{\widehat\pi^*_0(X_i)}{1 - \widehat\pi^*_0(X_i)}},
 \end{equation}
-where $\pi_0(X) = \Pr(V=1\mid S=1, I^*=0, X)$ is the probability of vaccination among the test-negative controls. This probability could be obtained, for instance, via a logistic regression of $V$ on $X$ among those with $I^*=0$. In Appendix \ref{sec:app_estimation}, we discuss methods for estimating standard errors and confidence intervals for $\widehat{\Psi}_{om}^*$ and $\widehat{\Psi}_{ipw}^*$ via bootstrapping or stacked estimating equations. We also discuss alternative estimators, suggested by expressions (\ref{eqn:om_estimand}) and (\ref{eqn:ipw_estimand}), that could be used when one has access to the full sample (including the untested) from the underlying cohort.
+where $\pi_y(X) = \Pr[V=1\mid S=1, Y^*=y, X]$ is the probability of vaccination among the test-negative controls. This probability could be obtained, for instance, via a logistic regression of $V$ on $X$ among those with $Y^*=0$. In \ref{sec:app_estimation}, we discuss methods for estimating standard errors and confidence intervals for $\widehat{\Psi}_{om}^*$ and $\widehat{\Psi}_{ipw}^*$ via bootstrapping or stacked estimating equations. 
 
-The first estimator, $\widehat{\Psi}_{om}^*$, requires  correct specification of the outcome model, while the second estimator, $\widehat{\Psi}_{ipw}^*$, requires correct specification of the extended propensity score model. The preferred estimator may depend on the context. For instance, if more is known about the assignment mechanism for vaccination, the weighting estimator may be preferred \cite{robins_estimating_1992,braitman_rare_2002}. Conversely, if the process leading to infection and testing is better understood, the outcome estimator may be more appropriate. In practice, however, both models may be difficult to specify correctly. Data-adaptive and more flexible machine learning estimators offer the possibility of capturing more complex data generation processes, though they generally converge at slower rates than the $\sqrt{n}$ rates of parametric models. Therefore, it may be difficult to construct asymptotically valid confidence intervals \cite{chernozhukov_doubledebiased_2018}. 
-
-To address this, we derive an estimator based on the efficient influence function for $\Psi_{RRV}$:
+The first estimator, $\widehat{\Psi}_{om}^*$, requires  correct specification of the outcome model, while the second estimator, $\widehat{\Psi}_{ipw}^*$, requires correct specification of the extended propensity score model. %The preferred estimator may depend on the context. For instance, if more is known about the assignment mechanism for vaccination, the weighting estimator may be preferred \cite{robins_estimating_1992,braitman_rare_2002}. Conversely, if the process leading to infection and testing is better understood, the outcome estimator may be more appropriate. 
+In practice, however, both models may be difficult to specify correctly. To address this, we construct a doubly robust estimator for $\Psi$ that is consistent and asymptotically normal if the model for either $\mu^*_0(X)$ or $\pi^*_0(X)$ or both are correctly specified. Full details of the doubly robust approach are included in \ref{sec:eif}, but are based on noting that an equivalent expression of $\Psi_{om}$ and $\Psi_{ipw}$ is
+\begin{equation*}
+    \dfrac{\E[V \mathbbm 1 (Y = 2)|S =1]}{\E\left[V\mathbbm 1 (Y = 2) \exp\{-\phi^*(X)\}\Big| S = 1 \right]},
+\end{equation*}
+where 
+\[\phi^*(X) = \log \dfrac{\Pr[Y=2|S=1, V=1,X]\Pr[Y=1|S=1, V=1,X]}{\Pr[Y=1|S=1, V=0,X]\Pr[Y=2|S=1, V=0,X]}\]
+is the log of the conditional odds ratio function. As described in \textcite{tchetgen_tchetgen_doubly_2010}, a doubly robust estimator of $\alpha^*(X)$ may be obtained as the solution to the empirical analogue of the population moment equation
+\[E[(1,X)'(V-\pi_0^*(X))\exp\{-\phi^*(X)VY^*\}(Y^* - \mu_0^*(X))] = 0.\]
+Let $\widehat{\phi}_{dr}^*(X)$ be one such solution, a doubly robust estimator of $\Psi$ is then
 \begin{equation}\label{eqn:dr_estimator}
-    \widehat{\Psi}_{dr}^* = \dfrac{\sum_{i=1}^n V_jI_j^*}{\sum_{j=1}^n\bigg[ (1-V_j)\{I^*_j - \widehat\mu_0(X_j)\}\dfrac{\widehat\pi(X_j)\{1 - \widehat\mu_1(X_j)\}}{\{1 - \widehat\pi(X_j)\}\{1 - \widehat\mu_0(X_j)\}^2} + V_j\{1-I^*_j\}\dfrac{\widehat\mu_0(X_j)}{1-\widehat \mu_0(X_j)}\bigg]},
+    \widehat{\Psi}_{dr}^* = \dfrac{\sum_{i=1}^n V_i Y^*_i}{\sum_{i=1}^nV_iY^*_i \exp\{\widehat{\phi}_{dr}^*(X)\}}.
 \end{equation}
-which we discuss further in Appendix \ref{sec:eif}.
-This estimator, $\widehat\Psi_{dr}^*$, is consistent if the model for $\mu_0$ and either the model for $\mu_1$ or the model for $\pi$ are correctly specified.
 
-\section{Sensitivity analysis}
+
+\section*{Sensitivity analysis}
 In practice, the odds ratio equi-confounding assumption may not hold such that
 $$OR_2(X) \neq OR_1(X).$$ 
-However, the decomposition in expression (\ref{eqn:decomposition}) suggests a sensitivity analysis that allows for departures from equi-confounding as follows. Consider the scenario where the odds ratio function $OR_2(X)$ is instead equal to:
+However, the decomposition in Expression \ref{eqn:decomposition} suggests a sensitivity analysis that allows for departures from equi-confounding as follows. Consider the scenario where the odds ratio function $OR_2(X)$ is instead equal to:
 \begin{equation}\label{eq:sensitivity-analysis}OR_2(X) = e^{\eta q(X)} OR_1(X), \end{equation}
 where $\eta$ is a scalar and $q(X)$ is a user-specified  monotone sensitivity function. Together, they parameterize the deviation from equi-confounding on the odds ratio scale. This is an example of the well-known exponential tilt model \cite{scharfstein_adjusting_1999, liu_identification_2020}. Setting $\eta = 0$ corresponds to the case where equi-confounding holds, with values of $\eta$ further from zero representing larger violations. For example, one might choose $q(X) = 1$, suggesting that confounding occurs uniformly across levels of $X$, and then vary $\eta$ over a grid of values in the interval $(-\omega, \omega)$.
 
-% With similar derivation to Section~\ref{sec:effect_among_vaccinated}, it can be shown that under Equation~\eqref{eq:sensitivity-analysis}, the conditional causal risk ratio $\Psi_{RRV}(X)$ can be identified as
+% With similar derivation to Section~\ref{sec:effect_among_vaccinated}, it can be shown that under Equation~\eqref{eq:sensitivity-analysis}, the conditional causal risk ratio $\Psi(X)$ can be identified as
 % \begin{equation}
 %     \dfrac{\Pr[I = 2, T = 1 | V = 1, X]/\Pr[I = 1, T = 1 | V = 1, X]}{\Pr[I = 2, T = 1 | V = 0, X]/\Pr[I = 1, T = 1 | V = 0, X]}e^{-\eta q(X)}.
 % \end{equation}
-% That is, the conditional causal risk ratio among the vaccinated and the odds ratio estimated in the test-negative study sample differ by a factor of $e^{-\eta q(X)}$. Furthermore, the marginal risk ratio among the vaccinated $\Psi_{RRV}$ can be identified as 
+% That is, the conditional causal risk ratio among the vaccinated and the odds ratio estimated in the test-negative study sample differ by a factor of $e^{-\eta q(X)}$. Furthermore, the marginal risk ratio among the vaccinated $\Psi$ can be identified as 
 
 % $$\dfrac{\Pr(I^* = 1 | S = 1, V = 1)}{E\left\{  \dfrac{\Pr(I^* = 0 | S = 1, V = 1, X)}{\Pr(I^* = 0| S = 1, V = 0, X)}\Pr(I^* = 1 | S = 1, V = 0, X)e^{\eta q(X)} \Big| S = 1, V = 1 \right\}}.$$
-% If $q(x)=q_0$ is a constant, then $\Psi_{RRV}=\Psi_{om}^*e^{-\eta q_0}$, that is, the estimated marginal causal risk ratio among vaccinated under Assumptions A1-A5 will also differ by a factor of $e^{\eta q_0}$.
+% If $q(x)=q_0$ is a constant, then $\Psi=\Psi_{om}^*e^{-\eta q_0}$, that is, the estimated marginal causal risk ratio among vaccinated under Assumptions A1-A5 will also differ by a factor of $e^{\eta q_0}$.
 
-\section{Simulation}
+\section*{Simulation}
 
-To illustrate a data generation process where our assumptions hold and to evaluate the empirical performance of the proposed estimators when they do not, we conduct a simulation study mimicking a TND with binary vaccination, testing, and infection. The data generation process is as follows:
+To illustrate a data generation process where our assumptions hold and to evaluate the empirical performance of the proposed estimators when they do not, we conduct a simulation study. The data generation process is as follows:
 \begin{align*}
     X, U &\sim \text{Unif}(0,1)\\
     V\mid X, U & \sim \text{Bernoulli}(\expit(\alpha_0 + \alpha_X X + \alpha_U U))\\
@@ -268,282 +302,100 @@ To illustrate a data generation process where our assumptions hold and to evalua
 \end{align*}
 where $U$ is an unmeasured confounder and
 \begin{align*}
-    p_1(v, X, U) & = \Pr[I^v = 1 | X, U] = \exp(\beta_{10} + \beta_{1V}v + \beta_{1X}X + \beta_{1VX}vX + \beta_{1U}U) \\
-    p_2(v, X, U) & = \Pr[I^v = 2 | X, U] = \exp(\beta_{20} + \beta_{2V}v + \beta_{2X}X + \beta_{2VX}vX + \beta_{2U}U).
-\end{align*}
-Under this process, potential outcomes $(I^v, T^v)$ for $v=0,1$ and $i=1, 2$ are generated from:
+    p_1(v, X, U) & = \Pr[I^v = 1 | V, X, U] = \exp(\beta_{10} + \beta_{1V}v + \beta_{1X}X + \beta_{1VX}vX + \beta_{1U}U) \\
+    p_2(v, X, U) & = \Pr[I^v = 2 | V, X, U] = \exp(\beta_{20} + \beta_{2V}v + \beta_{2X}X + \beta_{2VX}vX + \beta_{2U}U).
+\end{align*} We apply $Y = I \times T$. Under this process, potential outcomes $Y^v$ for $v=0,1$ and $y=1, 2$ are generated from:
 \begin{align*}
-    \Pr[I^v=0, T^v=1\mid V, X, U] &= 0\\
-    \Pr[I^v=i, T^v=1\mid V, X, U] &= p_i(v, X, U)\exp\{\tau_i + _{iV} v + \tau_X X + \tau_U U \\&\qquad \qquad\qquad + \tau_{2U}U\mathbbm 1(i=2) \}.
+    \Pr[Y^v = y\mid V, X, U] &= p_y(v, X, U)\exp\{\tau_y + \tau_{yV} v + \tau_X X + \tau_U U + \tau_{2U}U\mathbbm 1(y=2) \}.
 \end{align*}
-This implies the conditional independence $(I^v, T^v)\indep V\mid X, U$ holds for $v=0,1$, meaning that conditioning on $U$ and $X$ is sufficient to control confounding. Furthermore, we have:
+This implies the conditional independence $Y^v \indep V\mid X, U$ holds for $v=0,1$, meaning that conditioning on $U$ and $X$ is sufficient to control confounding. When there is no effect modification by $U$ or $X$ ($\beta_{2VX}=0$) and no direct effect on testing for focal illness ($\tau_{2V} = 0$), the causal risk ratio is
 \begin{align*}
-    \dfrac{\Pr[I^0=2, T^0=1 \mid V=1,X]}{\Pr[I^0=2, T^0=1\mid V=0,X]}=\dfrac{\E[\exp\{(\tau_U  + \tau_{2U}+\beta_{2U})U\}\mid V=1, X]}{\E[\exp\{(\tau_U  + \tau_{2U}+\beta_{2U})U\}\mid V=0, X]},
+    \Psi &= \exp(\beta_{2V}).
+\end{align*}
+Finally, under TND sampling with $S=\mathbbm{1}(Y \neq 0)$, it can also be shown that
+\begin{align*}
+    \Pr[Y=2 \mid  S=1, V, X, U] &= \expit\{(\beta_{20}-\beta_{10}+\tau_2 - \tau_1) + (\beta_{2V} - \beta_{1V} + \tau_{2V} - \tau_{1V}) V\\ &\qquad\qquad+(\beta_{2X}-\beta_{1X})X+ (\beta_{2VX} - \beta_{1VX})VX + (\beta_{2U} - \beta_{1U} + \tau_{2U})U\},
+\end{align*}
+which follows a logistic regression model.
+
+Violations of Assumption \ref{ass3} are controlled via $\beta_{2U}$, $\beta_{1U}$ and $\tau_{2U}$. Under our set up, we have:
+\begin{align*}
+    \dfrac{\Pr[Y^0=2 \mid V=1,X]}{\Pr[Y^0=2\mid V=0,X]}=\dfrac{\E[\exp\{(\tau_U  + \tau_{2U}+\beta_{2U})U\}\mid V=1, X]}{\E[\exp\{(\tau_U  + \tau_{2U}+\beta_{2U})U\}\mid V=0, X]},
 \end{align*}
 and 
 \begin{align*}
-    \dfrac{\Pr[I^0=1, T^0=1 \mid V=1,X]}{\Pr[I^0=1, T^0=1\mid V=0,X]}=\dfrac{\E[\exp\{(\tau_U  +\beta_{1U})U\}\mid V=1, X]}{\E[\exp\{(\tau_U +\beta_{1U})U\}\mid V=0, X]}.
+    \dfrac{\Pr[Y^0=1 \mid V=1,X]}{\Pr[Y^0=1\mid V=0,X]}=\dfrac{\E[\exp\{(\tau_U  +\beta_{1U})U\}\mid V=1, X]}{\E[\exp\{(\tau_U +\beta_{1U})U\}\mid V=0, X]},
 \end{align*}
-This implies that Assumption \ref{ass3} holds when $\beta_{2U}=\beta_{1U}$ and $\tau_{2U}=0$. Following the previous discussion, Assumption \ref{ass3} can be viewed as composed of two sub conditions (\ref{ass3a} and \ref{ass3b}): the unmeasured confounder exerts an equivalent effect on $I=1$ and $I=2$ ($\beta_{1U}=\beta_{2U}$), and there is no interaction between the unmeasured confounder and the source of illness for the probability of testing on the multiplicative scale ($\tau_{2U}=0$). Furthermore, $\beta_{1V}=0$ controls whether there is a direct effect of vaccination on $I = 1$, i.e. Assumption \ref{ass2}. Without this assumption, we can at best identify the ratio of vaccine effects on the two illness outcomes, i.e. $\exp(\beta_{2V}-\beta_{1V})$. The parameters $\tau_{1V}$ and $\tau_{2V}$ control whether there is a direct effect of vaccination on $T$ and whether these effects differ between test-negative and test-positive illnesses, i.e. Assumption \ref{ass2}. Under TND sampling with $S=\mathbbm{1}(I \neq 0, T = 1)$, it can be shown that
-\begin{align*}
-    \Pr[I^*=1 \mid U, X, V, S=1] &= \expit\{(\beta_{20}-\beta_{10}+\tau_2 - \tau_1) + \beta_{2V}V\\ &\qquad\qquad+(\beta_{2X}-\beta_{1X})X+\beta_{2VX}VX + (\beta_{2U} - \beta_{1U}U)\},
-\end{align*}
-which follows a logistic regression model that does not depend on $U$ when $\beta_{1U}=\beta_{2U}$. 
-%Finally, under this setup, the causal risk ratio for medically-attended illness is 
+implying that that Assumption \ref{ass3} holds when $\beta_{2U}=\beta_{1U}$ and $\tau_{2U}=0$ (Note that under these conditions the logistic model above similarly does not depend on $U$). Following the previous discussion, Assumption \ref{ass3} can be viewed as composed of two sub conditions (\ref{ass3a} and \ref{ass3b}): First, the unmeasured confounder exerts an equivalent effect on $I=1$ and $I=2$ (i.e. $\beta_{1U}=\beta_{2U}$), and second, there is no interaction between the unmeasured confounder and the source of illness for the probability of testing on the multiplicative scale (i.e. $\tau_{2U}=0$). 
+
+Likewise, violations of Assumption \ref{ass2} are controlled by $\beta_{1V}$ and $\tau_{1V}$. When $\beta_{1V} \neq 0$ there is a direct effect of vaccination on test-negative illness $I = 1$ and when $\tau_{1V} \neq 0$ there is a direct effect of vaccination on testing among those with test-negative illness. When this occurs, we can at most identify the ratio of vaccine effects on the two illness outcomes, i.e. $\exp(\beta_{2V} + \tau_{2V})/\exp(\beta_{1V} + \tau_{1V})$, provided there is no effect modification by $X$ or $U$. As we show in \ref{sec:de_testing} and illustrate further via simulation below, under the special case of equal effects on testing, i.e. $\tau_{2V} = \tau_{1V}$, certain effects on symptomatic illness may still be recovered.  
+%Finally, under this setup, the causal risk ratio for \subsection*attended illness is 
 % \begin{align*}
-%     \Psi_{RRV} &= \exp(\beta_{2V} + \tau_{2V})\dfrac{E[\exp\{(\beta_{2X}+\beta_{2VX})X\}\mid V=1]}{E[\exp(\beta_{2X}X)\mid V=1]}.
+%     \Psi &= \exp(\beta_{2V} + \tau_{2V})\dfrac{E[\exp\{(\beta_{2X}+\beta_{2VX})X\}\mid V=1]}{E[\exp(\beta_{2X}X)\mid V=1]}.
 % \end{align*}
 
- We generate a target population of $N = 15,000$ resulting in TND samples of test-positive cases and test-negative controls of between $1000$ and $2000$. We consider nine scenarios: 
+ We generate a target population of $N = 15,000$ resulting in TND samples of test-positive cases and test-negative controls of between $1000$ and $2000$. We consider eight scenarios: 
  \begin{enumerate}
-    \item No unmeasured confounding.
-    \item Unmeasured confounding, but assumptions \ref{ass1}-\ref{ass4} hold.
-    \item Direct effect of vaccination on $I=1$.
-    \item Equi-confounding is violated.
-    \item Equi-selection is violated.
-    \item Equal effects of vaccination on testing.
-    \item Unequal effects of vaccination on testing.
-    \item Infections $I=1$ and $I=2$ are not mutually exclusive.
-    \item All assumptions hold but there is effect modification by covariates $X$.
+    \item No unmeasured confounding
+    \item Unmeasured confounding, but Assumptions \ref{ass1} - \ref{ass4} hold
+    \item Direct effect of vaccination on $I=1$
+    \item Equi-confounding is violated
+    \item Equi-selection is violated
+    \item Equal effects of vaccination on testing
+    \item Unequal effects of vaccination on testing
+    %\item Infections $I=1$ and $I=2$ are not mutually exclusive.
+    \item All assumptions hold but there is effect modification by covariates $X$
  \end{enumerate}
- Parameter values for all scenarios are shown in Table \ref{tab:simparams}. For each scenario, we generate 1000 replicates and estimate $\Psi_{RRV}$ using the proposed estimators $\widehat{\Psi}_{om}^*$, $\widehat{\Psi}_{ipw}^*$, and $\widehat{\Psi}_{dr}^*$ as well as the conventional logistic regression estimator and calculate the bias and coverage of 95\% confidence intervals based on the true value. For comparison, we also estimate $\Psi_{RRV}$  assuming one had access to the full sample, as in cohort study. We consider both the typical case that the covariate $U$ is unmeasured, and the hypothetical case where $U$ is available, allowing for conditioning on a sufficient adjustment set. Finally, we include estimates from a difference-in-differences estimator that uses the full sample instead of restricting to those tested. Additional details on the setup and precise estimation methods are provided in Appendix \ref{sec:moresim}.
+ Parameter values for all scenarios are shown in eTable \ref{tab:simparams} and descriptions of the estimation methods are provided in eTable \ref{tab:methods}. For each scenario, we generate 1000 replicates and estimate $\Psi$ using the proposed estimators $\widehat{\Psi}_{om}^*$, $\widehat{\Psi}_{ipw}^*$, and $\widehat{\Psi}_{dr}^*$ as well as the conventional logistic regression estimator, $\widehat{\Psi}_{om}^*(X)$, and calculate the bias and coverage of 95\% confidence intervals based on the true value. For comparison, we also consider the following estimators based on data from the full cohort: a conventional outcome-modeling estimator adjusting for $X$ alone, another conditioning on $X$ and $U$ (covering the hypothetical case that all confounders are measured), and one based on $\Psi_{om}$ in Proposition \ref{prop1}. Finally, in scenario 8, we demonstrate the double robustness property of $\widehat{\Psi}_{dr}^*$ by adjusting the data generation process for $V$ and $I^v$ to include squared terms in $X$. Additional details on the setup and precise estimation methods are provided in  \ref{sec:moresim}.
 
-The results are reported in Figures \ref{fig:sims1} and \ref{fig:sims2} with additional details in Table \ref{sec:moresim}. When there is no unmeasured confounding, all estimators are unbiased. In all other scenarios the typical cohort estimator without $U$ is biased. When there is unmeasured confounding but our assumptions hold, the TND estimator is unbiased (scenario 2). When there is an effect of vaccination on the test-negative illness (scenario 3), the TND estimator is biased; however, it does identify the ratio of vaccine effects against $I = 2$ versus $I = 1$. When equi-confounding or equi-selection are violated the TND estimator is biased (scenarios 4 and 5). When the the test-negative and test-positive illnesses are not mutually exclusive, the TND estimator is biased for the causal risk ratio but unbiased for the causal odds ratio.  When there is a direct effect of vaccination on testing behavior, the TND estimator remains unbiased if the effect is equivalent for test-negative and test-positive illnesses (scenario 6), but is biased when they are unequal (scenario 7). Finally, the TND estimator remains unbiased in the presence of effect modification. %When there is unmeasured confounding and equi-confounding holds but equi-selection does not, the proposed estimator is biased but has good coverage. When there is unmeasured confounding and equi-selection holds but equi-confounding does not, the proposed estimator is unbiased but has poor coverage. When there is unmeasured confounding and neither equi-confounding nor equi-selection hold, the proposed estimator is biased and has poor coverage. When there is unmeasured confounding and equi-confounding and equi-selection hold but there is a direct effect of vaccination on $I = 1$, the proposed estimator is biased and has poor coverage. When there is unmeasured confounding and equi-confounding and equi-selection hold but there is a direct effect of vaccination on $T$, the proposed estimator is biased and has poor coverage.
+The results are reported in Figures \ref{fig:sims1} and \ref{fig:sims2} with further details in eTables \ref{tab:sims} and \ref{tab:sims2}. When there is no effect modification (scenarios 1 to 7) the proposed TND estimators and traditional logistic regression estimator are the same, so we show only the results from the latter, $\widehat{\Psi}_{om}^*(X)$, under the name ``TND, logit''. When there is no unmeasured confounding, all estimators are unbiased (scenario 1). In all other scenarios, the cohort estimator without $U$ is biased. When there is unmeasured confounding but our assumptions hold, the TND estimator is unbiased (scenario 2). When there is an effect of vaccination on the test-negative illness (scenario 3), the TND estimator is biased towards the null (when the effect is also protective); however, it does identify the ratio of vaccine effects against $I = 2$ versus $I = 1$ (grey dashed line). When equi-confounding or equi-selection are violated the TND estimator is biased (scenarios 4 and 5).  When there is a direct effect of vaccination on testing behavior, the TND estimator is unbiased for the risk ratio against symptomatic illness (grey dashed line) if the effect is equivalent for test-negative and test-positive illnesses (scenario 6, for more on this see  \ref{sec:de_testing}), but is biased when they are unequal (scenario 7). In all scenarios, the estimates from the TND estimator are the same as the difference-in-differences estimator (cohort, DiD) based on Proposition \ref{prop1} applied to the full cohort even though the TND estimator uses only information among the tested, demonstrating how TND may be viewed as essentially a more efficient sampling design. eTable \ref{tab:sims} shows that, when unbiased, confidence intervals derived from estimating equations in  \ref{sec:app_estimation} exhibit nominal coverage.
 
-\section{Discussion} \label{sec:discussion}
+Finally, in the more realistic scenario, that the effect of vaccination is heterogeneous, the proposed TND estimators, $\widehat{\Psi}_{om}^*$,$\widehat{\Psi}_{ipw}^*$, and $\widehat{\Psi}_{dr}^*$, remain unbiased for the marginal estimand while the conventional logistic regression approach, $\widehat{\Psi}_{om}^*(X)$, is biased (scenario 8). In Figure \ref{fig:sims2}, we confirm the double robustness property of $\widehat{\Psi}_{dr}^*$. As expected, when the outcome model is misspecified $\widehat{\Psi}_{ipw}^*$ and $\widehat{\Psi}_{dr}^*$ remain unbiased while $\widehat{\Psi}_{om}^*$ is biased. Likewise, when the extended propensity score model is misspecified $\widehat{\Psi}_{om}^*$ and $\widehat{\Psi}_{dr}^*$ remain unbiased while $\widehat{\Psi}_{ipw}^*$ is biased. When both models are misspecified all estimators are biased.
 
-In this article, we described alternative conditions under which the TND produces an unbiased estimate of vaccine effectiveness in the presence of unmeasured confounding. We demonstrated that the TND accurately recovers the vaccine effectiveness among the vaccinated, provided that the vaccine does not affect the test-negative illness and that unmeasured variables influence symptomatic illness and testing equivalently for both test-positive and test-negative infections. While our results apply to commonly-used logistic regression estimator, we also derived novel estimators based on outcome modeling, inverse probability weighting, and  the efficient influence function.
+\section*{Discussion} \label{sec:discussion}
 
-The plausibility of the equi-confounding assumption depends on understanding the source of the test-negative illness, which requires additional sampling and testing.  In previous TNDs for influenza the most common test-negative illnesses were rhinovirus, respiratory syncytial virus (RSV), human metapneumovirus (hMPV), parainfluenza virus (PIV), bocavirus (BoV), coronavirus (CoV), adenovirus (AdV), enterovirus (EV) and others \cite{chua_use_2020-1}. Ideally, the test-negative illness should have a similar exposure mechanism and clinical presentation as the target illness but remain unaffected by the vaccine. For example, in pneumococcal disease, non-vaccine serotypes of \textit{Streptococcus pneumoniae} serve as ideal test-negative controls \cite{broome_pneumococcal_1980}.  In Appendix \ref{sec:testing}, we explore potential structural sources of equi-confounding ---including health-seeking behavior, assortative vaccination \cite{zivich_assortativity_2021}, and immortal time--- as well as example violations, such as correlated vaccine-seeking for vaccines targeting test-negative pathogens \cite{payne_impact_2023}. In practice, assessing the appropriateness of the equi-confounding assumption will require subject-matter expertise and should be evaluated on a case-by-case basis.
+We have shown that the TND can yield unbiased estimates of vaccine effectiveness among the vaccinated in the presence of unmeasured confounding provided certain conditions are met: namely, the vaccine does not affect the test-negative illness and the net effect of unmeasured confounders  on symptomatic illness and testing is equal for both test-positive and test-negative infections. While our results apply to the commonly used logistic regression estimator, we also derived novel estimators based on outcome modeling and inverse probability weighting as well as a doubly robust estimator that is consistent if one or both of the outcome model and propensity score model are correctly specified.
 
-Even when equi-confounding is not plausible, as our simulations suggest, the TND may still yield less biased estimates compared to conventional approaches, especially when the test-negative illness serves as a reasonable, albeit imperfect, proxy for residual confounding. Our approach also permits a straightforward sensitivity analysis that can be used to understand the implications of departures from equi-confounding. Alternatively, when equi-confounding is implausible, additional negative controls can be leveraged, as suggested by recent methods using multiple proxies for unmeasured confounding \cite{li_double_2023}.
+The plausibility of the equi-confounding assumption may be increased by knowledge of the source of the test-negative illness.  In previous TNDs for influenza that included additional testing to confirm the source of test-negative illness the most common causes were rhinovirus, respiratory syncytial virus, human metapneumovirus, parainfluenza virus, bocavirus, coronavirus, adenovirus, enterovirus and others \cite{chua_use_2020-1}. Ideally, the test-negative illness should have a similar exposure mechanism and clinical presentation as the target illness but remain unaffected by the vaccine. For example, in pneumococcal disease, non-vaccine serotypes of \textit{Streptococcus pneumoniae} serve as ideal test-negative controls \cite{broome_pneumococcal_1980}. However, more careful selection of test-negative infections based on source pathogen is currently limited by infrequent use of concurrent or multiplex testing. Care must also be taken when test-negative infections have associated vaccines as these can be sources of \textit{unequal} confounding if not adjusted for.
 
-Our results also depend on the assumption that the vaccine does not affect other infections or influence test-seeking behavior (except through infection). The former may be violated if either vaccination provides short-term nonspecific protection through immune activation. Previous research has suggested that this is possible for influenza vaccines \cite{cowling_increased_2012}. However, other results have shown the opposite \cite{sundaram_influenza_2013}. Violations of this assumption would bias TND estimates, though in some cases, if the effect is in the same direction, the TND might still provide a lower bound on true vaccine effectiveness. If vaccination exerts equal effects on test-seeking behavior for test-positive and test-negative infections, as our simulations demonstrate, estimates of vaccine effectiveness against symptomatic infection remain unbiased. Conversely, when effects are unequal, the TND estimate could be biased. 
+Even when equi-confounding does not hold, as our simulations suggest, the TND may still reduce bias relative to other approaches based only on a minimal covariate set, when test-negative illness serves as a reasonable, if imperfect, proxy for residual confounding. We also propose a sensitivity analysis that allows for straightforward departures from equi-confounding via the exponential tilt model. Alternatively, additional negative controls can be leveraged in a proximal inference framework to identify effects under more general unmeasured confounding structures \cite{li_double_2023}.
+
+Our results also depend on the assumption that the vaccine does not affect other infections or influence test-seeking behavior (except through infection). The former may be violated if vaccination provides short-term nonspecific protection through immune activation. Previous research has suggested that this is possible for influenza vaccines \cite{cowling_increased_2012}. However, other results have shown the opposite \cite{sundaram_influenza_2013}. Violations of this assumption would bias TND estimates, though in some cases, if the effect is in the same direction, the TND might still provide a lower bound on true vaccine effectiveness. If vaccination exerts equal effects on test-seeking behavior for test-positive and test-negative infections, as our simulations demonstrate, estimates of vaccine effectiveness against symptomatic infection remain unbiased. 
 
 %While our focus has been on outpatient TNDs, where voluntary care-seeking is a major factor, TNDs in inpatient settings—particularly during the COVID-19 pandemic—warrant careful consideration. The composition of test-negative illnesses and the nature of unmeasured confounding may differ in these settings.
 
-Lastly, our results have implications for other study designs for vaccine evaluation. First, \textcite{wang_randomization_2022} recently proposed a cluster-randomized TND that corrects for potential bias caused by intervention-induced differential health-seeking behavior in an unblinded trial. In our framework, this corresponds to a setting where Assumption \ref{ass3a} holds by design, as vaccination is randomized, but Assumption \ref{ass3b} does not, as individuals are aware of their assignment and therefore may differentially seek care when sick. As mentioned above, to remove the influence of intervention effects on health-seeking requires them be equal across test-positive and test-negative illnesses on the multiplicative scale. However, one should also carefully consider potential effects on intermediate outcomes between symptoms and testing such as severity Second, in settings where full cohort data are available, comparing test-positive and test-negative infections via expressions (\ref{eqn:om_estimand}) or (\ref{eqn:ipw_estimand}) offers an alternative approach to confounding control, allowing for estimation of absolute risks under different vaccination regimes. 
+Last, our results have implications for other study designs for vaccine evaluation. First, \textcite{wang_randomization_2022} recently proposed a cluster-randomized TND that corrects for potential bias caused by intervention-induced differential health-seeking behavior in an unblinded trial. In our framework, this corresponds to a setting where Assumption \ref{ass3a} holds by design, as vaccination is randomized, but Assumption \ref{ass3b} does not, as individuals are aware of their assignment and therefore may differentially seek care when sick. As mentioned above, to remove the influence of intervention effects on health-seeking requires them be equal across test-positive and test-negative illnesses on the multiplicative scale. Second, in settings where full cohort data are available, comparing test-positive and test-negative infections via Expressions \ref{eqn:om_estimand} or \ref{eqn:ipw_estimand} offers an alternative approach to confounding control, allowing for estimation of absolute risks under different vaccination regimes. 
 
-%To determine whether the equi-confounding assumption is plausible, it would be helpful to know what the source(s) of the test-negative illness are, although this requires additional sampling and testing. From our perspective, the ideal test-negative illness would be one with the same transmission mechanism/exposure risk and a similar clinical presentation, but which remains unaffected by the vaccine. A good example, and perhaps the first recorded use of the TND, is in pneumococcal disease, where the vaccine targets certain serotypes of \textit{Streptococcus pneumoniae} but has no effect on other serotypes \cite{broome_pneumococcal_1980}, in which case the non-vaccine serotypes are an ideal test-negative control. Regardless, subject-matter expertise, and in particular, a nuanced understanding of both the biology and the social dynamics governing infection and test-seeking will be required to judge the appropriateness of the equi-confounding assumption on a case-by-case basis. Some examples of unmeasured characteristics where equi-confounding between test-positive and test-negative infections seems more likely include health-seeking and assortativity of mixing. An interesting example of equi-confounding by design is the differential exclusion of person-time immediately post vaccination among the vaccinated such as in TNDs where cases are excluded/marked as unvaccinated if they occur within the first $D$ days after the first or second dose. In a typical observational study such an exclusion would induce immortal time bias \cite{suissa_immortal_2008}. However, as we show in Appendix AX, the TND still produces unbiased estimates as long as this time is excluded equally among the vaccinated for both test-positive cases and test-negative controls. 
+%To determine whether the equi-confounding assumption is plausible, it would be helpful to know what the source(s) of the test-negative illness are, although this requires additional sampling and testing. From our perspective, the ideal test-negative illness would be one with the same transmission mechanism/exposure risk and a similar clinical presentation, but which remains unaffected by the vaccine. A good example, and perhaps the first recorded use of the TND, is in pneumococcal disease, where the vaccine targets certain serotypes of \textit{Streptococcus pneumoniae} but has no effect on other serotypes \cite{broome_pneumococcal_1980}, in which case the non-vaccine serotypes are an ideal test-negative control. Regardless, subject-matter expertise, and in particular, a nuanced understanding of both the biology and the social dynamics governing infection and test-seeking will be required to judge the appropriateness of the equi-confounding assumption on a case-by-case basis. Some examples of unmeasured characteristics where equi-confounding between test-positive and test-negative infections seems more likely include health-seeking and assortativity of mixing. An interesting example of equi-confounding by design is the differential exclusion of person-time immediately post vaccination among the vaccinated such as in TNDs where cases are excluded/marked as unvaccinated if they occur within the first $D$ days after the first or second dose. In a typical observational study such an exclusion would induce immortal time bias \cite{suissa_immortal_2008}. However, as we show in  AX, the TND still produces unbiased estimates as long as this time is excluded equally among the vaccinated for both test-positive cases and test-negative controls. 
 
 %Even when equi-confounding is not plausible, as we show in our simulations above, the TND may still yield less biased estimates as compared to conventional cohort approaches based on the same covariate set if the test-negative illness is still a decent proxy for residual confounding. When data from a full cohort are available, such as via large healthcare databases, our results point to an alternative to standard approaches to confounding control, namely by comparing test-positive and test-negative infections via expression (\ref{eqn:cohort_estimand}). This would also permit estimation of the absolute risk under different vaccination regimes. When equi-confounding is implausible, progress can still be made by leveraging additional negative controls. \citeauthor{li_double_2023} describe such an approach in a TND based on two or more proxies for unmeasured confounding \cite{li_double_2023}. Compared to our approach, their method requires a negative control outcome and negative control exposure as well as proper specification of the so-called \textit{treatment-confounding bridge function}. We note that the test-negative illness cannot be used as one of the proxies in this framework because there is not sufficient variation in test-negative versus test-positive illnesses, either because they are mutually exclusive or the joint probability of having both over the study period is sufficiently low.
 
-%Our results also rely on the assumption that the vaccine does not affect the incidence of other infections which may cause the same symptoms and the vaccine does not have a direct effect on test-seeking. The former may be violated if either vaccination or infection provides short-term nonspecific protection through activation of the immune system. Previous work has suggested that this may be the case for influenza vaccines \cite{cowling_increased_2012}. However, other results have shown the opposite \cite{sundaram_influenza_2013}. Regardless, as we have shown, as long as the effect of the vaccine on the test-negative illness is in the same direction (presumably protective) the TND estimate is the ratio of the two effects and thus at least a lower bound on true vaccine effectiveness. When vaccination has an effect on test-seeking, as we show in Appendix \ref{sec:de_testing}, the TND estimator remains unbiased provided the effect is the same for test-positive and test-negative infections. This could be plausible if for instance, the knowledge of having received a vaccine makes one feel more protected against the worst outcomes, independent of any biological action, and therefore less likely to go to a clinic when sick. However, if, on the other hand, vaccination affects severity of breakthrough infections for the target pathogen and severity affects the propensity to seek a test then there would be an unequal effect of vaccination on test-seeking and the TND estimate would be biased. In principle, this could be resolved by redefining the outcome to incorporate severity but this requires that severity can be adequately defined and measured for both test-positive and test-negative illnesses. 
+%Our results also rely on the assumption that the vaccine does not affect the incidence of other infections which may cause the same symptoms and the vaccine does not have a direct effect on test-seeking. The former may be violated if either vaccination or infection provides short-term nonspecific protection through activation of the immune system. Previous work has suggested that this may be the case for influenza vaccines \cite{cowling_increased_2012}. However, other results have shown the opposite \cite{sundaram_influenza_2013}. Regardless, as we have shown, as long as the effect of the vaccine on the test-negative illness is in the same direction (presumably protective) the TND estimate is the ratio of the two effects and thus at least a lower bound on true vaccine effectiveness. When vaccination has an effect on test-seeking, as we show in  \ref{sec:de_testing}, the TND estimator remains unbiased provided the effect is the same for test-positive and test-negative infections. This could be plausible if for instance, the knowledge of having received a vaccine makes one feel more protected against the worst outcomes, independent of any biological action, and therefore less likely to go to a clinic when sick. However, if, on the other hand, vaccination affects severity of breakthrough infections for the target pathogen and severity affects the propensity to seek a test then there would be an unequal effect of vaccination on test-seeking and the TND estimate would be biased. In principle, this could be resolved by redefining the outcome to incorporate severity but this requires that severity can be adequately defined and measured for both test-positive and test-negative illnesses. 
 
 %We have mainly focused on TNDs conducted in the outpatient setting, where voluntary care-seeking is a major concern. However, TNDs are increasingly conducted in inpatient settings to monitor vaccine effectiveness against hospitalization and death, particularly during the Covid-19 pandemic. In theory our results would apply in the inpatient setting as well although care should be taken as both the composition of test-negative illnesses as well as the source of unmeasured confounding is likely different. %In particular, if (severity)
 
-%Throughout we have also focused on effectiveness as defined by the causal risk ratio. Previous work on the TND has often been based the odds ratio \cite{sullivan_theoretical_2016}. The two are approximately equal provided the test-positive infection is rare. Another literature focuses on estimating direct effects of vaccines under different biological mechanisms, such as leaky or all-or-nothing protection, which are useful for parameterizing dynamic models \cite{lewnard_measurement_2018,lewnard_theoretical_2021}. In Appendix \ref{sec:vaccine_modelling}, we discuss the relationship between these direct effects and the casual risk ratio among the vaccinated considered here.
+%Throughout we have also focused on effectiveness as defined by the causal risk ratio. Previous work on the TND has often been based the odds ratio \cite{sullivan_theoretical_2016}. The two are approximately equal provided the test-positive infection is rare. Another literature focuses on estimating direct effects of vaccines under different biological mechanisms, such as leaky or all-or-nothing protection, which are useful for parameterizing dynamic models \cite{lewnard_measurement_2018,lewnard_theoretical_2021}. In  \ref{sec:vaccine_modelling}, we discuss the relationship between these direct effects and the casual risk ratio among the vaccinated considered here.
 
 %Prior work on the TND suggests that the design could be biased when there is correlation in vaccination behavior for vaccines that target the test positive and test negative illnesses. As shown in the DAG in Figure X this would also violate our identifiability assumptions because it would imply the existence of a confounder that does not affect the test positive and test negative illnesses equally. However, this could be resolved by measuring and adjusting for vaccination for the test negative illness. This further highlights the need to carefully consider and, where possible, document the source of the test negative illnesses. Investigators should also regularly collect full vaccination history.
 
 \newpage
+
 %TC:ignore
 
 \printbibliography
 
-
-
     \begin{figure}[p]
         \centering
-        \begin{subfigure}{0.49\linewidth}
-            \centering
-            \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 1.75cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
-                \tikzstyle{every state}=[
-                  draw = none,
-                  fill = none
-                ]
-                \node[state] (x) {$X$};
-                \node[state] (v) [right of=x] {$V$};
-                \node[state] (i) [right of=v] {$I$};
-                \node[state] (t) [right of=i] {$T$};
-                \node[state] (is) [right of=t] {$I^*$};
-                \node[state] (u) [below of=v] {$U$};
-        
-                \path[->] (x) edge node {} (v);
-                \path[->] (x) edge [out=45, in=135] node {} (i);
-                \path[->] (x) edge [out=45, in=135] node {} (t);
-                
-                \path[->] (v) edge node {} (i);
-                
-                \path[->] (i) edge node {} (t);
-                \path[->] (i) edge [out=45, in=135] node {} (is);
-        
-                \path[->] (t) edge node {} (is);
-        
-                \path[->] (u) edge node {} (x);
-                \path[->] (u) edge node {} (i);
-                \path[->] (u) edge node {} (t);
-                \end{tikzpicture}
-            \caption{Unconfoundedness assumption\label{fig:dag_a}}
-        \end{subfigure}
-        \begin{subfigure}{0.49\linewidth}
-            \centering
-            \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 1.75cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
-                \tikzstyle{every state}=[
-                  draw = none,
-                  fill = none
-                ]
-                \node[state] (x) {$X$};
-                \node[state] (v) [right of=x] {$V$};
-                \node[state] (i) [right of=v] {$I$};
-                \node[state] (t) [right of=i] {$\boxed{T}$};
-                \node[state] (is) [right of=t] {$I^*$};
-                \node[state] (u) [below of=v] {$\boxed{U}$};
-        
-                \path[->] (x) edge node {} (v);
-                \path[->] (x) edge [out=45, in=135] node {} (i);
-                \path[->] (x) edge [out=45, in=135] node {} (t);
-                
-                \path[->] (v) edge node {} (i);
-                
-                \path[->] (i) edge node {} (t);
-                \path[->] (i) edge [out=45, in=135] node {} (is);
-        
-                \path[->] (t) edge node {} (is);
-        
-                \path[->] (u) edge node {} (x);
-                \path[->] (u) edge node {} (i);
-                \path[->] (u) edge node {} (v);
-                \path[-] (u) edge [double, thick, double distance=1pt] node {} (t);
-                \end{tikzpicture}
-            \caption{Testing synonymous with unmeasured confounding\label{fig:dag_b}}
-        \end{subfigure}
-        \begin{subfigure}{0.49\linewidth}
-        \centering
-        \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 1.75cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
+        \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 3cm, inner sep = 0pt,minimum size = 0.5pt,  very thick]
             \tikzstyle{every state}=[
               draw = none,
               fill = none
             ]
             \node[state] (x) {$X$};
             \node[state] (v) [right of=x] {$V$};
-            \node[state] (i) [right of=v] {$I$};
+            \node[state] (i) [right of=v] {$I = 2$};
             \node[state] (t) [right of=i] {$T$};
-            \node[state] (is) [right of=t] {$I^*$};
-            \node[state] (u) [below of=v] {$U$};
-    
-            \path[->] (x) edge node {} (v);
-            \path[->] (x) edge [out=45, in=135] node {} (i);
-            \path[->] (x) edge [out=45, in=135] node {} (t);
-            
-            \path[->] (v) edge node {} (i);
-            
-            \path[->] (i) edge node {} (t);
-            \path[->] (i) edge [out=45, in=135] node {} (is);
-    
-            \path[->] (t) edge node {} (is);
-    
-            \path[->] (u) edge node {} (x);
-            \path[->] (u) edge node {} (v);
-            \path[->] (u) edge [line width=2pt] node {} (i);
-            \path[->] (u) edge [line width=2pt] node {} (t);
-    
-    
-            % \path[->] (x) edge [dashed] node {} (v);
-            % \path[->] (x) edge [dashed] node {} (e);
-            % \path[->] (x) edge [dashed] node {} (i);
-            % \path[->] (x) edge [dashed] node {} (h);
-            % \path[->] (x) edge [dashed] node {} (d);
-            
-            \end{tikzpicture}
-        \caption{Equi-confounding and equi-selection assumptions\label{fig:dag_c}}
-        \end{subfigure}
-        \begin{subfigure}{0.49\linewidth}
-            \centering
-            \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 1.75cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
-                \tikzstyle{every state}=[
-                  draw = none,
-                  fill = none
-                ]
-                \node[state] (x) {$X$};
-                \node[state] (v) [right of=x] {$V$};
-                \node[state] (i) [right of=v] {$I$};
-                \node[state] (t) [right of=i] {$T$};
-                \node[state] (is) [right of=t] {$I^*$};
-                \node[state] (u) [below of=v] {$U$};
-        
-                \path[->] (x) edge node {} (v);
-                \path[->] (x) edge [out=45, in=135] node {} (i);
-                \path[->] (x) edge [out=45, in=135] node {} (t);
-                
-                \path[->] (v) edge node {} (i);
-                
-                \path[->] (i) edge node {} (t);
-                \path[->] (i) edge [out=45, in=135] node {} (is);
-        
-                \path[->] (t) edge node {} (is);
-        
-                \path[->] (u) edge node {} (x);
-                \path[->] (u) edge node {} (v);
-                \path[->] (u) edge [line width=2pt] node {} (i);
-                % \path[->] (u) edge [line width=2pt] node {} (t);
-        
-        
-                % \path[->] (x) edge [dashed] node {} (v);
-                % \path[->] (x) edge [dashed] node {} (e);
-                % \path[->] (x) edge [dashed] node {} (i);
-                % \path[->] (x) edge [dashed] node {} (h);
-                % \path[->] (x) edge [dashed] node {} (d);
-                
-                \end{tikzpicture}
-            \caption{Equi-confounding only\label{fig:dag_d}}
-        \end{subfigure}
-        \begin{subfigure}{0.49\linewidth}
-        \centering
-        \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 1.75cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
-            \tikzstyle{every state}=[
-              draw = none,
-              fill = none
-            ]
-            \node[state] (x) {$X$};
-            \node[state] (v) [right of=x] {$V$};
-            \node[state] (i) [right of=v] {$I$};
-            \node[state] (t) [right of=i] {$T$};
-            \node[state] (is) [right of=t] {$I^*$};
-            \node[state] (u) [below of=v] {$U$};
-    
-            \path[->] (x) edge node {} (v);
-            \path[->] (x) edge [out=45, in=135] node {} (i);
-            \path[->] (x) edge [out=45, in=135] node {} (t);
-            
-            \path[->] (v) edge node {} (i);
-            
-            \path[->] (i) edge node {} (t);
-            \path[->] (i) edge [out=45, in=135] node {} (is);
-    
-            \path[->] (t) edge node {} (is);
-    
-            \path[->] (u) edge node {} (x);
-            \path[->] (u) edge node {} (v);
-            % \path[->] (u) edge [line width=2pt] node {} (i);
-            \path[->] (u) edge [line width=2pt] node {} (t);
-    
-    
-            % \path[->] (x) edge [dashed] node {} (v);
-            % \path[->] (x) edge [dashed] node {} (e);
-            % \path[->] (x) edge [dashed] node {} (i);
-            % \path[->] (x) edge [dashed] node {} (h);
-            % \path[->] (x) edge [dashed] node {} (d);
-            
-            \end{tikzpicture}
-        \caption{Equi-selection only\label{fig:dag_e}}
-        \end{subfigure}
-        \caption{Causal directed acyclic graphs for the test-negative design under alternative assumption sets. Graph (a) shows a mechanism satisfying the unconfoundedness assumption discussed in \cite{schnitzer_estimands_2022} as, conditional on $X$, $V$ and $I$ and $T$ are d-separated. Graph (b) shows a mechanism discussed in \cite{sullivan_theoretical_2016} where $U$ is binary health seeking behavior that is synonymous with receiving a test and therefore effectively conditioned on by conditioning on testing. Graph (c) shows a possible mechanism satisfying the identifiability conditions in Section \ref{sec:conditions} of this paper. It includes the possibility of unmeasured confounding and selection bias by an arbitrary $U$, which could be nonbinary; however, as shown by the bold arrows $U$ is assumed to act equivalently, on the odds scale, for the test positive and test negative illnesses. Graphs (d) and (e) show alternative mechanisms that satisfy equi-confounding or equi-selection only.}\label{fig:dags}
-    \end{figure}
-
-    \begin{figure}[p]
-        \centering
-        \begin{tikzpicture}[> = stealth, shorten > = 1pt, auto, node distance = 2cm, inner sep = 0pt,minimum size = 0.5pt, semithick]
-            \tikzstyle{every state}=[
-              draw = none,
-              fill = none
-            ]
-            \node[state] (x) {$X$};
-            \node[state] (v) [right of=x] {$V$};
-            \node[state] (i) [right of=v] {$I_2$};
-            \node[state] (t) [right of=i] {$T$};
-            \node[state] (is) [right of=t] {$I^*$};
-            \node[state] (i1) [below of=i] {$I_1$};
+            \node[state] (i1) [below of=i] {$I = 1$};
             \node[state] (u) [below of=v] {$U$};
     
             \path[->] (x) edge node {} (v);
@@ -551,24 +403,20 @@ Lastly, our results have implications for other study designs for vaccine evalua
     
             \path[->] (v) edge node {} (i);
             
-            \path[->] (i) edge [line width=2pt] node {} (t);
-            \path[->] (i1) edge [line width=2pt] node {} (t);
-            \path[->] (i1) edge node {} (is);
+            \path[->] (i) edge [forestgreen, pos=0.5, sloped, above] node [font=\tiny] {\circled{A3b}} (t);
+            \path[->] (i1) edge [forestgreen, pos=0.5, sloped, below] node [font=\tiny] {\circled{A3b}} (t);
     
             \path[->] (x) edge [out=45, in=135] node {} (t);
     
-            \path[->] (t) edge node {} (is);
-    
-            \path[->] (i) edge [out=45, in=135] node {} (is);
-            \path[->] (i1) edge node {} (i);
-    
+        
             \path[->] (u) edge node {} (x);
             \path[->] (u) edge node {} (v);
-            \path[->] (u) edge [line width=2pt] node {} (i);
+            \path[->] (u) edge [bblue, pos=0.5, sloped, above] node [font=\tiny] {\circled{A3a}} (i);
             \path[->] (u) edge node {} (t);
-            \path[->] (u) edge [line width=2pt] node {} (i1);
+            \path[->] (u) edge [bblue, pos=0.5, sloped, below] node  [font=\tiny] {\circled{A3a}} (i1);
             \end{tikzpicture}
-        \caption{Splitting $I$ node to show how $I=1$ is a negative outcome control. Dashed line is deterministic relationship as $I = 1$ and $I = 2$ are assumed to be mutually exclusive in the main text.\label{fig:dag_split}}
+        \caption{Causal directed acyclic graph (DAG) showing the assumed relationship between the variables in a test-negative study under equi-confounding. Here we split the $I$ node into $I=1$ and $I=2$ to show how the former acts as a negative outcome control. The equi-confounding assumption itself, as a parametric restriction, is not easy to represent on a DAG using standard notation. Here, we add labels over the arrows that must represent equal effects on the odds ratio scale for Assumptions \ref{ass3a} and \ref{ass3b} to hold. }
+        \label{fig:dag}
     \end{figure}
     \clearpage
 
@@ -576,20 +424,23 @@ Lastly, our results have implications for other study designs for vaccine evalua
     \centering
     \includegraphics{../results/sims1.pdf}
     \caption{
-        Bias of vaccine effectiveness (VE) estimators across different simulation scenarios. In each scenario, we compare: (i) ideal cohort estimator with $U$ measured, (ii) more typical cohort estimator with $U$ unmeasured, (iii) a difference-in-differences (DiD) estimator in the cohort based on equation \ref{eqn:om_estimand}, and (iv) the TND estimator $\widehat{\Psi}_{om}^*$. Results are based on 1000 Monte Carlo replications. Black dashed line is the true VE. In scenario 3, grey dashed line is the ratio of VEs for test-positive versus test-negative illness. In scenarios 6 and 7, grey dashed line VE against symptomatic illness.}
+        Bias of vaccine effectiveness (VE) estimators across different simulation scenarios. In each scenario, we compare: (i) ideal cohort estimator with $U$ measured, (ii) more typical cohort estimator with $U$ unmeasured, (iii) a difference-in-differences (DiD) estimator in the cohort based on equation \ref{eqn:om_estimand}, and (iv) the conventional TND estimator based on logistic regression $\widehat{\Psi}_{om}^*(X)$. Results are based on 1000 Monte Carlo replications. Black dashed line is the true VE. In scenario 3, grey dashed line is the ratio of VEs for test-positive versus test-negative illness. In scenarios 6 and 7, grey dashed line VE against symptomatic illness (for more on this see  \ref{sec:de_testing}).}
     \label{fig:sims1}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics{../results/sims2.pdf}
-    \caption{Bias of vaccine effectiveness (VE) estimators under effect heterogeneity. We add to the estimators considered in Figure \ref{fig:sims1} the conventional TND logistic regression estimator (TND, logit) as well as the novel estimators of the marginal RRV introduced in section \ref{sec:estimation}: the outcome modeling estimator (TND, om), the inverse probability weighting estimator (TND, ipw), and the doubly robust estimator (TND, dr). Results are based on 1000 Monte Carlo replications. Black dashed line is the true VE.}
+    \caption{Bias of vaccine effectiveness (VE) estimators under effect heterogeneity and misspecification of the nuisance functions. We add to the estimators considered in Figure \ref{fig:sims1} the novel estimators of the marginal RRV introduced in section \ref{sec:estimation}: the outcome modeling estimator (TND, om), the inverse probability weighting estimator (TND, ipw), and the doubly robust estimator (TND, dr). Results are based on 1000 Monte Carlo replications. Black dashed line is the true VE.}
     \label{fig:sims2}
 \end{figure}
 
+
+
 \clearpage
 
-\input{supplement.tex}
+\input{manuscript/supplement_new.tex}
+
 %TC:endignore
 
 \end{document}

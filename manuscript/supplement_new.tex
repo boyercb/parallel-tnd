@@ -1,4 +1,13 @@
 
+\title{\textit{eAppendix:} Identification and estimation of vaccine effectiveness in the test-negative design under equi-confounding}
+\date{ }
+\maketitle
+\pagenumbering{arabic}% resets `page` counter to 1
+
+\textbf{This file contains:}
+
+\textbf{eAppendices 1-9, eTables 1-4, eFigures 1-2}
+\newpage 
 \begin{appendix}
     \renewcommand{\thesection}{eAppendix \arabic{section}}
     \renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
@@ -11,13 +20,16 @@
     %\renewcommand{\thetable}{A\arabic{table}}
     \setcounter{table}{0}
     
-    \renewcommand{\theequation}{E\arabic{equation}}
+    \renewcommand{\theequation}{A\arabic{equation}}
     \setcounter{equation}{0}
 
-
     \singlespacing
+     \part{ } % Start the appendix part
+    \parttoc % Insert the appendix TOC
+
 %    \appendixwithtoc
     \newpage
+    \begin{refsection}  
 
     \section{A nonparametric odds ratio model}\label{sec:or_model}
 Following \textcite{tchetgen_universal_2023}, we parameterize a unit's contribution to the likelihood for the potential outcome under no treatment $Y^0$ conditional on $V$ and covariates $X$ and assuming independent sampling. Let
@@ -115,7 +127,7 @@ which is also discussed in the main text.
     % \subsection{Assortativity of vaccination}
 
     \subsection{Correlated vaccination history}
-    Prior work on the TND suggests that the design could be biased when there are other vaccines covering test-negative illness in addition to the focal vaccine for the test positive pathogen when vaccination behavior is correlated. For instance, denote by $V^*$ the vaccination against the test-negative pathogen and assume first $V^*$ is unavailable to the investigator. As shown in the DAG in Figure \ref{fig:additional_dags} this would also violate our identifiability assumptions because it would imply the existence of a confounder that does not affect the test positive and test negative illnesses equally, i.e., 
+    Prior work on the TND suggests that the design could be biased when there are other vaccines covering test-negative illness in addition to the focal vaccine for the test positive pathogen when vaccination behavior is correlated. For instance, denote by $V^*$ the vaccination against the test-negative pathogen and assume first $V^*$ is unavailable to the investigator. As shown in the DAG in eFigure \ref{fig:additional_dags} this would also violate our identifiability assumptions because it would imply the existence of a confounder that does not affect the test positive and test negative illnesses equally, i.e., 
     \[\dfrac{\Pr(I^0 = 2 | V =1, X)}{\Pr(I^0 = 2 | V =0, X)} \neq \dfrac{\Pr(I^0 = 1 | V =1, X)}{\Pr(I^0 = 1 | V =0, X)}. \]
     However, this could be resolved by measuring and adjusting for vaccination for the test negative illness. This further highlights the need to carefully consider and, where possible, document the source of the test negative illnesses. Investigators should also regularly collect full vaccination history.
     \[\dfrac{\Pr(I^0 = 2 | V =1, V^*, X)}{\Pr(I^0 = 2 | V =0, V^*, X)} = \dfrac{\Pr(I^0 = 1 | V =1,V^*,  X)}{\Pr(I^0 = 1 | V =0,V^*,  X)} \]
@@ -257,7 +269,7 @@ which is also discussed in the main text.
         &= \dfrac{\Pr(Y=2|V=1)}{E\left\{ \mathbbm 1(Y = 1) \dfrac{\Pr(Y = 2 | V = 0, X)}{\Pr(Y = 1 | V = 0, X)} \Big| V = 1\right\}} \\
         &= \dfrac{E\left\{V \mathbbm 1(Y = 2)\right\}}{E\left\{ V \mathbbm 1(Y=1) \dfrac{\Pr(Y = 2 | V = 0, X) }{\Pr(Y = 1 | V = 0, X)}  \right\}}.
     \end{align*}
-    The first line restates the definition. The second uses the law of iterated expectation. The third applies the definition of conditional expectation. The fourth applies the nonparametric odds ratio model in section \ref{sec:or_model}. The fifth applies the equi-confounding assumption (Assumption \ref{app_ass3}) in which $\beta(2,X) = \beta(1,X)$ and simplifies. The sixth applies the no effect on test-negative illness (Assumption \ref{app_ass2}). The seventh applies consistency (Assumption \ref{app_ass1}). The eigth reverses the iterated expectation and the ninth uses the definition of conditional expectation with the $\Pr(V=1)$ terms in numerator and denominator canceling.
+    The first line restates the definition. The second uses the law of iterated expectation. The third applies the definition of conditional expectation. The fourth applies the nonparametric odds ratio model in \ref{sec:or_model}. The fifth applies the equi-confounding assumption (Assumption \ref{app_ass3}) in which $\beta(2,X) = \beta(1,X)$ and simplifies. The sixth applies the no effect on test-negative illness (Assumption \ref{app_ass2}). The seventh applies consistency (Assumption \ref{app_ass1}). The eigth reverses the iterated expectation and the ninth uses the definition of conditional expectation with the $\Pr(V=1)$ terms in numerator and denominator canceling.
     
     For the second, we have 
     \begin{align*}
@@ -426,7 +438,7 @@ and $\beta(1,X) = \beta(2,X)$ under equi-confounding. \textcite{tchetgen_univers
 \end{equation}
 where 
 \[\xi(X) = \dfrac{E[\mathbbm 1(Y=2)\exp\{\beta(Y,X)\} | V = 0, X]}{E[\exp\{\beta(Y,X)\} | V = 0, X]}.\]
-Equation \ref{eqn:udid3} requires correct specification of $\beta(Y, X)$ as it is common to both Equation \ref{eqn:udid1} and  \ref{eqn:udid2}.  However, assuming $\beta(Y,X)$ is correctly specified, Equation \ref{eqn:udid3} is consistent if either of (1) a model for the outcome under $V=0$ or (2) a model for the odds of $V$ given the reference is correct. 
+Equation \ref{eqn:udid3} requires correct specification of $\beta(Y, X)$ as it is common to both equation \ref{eqn:udid1} and  \ref{eqn:udid2}.  However, assuming $\beta(Y,X)$ is correctly specified, equation \ref{eqn:udid3} is consistent if either of (1) a model for the outcome under $V=0$ or (2) a model for the odds of $V$ given the reference is correct. 
 
 
 We begin by showing equations \ref{eqn:udid1} and \ref{eqn:udid2} are equivalent to the denominators of identifying expressions $\Psi_{om}$ and $\Psi_{ipw}$ from Proposition \ref{prop1} in the main text, i.e.
@@ -439,7 +451,7 @@ We begin by showing equations \ref{eqn:udid1} and \ref{eqn:udid2} are equivalent
     \end{equation*}
 where $\pi(y, X) = \Pr(V = 1 | Y^0 = y, X)$ and $\log \dfrac{\pi(Y, X)}{1 - \pi(Y, X)} = \eta(X) + \beta(Y, X)$.
 
-We then show that Equation \ref{eqn:udid3} retains its double-robustness property under our set up with
+We then show that equation \ref{eqn:udid3} retains its double-robustness property under our set up with
     \begin{align*}
         \xi(X) &= \dfrac{\exp\{\beta(1,X)\}}{E[\exp\{\beta(Y,X)\} | V = 0, X]}\mu_2(0,X) \\
             &= \exp\{\alpha(1,X)\}\mu_2(0,X)
@@ -519,7 +531,7 @@ When $\mu_y^\dagger(0,X) = \mu_y(0,X) \implies \xi^\dagger(X) = \xi(X)$:
 \newpage
 \section{Doubly robust estimator under TND sampling}\label{sec:eif}
 Under TND sampling, i.e. $O_{TND} = \{(X_i, V_i, S_i=1, Y_i) : i = 1, \ldots, n\},$ with selection $S = \mathbbm 1(Y\neq 0)$, 
-we show in the main text that Equations \ref{eqn:om_estimand} and \ref{eqn:ipw_estimand}, and by extension Equations \ref{eqn:udid1} and \ref{eqn:udid2}, are still identifiable by
+we show in the main text that equations \ref{eqn:om_estimand} and \ref{eqn:ipw_estimand}, and by extension equations \ref{eqn:udid1} and \ref{eqn:udid2}, are still identifiable by
     \begin{equation*}
         \Psi_{om}^* = \dfrac{E[V \mathbbm 1 (Y = 2)|S =1]}{E\left[V\mathbbm 1 (Y = 1) \dfrac{\Pr[Y = 2 | S = 1, V = 0, X]}{\Pr[Y = 1| S = 1, V = 0, X]}\Big| S = 1 \right]}
     \end{equation*}
@@ -918,7 +930,7 @@ we can actually show that the causal risk ratio using the mismeasured outcome $Y
 \section{Simulation details}\label{sec:moresim}
 Here, we provide additional details on the data generation process and estimation methods for the simulation study described in the main text. We also present additional results. 
 
-Our data generation process is a special case of the nonparametric structural equation model implied by the single world intervention graph (SWIG) in Figure \ref{fig:simswig} representing the data as observed in the test negative design under a hypothetical intervention that sets $V$ to $v$. More specifically, we generate data according to  
+Our data generation process is a special case of the nonparametric structural equation model implied by the single world intervention graph (SWIG) in eFigure \ref{fig:simswig} representing the data as observed in the test negative design under a hypothetical intervention that sets $V$ to $v$. More specifically, we generate data according to  
 \begin{align*}
     X, U &\sim \text{Unif}(0,1)\\
     V\mid X, U & \sim \text{Bernoulli}(\expit(\alpha_0 + \alpha_X X + \alpha_U U))\\
@@ -1023,7 +1035,7 @@ Likewise, violations of Assumption \ref{ass2} are controlled by $\beta_{1V}$ and
     \widehat{\Psi}_{cohort,U} = \dfrac{\sum_{i=1}^N\widehat{\mu}_1(X_i, U_i)}{\sum_{i=1}^N\widehat{\mu}_0(X_i, U_i)}
  \end{equation}
  where $\mu_v(X) = \Pr(Y=2 | X, V=v)$ and $\mu_v(X,U) = \Pr(Y=2 | X, U, V=v)$
- The first estimator represents the typical case that the covariate $U$ is unmeasured, and the second represents the hypothetical case where $U$ is available, allowing for conditioning on a sufficient adjustment set. We consider both the typical case that the covariate $U$ is unmeasured, and the hypothetical case where $U$ is available, allowing for conditioning on a sufficient adjustment set. Finally, we include estimates from and $\widehat{\Psi}_{om}$ based on $\Psi_{om}$ from Proposition \ref{prop1} and discussed further in section \ref{sec:app_estimation} that uses the full sample instead of restricting to those tested. Finally, in scenario 8, we demonstrate the double robustness property of $\widehat{\Psi}_{dr}^*$ by adjusting the data generation process for $V$ to be
+ The first estimator represents the typical case that the covariate $U$ is unmeasured, and the second represents the hypothetical case where $U$ is available, allowing for conditioning on a sufficient adjustment set. We consider both the typical case that the covariate $U$ is unmeasured, and the hypothetical case where $U$ is available, allowing for conditioning on a sufficient adjustment set. Finally, we include estimates from and $\widehat{\Psi}_{om}$ based on $\Psi_{om}$ from Proposition \ref{prop1} and discussed further in \ref{sec:app_estimation} that uses the full sample instead of restricting to those tested. Finally, in scenario 8, we demonstrate the double robustness property of $\widehat{\Psi}_{dr}^*$ by adjusting the data generation process for $V$ to be
  \begin{align*}
     V\mid X, U & \sim \text{Bernoulli}(\exp\{\alpha_0 + \alpha_X \mathbbm 1 (X > 0.5) + \alpha_U U\})
 \end{align*}
@@ -1127,7 +1139,10 @@ when simulating under misspecification of the extended propensity score model an
 \bottomrule
 \end{tabular}
 \end{table}
-
+\newpage
+\clearpage
 % $\varphi$
+ \printbibliography[heading=subbibliography]
+\end{refsection}
 \end{appendix}
 

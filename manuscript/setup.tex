@@ -10,6 +10,7 @@
     graphicx,
     caption,
     color,
+    xcolor,
     setspace,
     sectsty,
     comment,
@@ -21,7 +22,6 @@
     subfiles,
     titling,
     array,
-    hyperref,
     booktabs,
     longtable,
     float,
@@ -29,7 +29,34 @@
     makecell,
     bbm,
     threeparttable, 
+    minitoc,
+    tocbasic,
     enumitem}
+
+\usepackage[page]{appendix} % print appendices title
+
+\definecolor{forestgreen}{RGB}{34,139,34}
+\definecolor{bblue}{HTML}{1E88E5} 
+\definecolor{bgreen}{HTML}{004D40}
+ \definecolor{bred}{HTML}{D81B60}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=magenta,
+    filecolor=magenta, 
+    citecolor=forestgreen,      
+    urlcolor=blue
+}
+
+% Make the "Part I" text invisible
+\renewcommand \thepart{}
+\renewcommand \partname{}
+\DeclareTOCStyleEntry[dynnumwidth=true,
+                      numsep=1em,
+]{tocline}{section}
+\DeclareTOCStyleEntry[dynnumwidth=true,
+                      numsep=1em,
+]{tocline}{subsection}
 
 
 \usepackage[
@@ -149,7 +176,8 @@ swigs}
 \newcommand{\Vast}{\bBigg@{5}}
 \makeatother
 
-
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
 \newcommand{\ode}[2]{\frac{d{#1}}{d{#2}}}
 \DeclareMathOperator{\E}{E}
 \DeclareMathOperator{\indep}{\perp\!\!\!\perp}

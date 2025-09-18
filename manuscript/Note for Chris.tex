@@ -1,0 +1,191 @@
+
+\documentclass[12pt]{article}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %TCIDATA{OutputFilter=LATEX.DLL}
+% %TCIDATA{Version=5.50.0.2960}
+% %TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+% %TCIDATA{BibliographyScheme=Manual}
+% %TCIDATA{Created=Tuesday, April 01, 2025 14:51:52}
+% %TCIDATA{LastRevised=Wednesday, April 02, 2025 02:18:11}
+% %TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+% %TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+% %TCIDATA{CSTFile=40 LaTeX article.cst}
+
+% \newtheorem{theorem}{Theorem}
+% \newtheorem{acknowledgement}[theorem]{Acknowledgement}
+% \newtheorem{algorithm}[theorem]{Algorithm}
+% \newtheorem{axiom}[theorem]{Axiom}
+% \newtheorem{case}[theorem]{Case}
+% \newtheorem{claim}[theorem]{Claim}
+% \newtheorem{conclusion}[theorem]{Conclusion}
+% \newtheorem{condition}[theorem]{Condition}
+% \newtheorem{conjecture}[theorem]{Conjecture}
+% \newtheorem{corollary}[theorem]{Corollary}
+% \newtheorem{criterion}[theorem]{Criterion}
+% \newtheorem{definition}[theorem]{Definition}
+% \newtheorem{example}[theorem]{Example}
+% \newtheorem{exercise}[theorem]{Exercise}
+% \newtheorem{lemma}[theorem]{Lemma}
+% \newtheorem{notation}[theorem]{Notation}
+% \newtheorem{problem}[theorem]{Problem}
+% \newtheorem{proposition}[theorem]{Proposition}
+% \newtheorem{remark}[theorem]{Remark}
+% \newtheorem{solution}[theorem]{Solution}
+% \newtheorem{summary}[theorem]{Summary}
+% \newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+%\input{tcilatex}
+\usepackage{amsmath}
+\begin{document}
+
+
+Suppose we observed TND\ data $(X,V,Y)$ from the law 
+\[
+Y|U,X,V,S=1
+\]
+where $U$ are unmeasured common causes of $V, Y$ and selection into the TND
+sample. We suppose that $Y$ takes on three values 
+\[
+Y=\left\{ 
+\begin{array}{c}
+0\text{ uninfected } \\ 
+1\text{ test-negative case} \\ 
+2\text{ covid test positive case}%
+\end{array}%
+\right. 
+\]%
+we suppose further that the test-negative cases are negative control
+outcomes such that 
+\begin{eqnarray*}
+\Pr \left\{ Y=1|U,X,V\right\} = \exp \left\{ \alpha _{0}+\alpha _{u}U+\alpha _{x}^{\prime }X\right\} 
+\end{eqnarray*}%
+We will also suppose that we have measured a negative control treatment $Z$
+such that%
+\[
+Y\amalg Z|U,X,V
+\]
+where  
+\begin{gather*}
+U|X,Z,V\sim \mu \left( X,Z,V\right) +\varepsilon _{u} \\
+\varepsilon_{u} \amalg X,Z,V
+\end{gather*}%
+Now suppose that the outcome of interest satisfies the multiplicative model 
+\[
+\Pr \left\{ Y=2|U,X,V\right\} =\exp \left\{ \beta _{0} + \beta
+_{u}U+\beta _{x}^{\prime }X +\beta _{v}V\right\} 
+\]%
+We aim to identify the parameter $\beta _{v}$ in this regression, assuming
+as in both Kendrick's and Chris' paper that conditions ensure that%
+\[
+\frac{\Pr \left\{ Y=2|U,X,V=1,S=1\right\} }{\Pr \left\{
+Y=2|U,X,V=0,S=1\right\} }=\frac{\Pr \left\{ Y=2|U,X,V=1\right\} }{\Pr
+\left\{ Y=2|U,X,V=0\right\} }=\exp \left\{ \beta _{v}\right\} 
+\]
+We then have that 
+\begin{align*}
+&\Pr \left\{ Y=1 | X,Z,V \right\}  \\
+&\quad=E\left\{ \exp \left\{ \alpha _{0}+\alpha _{u}U+\alpha _{x}^{\prime
+}X\right\} | X, Z, V\right\}  \\
+&\quad =\exp \left\{ \alpha _{0}+\alpha _{x}^{\prime }X\right\} \exp \left\{
+\alpha _{u}\mu \left( X,Z,V \right) \right\} E\left\{ \exp \left( \alpha
+_{u}\varepsilon _{u}\right) \right\}  \\
+&\quad =\exp \left\{ \alpha _{0}^{\ast }+\alpha _{x}^{\prime }X+\alpha _{u}\mu
+\left( X,Z,V \right) \right\} 
+\end{align*}%
+Likewise, we have that 
+\begin{align*}
+&\Pr \left\{ Y=2|X,Z,V\right\}  \\
+&\quad=E\left\{ \exp \left\{ \beta _{0} + \beta
+_{u}U+\beta _{x}^{\prime }X +\beta _{v}V\right\} |X,Z,V\right\}  \\
+&\quad=\exp \left\{ \beta _{0} + \beta
+_{u}\mu \left( X,Z,V \right)+\beta _{x}^{\prime }X +\beta _{v}V\right\} E\left\{ \exp \left( \beta _{u}\varepsilon
+_{u}\right) \right\}  \\
+&\quad=\exp \left\{ \beta^{\ast } _{0} + \beta
+_{u}\mu \left( X,Z,V \right)+\beta _{x}^{\prime }X +\beta _{v}V\right\}  
+% &\quad=\exp \left\{ \beta _{0}^{\ast }+ \frac{%
+% \beta _{u}}{\alpha _{u}}\left[ \log \left(\Pr \left\{ Y=1|X,Z,V\right\} %
+% \right) -\alpha _{0}^{\ast }-\alpha _{x}^{\prime }X\right] +\beta _{x}^{\prime }X + \beta _{v}V \right\}  \\
+% &\quad=\exp \left\{ \beta _{0}^{\ast \ast }+ \beta _{u}^{\ast \ast }\log \left(\Pr \left\{
+% Y=1|X,Z,V\right\} \right) +\beta _{x}^{\ast \ast
+% \prime }X + \beta _{v}V\right\} 
+\end{align*}%
+Under the proposed selection we have
+\begin{align*}
+    &\dfrac{\Pr \left\{ Y=2|U,X,V,S=1\right\}}{\Pr \left\{ Y=1|U,X,V,S=1\right\}} \\
+    &\quad=\exp \left\{ (\beta _{0}^{\ast } - \alpha_0^{\ast}) + (\beta _{u} - \alpha_u)\mu \left( X,Z,V \right)  +(\beta _{x}^{ \prime } - \alpha_x^{\prime}) X + \beta _{v}V\right\} \\
+    &\quad=\exp \bigg\{ (\beta _{0}^{\ast } - \alpha_0^{\ast}) + \left(\dfrac{\beta _{u}}{\alpha_u} - 1\right)\left[ \log \left(\Pr \left\{ Y=1|X,Z,V\right\} \right) -\alpha _{0}^{\ast }-\alpha _{x}^{\prime }X\right] + \\
+    &\qquad \qquad \qquad(\beta _{x}^{ \prime } - \alpha_x^{\prime}) X + \beta _{v}V\bigg\} \\
+    &\quad=\exp\left\{ \beta _{0}^{\ast \ast } + \beta_u^{\ast \ast} \log \left(\Pr \left\{ Y=1|X,Z,V\right\} \right) + \beta _{x}^{ \ast \ast \prime } X + \beta _{v}V\right\} 
+\end{align*}
+This suggests a two-stage procedure if we had $\Pr\left\{ Y=1|X,Z,V\right\}$, but we don't observe this under TND sampling. So the problem here is that under the sampling design $\Pr \left\{ Y=1|U,X,V,S=1\right\}$ and $\Pr \left\{ Y=2|U,X,V,S=1\right\}$ are coupled with $\Pr \left\{ Y=2|U,X,V,S=1\right\} = 1 - \Pr \left\{ Y=1|U,X,V,S=1\right\}$. Two things that are observed are 
+\[\Pr\{Z=z | X, V, Y = 1\} = \Pr\{Z=z | X, V, Y = 1, S = 1\}\]
+and 
+\[\Pr\{V=v | X, Z, Y = 1\} = \Pr\{V=v | X, Z, Y = 1, S =1\}\]
+under $S = I(Y\neq0)$. I think this suggestes that we could use an approach based on treatment confounding bridge function? Unless there's another 
+
+% We could use the fact that
+% \[
+% \dfrac{\Pr\{V=1 | X,Z,Y=1\}}{\Pr\{V=0 | X,Z,Y=1\}} = \dfrac{\Pr\{Y=1 | X,Z,V=1\}\Pr\{V=1|X,Z\}}{\Pr\{Y=1 | X,Z,V=0\}\Pr\{V=0|X,Z\}}
+% \]
+% \begin{align*}
+%     &\Pr\{V=v | X,Z,Y=1\} \\
+%     &\quad= \dfrac{\Pr \left\{ Y=1|X,Z,V=v\right\}\Pr \left\{ V=v|X,Z\right\}}{\sum_{v' \in \{0,1\}} \Pr \left\{ Y=1|X,Z,V=v'\right\}\Pr \left\{ V=v'|X,Z\right\} }
+% \end{align*}
+
+% \begin{align*}
+%     &\Pr\{Y=1 | X,Z,V=v\} \\
+%     &\quad= \dfrac{\Pr \left\{ V=v|X,Z,Y=1\right\}\Pr \left\{ Y=1|X,Z\right\}}{\sum_{y' \in \{0,1,2\}} \Pr \left\{ V=v|X,Z,Y=y'\right\}\Pr \left\{ Y=y'|X,Z\right\} }
+% \end{align*}
+
+% \[f(Z|U,X,V) = f(U|X,Z,V)f(X,Z,V)/f(U,X,V)\]
+% \begin{align*}
+%     E[E[Z | U,X,V,Y=1] | X,V,Y=1]
+% \end{align*}
+
+% \newpage
+% Note that
+% \begin{align*}
+%     &\Pr\{V=1 | X,Z,Y=1\} =\\
+%     &\quad= \dfrac{1}{1 + \dfrac{\Pr \left\{ Y=1|X,Z,V=0\right\}}{\Pr \left\{ Y=1|X,Z,V=1\right\}} \dfrac{\Pr \left\{ V=0|X,Z\right\}}{\Pr \left\{ V=1|X,Z\right\}}}
+% \end{align*}
+
+% \begin{align*}
+%     \Pr \left\{ Y=1|X,Z,V\right\} &= \dfrac{f(V | X,Z,Y=1) \Pr \left\{ Y=1|X,Z\right\}}{f(V | X, Z)}
+% \end{align*}
+
+% and thus 
+% \begin{align*}
+%     &\Pr \left\{ Y=1|X,Z,V=1\right\} = \\
+%     &\quad=\dfrac{\Pr\{V=1 | X,Z,Y=1\} \left(\Pr \left\{ Y=1|X,Z,V=1\right\}\Pr \left\{V=1|X,Z\right\} + \Pr \left\{ Y=1|X,Z,V=0\right\}\Pr \left\{V=0|X,Z\right\}\right)}{\Pr\{V=1 | X,Z\}} \\
+%     &\quad=\Pr\{V=1 | X,Z,Y=1\} \left(\Pr \left\{ Y=1|X,Z,V=1\right\}+ \Pr \left\{ Y=1|X,Z,V=0\right\}\dfrac{\Pr \left\{V=0|X,Z\right\}}{\Pr\{V=1 | X,Z\}}\right)
+% \end{align*}
+
+% \[\Pr\{V=1 | X,Z,Y=1\} = \dfrac{1}{1 + \dfrac{\Pr \left\{ Y=1|X,Z,V=0\right\}}{\Pr \left\{ Y=1|X,Z,V=1\right\}}\dfrac{\Pr \left\{V=0|X,Z\right\}}{\Pr\{V=1 | X,Z\}}}\]
+% This suggest performing two -stage regression approach, First fit a
+% regression say    
+% \[
+% \Pr \left\{ Y=1|V,X,Z,S=1\right\} =\exp \left\{ \theta _{0}+\theta
+% _{v}V+\theta _{x}X+\theta _{z}Z\right\} 
+% \]%
+% for $\exp \left\{ \alpha _{0}^{\ast }+\alpha _{x}^{\prime }X+\alpha _{u}\mu
+% \left( X,Z.V\right) \right\} $ get the fitted value $\widehat{\theta }\left(
+% V,X,Z\right) =$log$\widehat{\Pr }\left\{ Y=1|V,X,Z,S=1\right\} =\widehat{%
+% \theta }_{0}+\widehat{\theta }_{v}V+\widehat{\theta }_{x}X+\widehat{\theta }%
+% _{z}Z,$ Then, fit a regression for 
+% \[
+% \Pr \left\{ Y=2|V,X,Z,S=1\right\} =\exp \left\{ \widehat{\beta }_{0}^{\ast
+% \ast }+\widehat{\beta }_{v}V+\widehat{\beta }_{x}^{\ast \ast \prime }X+%
+% \widehat{\beta }_{u}^{\ast \ast }\widehat{\theta }\left( V,X,Z\right)
+% \right\} 
+% \]%
+% where $\widehat{\beta }_{v}$ is consistent for $\beta _{v}.$ Alternatively,
+% in the second stage, one could perform a logistic regression 
+% \[
+% \log \frac{\Pr \left\{ Y=2|V,X,Z,S=1\right\} }{\Pr \left\{
+% Y=1|V,X,Z,S=1\right\} }=\widehat{\beta }_{0}^{\ast \ast }+\widehat{\beta }%
+% _{v}V+\widehat{\beta }_{x}^{\ast \ast \prime }X+\widehat{\beta }_{u}^{\ast
+% \ast \ast }\widehat{\theta }\left( V,X,Z\right) 
+% \]%
+% where \ $\widehat{\beta }_{u}^{\ast \ast \ast }=\widehat{\beta }_{u}^{\ast
+% \ast }-1.$
+
+\end{document}
