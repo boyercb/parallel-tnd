@@ -59,6 +59,7 @@ dir.create("data", showWarnings = FALSE)
   - `sim.R` - Simulation wrapper functions
   - `table.R` - Code to generate results tables
   - `plot.R` - Code to generate figures
+- `data/` - Data files (in this project only saved simulation results)
 - `manuscript/` - LaTeX source files for the manuscript
 - `results/` - Output files (tables and figures)
 
