@@ -1,0 +1,339 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb,
+    amsmath,
+    amsfonts,
+    amsthm, 
+    bbm,
+    graphicx,
+    caption,
+    color,
+    xcolor,
+    setspace}
+\usepackage{geometry}
+
+\definecolor{forestgreen}{RGB}{34,139,34}
+\definecolor{bblue}{HTML}{1E88E5} 
+\definecolor{bgreen}{HTML}{004D40}
+ \definecolor{bred}{HTML}{D81B60}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=magenta,
+    filecolor=magenta, 
+    citecolor=forestgreen,      
+    urlcolor=blue
+}
+
+\usepackage[
+    backend=biber,
+    style=authoryear,
+    date=year,
+    doi=true,
+    isbn=false,
+    url=false,
+    eprint=false
+]{biblatex}
+
+
+\AtEveryBibitem{%
+  \clearfield{note}%
+}
+\AtEveryCitekey{\clearlist{publisher}}
+\AtEveryBibitem{\clearlist{publisher}}
+\addbibresource{tnd.bib}
+\geometry{left=1.0in,right=1.0in,top=1.0in,bottom=1.0in}
+
+\newtheorem{result}{Result}
+
+\begin{document}
+\onehalfspacing
+\section{Cohort sampling}
+Consider data from an observational study with binary vaccination $V$, covariates $X$, and tri-level outcome $Y$ (0: no test, 1: test-negative, 2: test-positive) as described in the main text and assume for now that data are observed for everyone (i.e. no TND sampling). The parameter of interest is the causal risk ratio among the vaccinated $\phi = \Pr(Y^1=2|V=1)/\Pr(Y^0 = 2 | V = 1)$. We focus on the denominator $\phi = \Pr(Y^0 = 2 | V = 1)$ as identification of the numerator is trivial under causal consistency. Identification of $\phi$ under equi-confounding is structurally similar to Universal Difference-in-Differences (UDiD), with a key difference that the NCO and Outcome are mutually exclusive by design and the. Under the UDiD framework, \textcite{tchetgen_universal_2023} provide the following estimators of $\phi$:
+\begin{equation} \label{eqn:udid1}
+    E\left[\dfrac{E[\mathbbm 1(Y=2)\exp\{\beta(Y,X)\} | V = 0, X]}{E[\exp\{\beta(Y,X)\} | V = 0, X]}\bigg|V = 1\right]
+\end{equation}
+and 
+\begin{equation}\label{eqn:udid2}
+    \dfrac{E[(1-V)\mathbbm 1(Y=2)\exp\{\eta(X) + \beta(Y,X)\}]}{E[(1-V)\exp\{\eta(X) +\beta(Y,X)\}]}
+\end{equation}
+where
+\begin{align*}
+    \beta(y,X) &= \log\dfrac{\Pr(Y^0=y|V=1,X)\Pr(Y^0=0|V=0,X)}{\Pr(Y^0=0|V=1,X)\Pr(Y^0=y|V=0, X)} \\
+    &= \log\dfrac{\Pr(V=1 | Y^0=y,X)\Pr(V=0|Y^0=0,X)}{\Pr(V=0|Y^0=y, X)\Pr(V=1|Y^0=0,X)} \\
+    \eta(X) &= \log \dfrac{\Pr(V = 1 | Y^0 = 0, X)}{\Pr(V = 0 | Y^0 = 0, X)}
+\end{align*}
+and $\beta(1,X) = \beta(2,X)$ under equi-confounding.
+\begin{result}[Equivalence of UDiD and our estimators]\label{res1}
+Equations \ref{eqn:udid1} and \ref{eqn:udid2} are equivalent to the denominators of identifying expressions $\Psi_{om}$ and $\Psi_{ipw}$ from Proposition 1 in the main text, i.e.
+ \begin{equation}\label{eqn:om_estimand}
+        E\left[\Pr[Y = 2 | V = 0, X] \dfrac{\Pr[Y = 1 | V = 1, X]}{\Pr[Y = 1 | V = 0, X]} \Big| V = 1 \right]
+    \end{equation}
+    and 
+    \begin{equation}\label{eqn:ipw_estimand}
+        E\left[ \dfrac{(1 - V)}{\Pr(V=1)} \mathbbm 1(Y = 2) \dfrac{\pi(1,X)}{1 - \pi(1,X)}\right]
+    \end{equation}
+where $\pi(y, X) = \Pr(V = 1 | Y^0 = y, X)$ and $\log \dfrac{\pi(Y, X)}{1 - \pi(Y, X)} = \eta(X) + \beta(Y, X)$.
+\begin{proof}
+ See Appendix \ref{sec:proof1}.
+\end{proof}
+\end{result}
+
+\textcite{tchetgen_universal_2023} also provide a doubly-robust estimator of $\phi$, given by 
+\begin{equation}\label{eqn:udid3}
+     E\left[\dfrac{(1 - V)}{\Pr(V=1)} \exp\{\eta(X) + \beta(Y,X)\}\{\mathbbm 1(Y = 2) - \xi(X)\} + \dfrac{V}{\Pr(V=1)}\xi(X)  \right]
+\end{equation}
+where 
+\[\xi(X) = \dfrac{E[\mathbbm 1(Y=2)\exp\{\beta(Y,X)\} | V = 0, X]}{E[\exp\{\beta(Y,X)\} | V = 0, X]}.\]
+Equation \ref{eqn:udid3} requires correct specification of $\beta(Y, X)$ as it is common to both Equation \ref{eqn:udid1} and  \ref{eqn:udid2}.  However, assuming $\beta(Y,X)$ is correctly specified, Equation \ref{eqn:udid3} is consistent if either of (1) a model for the outcome under $V=0$ or (2) a model for the odds of $V$ given the reference is correct. 
+
+\begin{result}\label{res2}
+    We show that Equation \ref{eqn:udid3} retains its double-robustness property under our set up with
+    \begin{align*}
+        \xi(X) &= \dfrac{\exp\{\beta(1,X)\}}{E[\exp\{\beta(Y,X)\} | V = 0, X]}\mu_2(0,X) \\
+            &= \exp\{\alpha(1,X)\}\mu_2(0,X)
+    \end{align*}
+    where $\alpha(y, X) = \log \dfrac{\Pr(Y^0=y|V=1,X)}{\Pr(Y^0=y|V=0,X)}$ and $\mu_y(v,X) = E[\mathbbm 1 (Y= y) | V = v, X]$. \textcolor{red}{CB: Can this all be parameterized in terms of $\alpha(y,X)$? If so would help when we add TND sampling later.} That is, Equation \ref{eqn:udid3} is consistent for $\phi$ if $\beta(Y,X)$ is correctly specified and either or both of the following hold:
+    \begin{enumerate}
+        \item $\mu_y^\dagger(0,X) = \mu_y(0,X)$ for $y \in \{1, 2\}$.
+        \item $\eta^\dagger(X) = \eta(X)$.
+    \end{enumerate}
+    where  $\mu_y^\dagger(0,X)$ is a, possibly misspecified, estimator of $\mu_y(0,X)$ and likewise $\eta^\dagger(X)$ is a, possibly misspecified, estimator of $\eta(X)$.
+    \begin{proof}
+        See Appendix \ref{sec:proof2}.
+    \end{proof}
+\end{result}
+\newpage 
+\textcolor{red}{CB: Do these look right?}
+
+\textbf{Estimation steps:}
+\begin{enumerate}
+    \item Fit $\mu_y^\dagger(0,X)$ e.g., via multinomial regression of $Y$ on $(1,X)'$ among those with $V= 0$.
+    \item Fit $\pi^\dagger(1,X)$ e.g., via logistic regression of $V$ on $(1,X)'$ among those with $Y=1$. Note that 
+    \[\log \dfrac{\pi(1,X)}{1-\pi(1,X)} = \eta(X) + \beta(1, X),\]
+    but as of yet we cannot differentiate between them.
+    \item Estimate $\eta^\dagger(X)$ by solving 
+    \[E\left[\dfrac{(1-V)}{1 -\pi(Y,X)}\right] = 1 \iff E[(1-V)\{1 - \pi^\dagger(Y,X)\} - 1] = 0\]
+    where 
+    \[\log \dfrac{\pi^\dagger(Y,X)}{1 - \pi^\dagger(Y,X)} = \begin{cases} \eta(X) & \text{if } Y = 0 \\
+    \log \dfrac{\pi^\dagger(1,X)}{1-\pi^\dagger(1,X)}  & \text{if } Y \in \{1,2\}
+    \end{cases}\]
+    \item Estimate doubly-robust $\beta_{DR}^\dagger(Y,X)$ via 
+    \[E\left[\{V - \operatorname{expit}(\eta^\dagger(X))\}\exp\{-\beta_{DR}(Y,X)V\}\{S(Y,X) - \mu_Y^\dagger(0, X)S(Y,X)\}\right] = 0\]
+    where $S(Y,X) = \mathbbm 1 (Y = 1)$.
+    \item Re-estimate $\eta_{DR}^\dagger(X)$ by solving 
+    \[E\left[\dfrac{(1-V)}{1 -\pi(Y,X)}\right] = 1 \iff E[(1-V)\{1 + \exp\{\eta_{DR}^\dagger(X) + \beta^\dagger_{DR}(Y,X)\}\} - 1] = 0\]
+    \item Estimate effect via
+    \[\dfrac{E[V \mathbbm 1(Y =2)]}{ E\left[(1 - V) \exp\{\eta_{DR}^\dagger(X) + \beta^\dagger_{DR}(Y,X)\}\{\mathbbm 1(Y = 2) - \xi^\dagger(X)\} + V\xi^\dagger(X)\}  \right]}\]
+    where
+    \[\xi^\dagger(X)= \dfrac{\exp\{\beta^\dagger_{DR}(Y,X)\}}{E[\exp\{\beta^\dagger_{DR}(Y,X)\}|V=0,X ]}\mu_2^\dagger(0,X).\]
+\end{enumerate}
+\newpage
+
+\section{TND sampling}
+Under TND sampling, i.e. $O_{TND} = \{(X_i, V_i, S_i=1, Y_i) : i = 1, \ldots, n\},$ with selection $S = \mathbbm 1(Y\neq 0)$, 
+we show in the main text that Equations \ref{eqn:om_estimand} and \ref{eqn:ipw_estimand}, and by extension Equations \ref{eqn:udid1} and \ref{eqn:udid2}, are still identifiable by
+    \begin{equation}\label{eqn:om_estimand_tnd}
+        \Psi_{om}^* = \dfrac{\Pr[Y = 2 | S = 1, V = 1]}{E\left[ \Pr[Y = 2 | S = 1, V = 0, X] \dfrac{\Pr[Y = 1 | S = 1, V = 1, X]}{\Pr[Y = 1| S = 1, V = 0, X]}\Big| S = 1, V = 1 \right]}
+    \end{equation}
+    and 
+    \begin{equation}\label{eqn:ipw_estimand_tnd}
+        \Psi_{ipw}^* = \dfrac{E[V \mathbbm 1 (Y = 2)|S =1]}{E\left[ (1 - V) \mathbbm 1 (Y = 2) \dfrac{\pi^*_1(X)}{1 - \pi^*_1(X)} \bigg| S = 1\right]}
+    \end{equation}
+    where $\pi^*_1(X) = \Pr[V = 1| S = 1, Y = 1, X]$. These equations could alternatively be parameterized as 
+    \begin{equation}\label{eqn:om_estimand_tnd}
+        \Psi_{om}^* = \dfrac{\Pr[Y = 2 | S = 1, V = 1]}{E\left[  \exp\{\alpha^*(1,X)\} \mu^*(0,X)\Big| S = 1, V = 1 \right]}
+    \end{equation}
+    and 
+    \begin{equation}\label{eqn:ipw_estimand_tnd}
+        \Psi_{ipw}^* = \dfrac{E[V \mathbbm 1 (Y = 2)|S =1]}{E\left[ (1 - V) \mathbbm 1 (Y = 2) \exp\{\nu^*(X) + \alpha^*(1,X)\} \bigg| S = 1\right]}
+    \end{equation}
+    where $\alpha^*(y,X) = \log \dfrac{\Pr(Y^0=y|S=1, V=1,X)}{\Pr(Y^0=y|S=1,V=0,X)}$ and $\nu^*(X) = \log \dfrac{\Pr(V=1|S=1,X)}{\Pr(V=0|S=1,X)}$. This emphasizes that the shared parameter under TND sampling is now $\alpha(Y,X)$ instead of $\beta(Y,X)$.
+    Therefore, it is an interesting question whether the corollary to the doubly-robust estimator for the denominator in Equation \ref{eqn:udid3} is also doubly-robust, i.e. does
+    \begin{equation}\label{eqn:udid4}
+     E\left[\dfrac{(1 - V)\exp\{\nu^*(X) + \alpha^*(1,X)\}}{\Pr(V=1|S=1)} \{\mathbbm 1(Y = 2) - \xi^*(X)\} + \dfrac{V\xi^*(X)}{\Pr(V=1|S=1)}\} \bigg| S=1  \right]
+    \end{equation}
+    where 
+    \[\xi^*(X) = \exp\{\alpha^*(1,X)\} \mu^*(0,X),\]
+    and 
+    \[\mu^*(v,X) = \Pr(Y=2|S=1,V=v,X)\]
+    retain double-robustness property?
+    \newpage
+\begin{result}\label{res3}
+    Equation \ref{eqn:udid4} is consistent for $\phi$ if $\alpha(Y,X)$ is correctly specified and either or both of the following hold:
+    \begin{enumerate}
+        \item $\mu^\ddagger(0,X) = \mu^*(0,X)$.
+        \item $\nu^\ddagger(X) = \nu^*(X)$.
+    \end{enumerate}
+    where  $\mu^\ddagger(0,X)$ is a, possibly misspecified, estimator of $\mu^*(0,X)$ and likewise $\nu^\ddagger(X)$ is a, possibly misspecified, estimator of $\nu^*(X)$.
+    \begin{proof}
+        See Appendix \ref{sec:proof3}.
+    \end{proof}
+\end{result}
+    % \textcolor{red}{
+    % Some challenges related to the fact that we no longer directly observe those with $Y = 0$:
+    % \begin{enumerate}
+    %     \item The shared parameter in Equations \ref{eqn:om_estimand_tnd} and \ref{eqn:ipw_estimand_tnd} is only $\alpha(1,X)$ where
+    %     \[\alpha^*(y,X) = \dfrac{\Pr(Y^0=1|S=1,V=1,X)}{\Pr(Y^0=1|S=1,V=0,X)}\]
+    %     and under equi-confounding $\alpha^*(1,X)=\alpha^*(2,X)$.
+    %     \item $\eta(X)$ is not 
+    % \end{enumerate}
+    % }
+
+\textcolor{red}{CB: NEED HELP HERE. I DON'T THINK THIS IS RIGHT}
+
+\textbf{Estimation steps:}
+\begin{enumerate}
+    \item Fit $\mu^\ddagger(0,X)$ e.g., via logistic regression of $Y$ on $(1,X)'$ among those with $V= 0$ using $O_{TND}$.
+    \item Fit $\nu^\ddagger(X)$ e.g., via logistic regression of $V$ on $(1,X)'$ using $O_{TND}$.
+    % \item Estimate $\eta^\dagger(X)$ by solving 
+    % \[E\left[\dfrac{(1-V)}{1 -\pi(Y,X)}\right] = 1 \iff E[(1-V)\{1 - \pi^\dagger(Y,X)\} - 1] = 0\]
+    % where 
+    % \[\log \dfrac{\pi^\dagger(Y,X)}{1 - \pi^\dagger(Y,X)} = \begin{cases} \eta(X) & \text{if } Y = 0 \\
+    % \log \dfrac{\pi^\dagger(1,X)}{1-\pi^\dagger(1,X)}  & \text{if } Y \in \{1,2\}
+    % \end{cases}\]
+    \item  Estimate doubly-robust $\alpha_{DR}^\dagger(1,X)$ via 
+    \[E\left[\{V - \operatorname{expit}(\nu^\dagger(X))\}\exp\{-\alpha_{DR}(1,X)V\}\left(\mathbbm1(Y=1) - \{1-\mu^\ddagger(0, X)\}\right)\bigg| S= 1\right] = 0.\]
+    \item Estimate $\nu_{DR}^\dagger(X)$ by solving 
+    \[E\left[\dfrac{(1-V)}{1 -\pi(Y,X)} \bigg| S=1vb\right] = 1 \iff E[(1-V)\{1 + \exp\{\nu_{DR}^\dagger(X) + \alpha^\dagger_{DR}(Y,X)\}\} - 1 | S = 1] = 0\]
+    \item Estimate effect via
+    \[\dfrac{E[V \mathbbm 1(Y =2)|S=1]}{E\left[(1 - V) \exp\{\nu^\ddagger(X) + \alpha^\ddagger_{DR}(1,X)\}\{\mathbbm 1(Y = 2) - \xi^\ddagger(X)\} + V\xi^\ddagger(X) \bigg|S=1 \right]}\]
+    where
+    \[\xi^\dagger(X)= \exp\{\alpha^\ddagger_{DR}(Y,X)\}\mu^\ddagger(0,X).\]
+\end{enumerate}
+
+\newpage
+
+\begin{appendix}
+
+    \renewcommand{\thefigure}{A\arabic{figure}}
+    \setcounter{figure}{0}
+    
+    \renewcommand{\thetable}{A\arabic{table}}
+    \setcounter{table}{0}
+    
+    \renewcommand{\theequation}{A\arabic{equation}}
+    \setcounter{equation}{0}
+
+
+\section{Proof of Result \ref{res1}}\label{sec:proof1}
+For equation 1, we have
+\begin{align*}
+     E&\left[\dfrac{E[\mathbbm 1(Y=2)\exp\{\beta(Y,X)\} | V = 0, X]}{E[\exp\{\beta(Y,X)\} | V = 0, X]}\bigg|V = 1\right] = \\
+     &\quad = E \left[\dfrac{\int \mathbbm 1(Y=2)\exp\{\beta(y,X)\} f(y| V = 0, X)dy}{\int \exp\{\beta(y,X)\} f(y| V = 0, X)}\bigg|V = 1\right] \\
+     &\quad = E \left[\dfrac{\Pr(Y = 2 | V = 0, X)\exp\{\beta(2,X)\} }{\int \exp\{\beta(y,X)\} f(y| V = 0, X)}\bigg|V = 1\right] \\
+     &\quad = E \left[\dfrac{\Pr(Y = 2 | V = 0, X)\exp\{\beta(1,X)\} }{\int \exp\{\beta(y,X)\} f(y| V = 0, X)}\bigg|V = 1\right] \\
+     &\quad = E \left[\dfrac{\Pr(Y = 2 | V = 0, X)\exp\{\beta(1,X)\} }{\Pr(Y^0 = 0| V = 0, X)/\Pr(Y^0 =0|V = 1, X)}\bigg|V = 1\right] \\
+     &\quad = E \left[\Pr(Y = 2|V = 0, X)\dfrac{\Pr(Y = 1 | V = 1, X)}{\Pr(Y = 1 | V = 0, X)}\bigg|V = 1\right]
+\end{align*}
+For equation 2, we have
+\begin{align*}
+     &\dfrac{E[(1-V)\mathbbm 1(Y=2)\exp\{\eta(X) + \beta(Y,X)\}]}{E[(1-V)\exp\{\eta(X) +\beta(Y,X)\}]} = \\
+     &\qquad = \dfrac{E\left[(1-V)\dfrac{\pi(2,X)}{1-\pi(2,X)}\mathbbm 1(Y=2)\right]}{E\left[(1-V)\dfrac{\pi(Y, X)}{1-\pi(Y,X)}\right]} \\
+     &\qquad = \dfrac{E\left[(1-V)\dfrac{\pi(1,X)}{1-\pi(1,X)}\mathbbm 1(Y=2)\right]}{E\left[(1-V)\dfrac{\pi(Y, X)}{1-\pi(Y,X)}\right]} \\
+     &\qquad = \dfrac{E\left[(1-V)\dfrac{\pi(1,X)}{1-\pi(1,X)}\mathbbm 1(Y=2)\right]}{E\left[E[(1-V) | Y, X]\dfrac{\pi(Y, X)}{1-\pi(Y,X)}\right]} \\
+     &\qquad = \dfrac{E\left[(1-V)\dfrac{\pi(1,X)}{1-\pi(1,X)}\mathbbm 1(Y=2)\right]}{E\left[\pi(Y,X)\right]} \\
+     &\qquad = E\left[\dfrac{(1-V)}{\Pr[V=1]}\dfrac{\pi(1,X)}{1-\pi(1,X)}\mathbbm 1(Y=2)\right]
+\end{align*}
+
+\section{Proof of Result \ref{res2}}\label{sec:proof2}
+When $\eta^\dagger(X) = \eta(X)$:
+\begin{align*}
+    E&\left[\dfrac{(1 - V)}{\Pr(V=1)} \exp\{\eta^\dagger(X) + \beta(Y,X)\}\{\mathbbm 1(Y = 2) - \xi^\dagger(X)\} + \dfrac{V}{\Pr(V=1)}\xi^\dagger(X) \right]\\
+     &= E\left[\dfrac{(1 - V)}{\Pr(V=1)}  \dfrac{\pi(Y^0,X)}{1-\pi(Y^0,X)} \{\mathbbm 1(Y^0 = 2) - \xi^\dagger(X)\}  + \dfrac{V}{\Pr(V=1)}\xi^\dagger(X)\right] \\
+      &= E\left[\dfrac{E[1-V|Y^0, X]}{\Pr(V=1)}  \dfrac{\pi(Y^0,X)}{1-\pi(Y^0,X)}\{\mathbbm 1(Y^0 = 2) - \xi^\dagger(X)\} + \dfrac{V}{\Pr(V=1)}\xi^\dagger(X)\right]\\
+       &= E\left[\dfrac{E[V|Y^0, X]}{\Pr(V=1)} \{\mathbbm 1(Y^0 = 2) - \xi^\dagger(X)\} + \dfrac{V}{\Pr(V=1)}\xi^\dagger(X)\right] \\
+       &= E\left[\dfrac{V}{\Pr(V=1)} \{\mathbbm 1(Y^0 = 2) - \xi^\dagger(X)\} + \dfrac{V}{\Pr(V=1)}\xi^\dagger(X)\right]\\
+        &= E\left[\mathbbm 1(Y^0 = 2) |V=1\right]
+\end{align*}
+When $\mu_y^\dagger(0,X) = \mu_y(0,X) \implies \xi^\dagger(X) = \xi(X)$:
+\begin{align*}
+     E&\left[\dfrac{(1 - V)}{\Pr(V=1)} \exp\{\eta^\dagger(X) + \beta(Y,X)\}\{\mathbbm 1(Y = 2) - \xi^\dagger(X)\} + \dfrac{V}{\Pr(V=1)}\xi^\dagger(X) \right]\\
+     &= E\left[\dfrac{(1 - V)}{\Pr(V=1)} \dfrac{\pi^\dagger(Y^0,X)}{1-\pi^\dagger(Y^0, X)}\{\mathbbm 1(Y^0 = 2) - \xi(X)\} + \dfrac{V}{\Pr(V=1)}\xi(X) \right] \\
+      &= E\left[\dfrac{E[1-V|Y^0, X] }{\Pr(V=1)} \dfrac{\pi^\dagger(Y^0,X)}{1-\pi^\dagger(Y^0, X)}\{\mathbbm 1(Y^0 = 2) - \xi(X)\} + \dfrac{V}{\Pr(V=1)}\xi(X) \right] \\
+      &= E\left[\dfrac{ E[V|Y^0, X]}{\Pr(V=1)}\underbrace{\dfrac{E[1-V|Y^0, X]}{E[V|Y^0, X]} \dfrac{\pi^\dagger(Y^0,X)}{1-\pi^\dagger(Y^0, X)}}_{=\exp\{(\eta^\dagger(X) - \eta(X)\}}\{\mathbbm 1(Y^0 = 2) - \xi(X)\} + \dfrac{V}{\Pr(V=1)}\xi(X) \right] \\
+      &= E\left[\dfrac{ E[V|Y^0, X]}{\Pr(V=1)}\exp\{(\eta^\dagger(X) - \eta(X)\}\{\mathbbm 1(Y^0 = 2) - \xi(X)\} + \dfrac{V}{\Pr(V=1)}\xi(X) \right] \\
+      &= E\left[\dfrac{V}{\Pr(V=1)}\exp\{(\eta^\dagger(X) - \eta(X)\}\{\mathbbm 1(Y^0 = 2) - \xi(X)\} + \dfrac{V}{\Pr(V=1)}\xi(X) \right] \\
+      &= E\left[E\left[\exp\{(\eta^\dagger(X) - \eta(X)\}\{\mathbbm 1(Y^0 = 2) - \xi(X)\} | V = 1\right] + E\left[\xi(X)\} |V=1\right]\right] \\
+      &= E\left[E\left[\exp\{(\eta^\dagger(X) - \eta(X)\}\{\underbrace{ E[\mathbbm1(Y^0 = 2)|V=1,X] - \xi(X)}_{=0}\} | V = 1\right] + E\left[\xi(X) |V=1\right]\right] \\
+        &= E\left[\mathbbm1(Y^0 = 2)|V=1\right]
+\end{align*}
+\newpage
+\section{Proof of Result \ref{res3}}\label{sec:proof3}
+When $\nu^\ddagger(X) = \nu^*(X)$:
+\begin{align*}
+    E&\left[\dfrac{(1 - V)}{\Pr(V=1|S=1)} \exp\{\nu^\ddagger(X) + \alpha^*(1,X)\}\{\mathbbm 1(Y = 2) - \xi^\ddagger(X)\} + \dfrac{V}{\Pr(V=1|S=1)}\xi^\ddagger(X) \bigg|S=1\right]\\
+     &= E\left[\dfrac{(1 - V)}{\Pr(V=1|S=1)}  \dfrac{\pi^*(Y^0,X)}{1-\pi^*(Y^0,X)} \{\mathbbm 1(Y^0 = 2) - \xi^\ddagger(X)\}  + \dfrac{V}{\Pr(V=1|S=1)}\xi^\ddagger(X)\bigg|S=1\right] \\
+      &= E\left[\dfrac{E[1-V|S=1,Y^0, X]}{\Pr(V=1|S=1)}   \dfrac{\pi^*(Y^0,X)}{1-\pi^*(Y^0,X)}\{\mathbbm 1(Y^0 = 2) - \xi^\ddagger(X)\} + \dfrac{V}{\Pr(V=1|S=1)}\xi^\ddagger(X)\bigg|S=1\right]\\
+       &= E\left[\dfrac{E[V|S=1,Y^0, X]}{\Pr(V=1|S=1)} \{\mathbbm 1(Y^0 = 2) - \xi^\ddagger(X)\} + \dfrac{V}{\Pr(V=1|S=1)}\xi\ddagger(X)\bigg|S=1\right] \\
+       &= E\left[\dfrac{V}{\Pr(V=1|S=1)} \{\mathbbm 1(Y^0 = 2) - \xi^\ddagger(X)\} + \dfrac{V}{\Pr(V=1|S=1)}\xi^\ddagger(X)\bigg|S=1\right]\\
+       &= E\left[\dfrac{V}{\Pr(V=1|S=1)} \mathbbm 1(Y^0 = 2) \bigg|S=1\right]\\
+       &= E\left[\dfrac{(1 - V)}{\Pr(V=1|S=1)}  \dfrac{\pi^*(Y,X)}{1-\pi^*(Y,X)} \mathbbm 1(Y = 2) \bigg|S=1\right]
+\end{align*}
+When $\mu^\ddagger(0,X) = \mu^*(0,X) \implies \xi^\ddagger(X) = \xi^*(X)$:
+\begin{align*}
+     E&\left[\dfrac{(1 - V)}{\Pr(V=1|S=1)} \exp\{\nu^\ddagger(X) + \alpha^*(1,X)\}\{\mathbbm 1(Y = 2) - \xi^\ddagger(X)\} + \dfrac{V}{\Pr(V=1|S=1)}\xi^\ddagger(X) \bigg|S=1 \right]\\
+     &= E\left[\dfrac{(1 - V)}{\Pr(V=1|S=1)} \dfrac{\pi^\ddagger(Y^0,X)}{1-\pi^\ddagger(Y^0, X)}\{\mathbbm 1(Y^0 = 2) - \xi^*(X)\} + \dfrac{V}{\Pr(V=1|S=1)}\xi^*(X)\bigg|S=1 \right] \\
+      &= E\left[\dfrac{E[1-V|S=1,Y^0, X] }{\Pr(V=1|S=1)} \dfrac{\pi^\ddagger(Y^0,X)}{1-\pi^\ddagger(Y^0, X)}\{\mathbbm 1(Y^0 = 2) - \xi^*(X)\} + \dfrac{V}{\Pr(V=1|S=1)}\xi^*(X)\bigg|S=1 \right] \\
+      &= E\bigg[\dfrac{ E[V|Y^0, X]}{\Pr(V=1|S=1)}\underbrace{\dfrac{E[1-V|S=1,Y^0, X]}{E[V|S=1,Y^0, X]} \dfrac{\pi^\ddagger(Y^0,X)}{1-\pi^\ddagger(Y^0, X)}}_{=\exp\{(\nu^\ddagger(X) - \nu(X)\}}\{\mathbbm 1(Y^0 = 2) - \xi^*(X)\}  \\
+      &\qquad\qquad + \dfrac{V}{\Pr(V=1|S=1)}\xi^*(X)\bigg|S=1 \bigg] \\
+      &= E\left[\dfrac{ E[V|S=1,Y^0, X]}{\Pr(V=1|S=1)}\exp\{(\nu^\ddagger(X) - \nu(X)\}\{\mathbbm 1(Y^0 = 2) - \xi^*(X)\} + \dfrac{V}{\Pr(V=1|S=1)}\xi^*(X) \bigg|S=1\right] \\
+      &= E\left[\dfrac{V}{\Pr(V=1|S=1)}\exp\{(\nu^\ddagger(X) - \nu(X)\}\{\mathbbm 1(Y^0 = 2) - \xi^*(X)\} + \dfrac{V}{\Pr(V=1|S=1)}\xi^*(X)\bigg|S=1 \right] \\
+      &= E\left[E\left[\exp\{(\nu^\ddagger(X) - \nu(X)\}\{\mathbbm 1(Y^0 = 2) - \xi^*(X)\} | S=1, V = 1\right] + E\left[\xi^*(X)\} |S=1, V=1\right] \big| S= 1\right] \\
+      &= E\Bigg[E\Bigg[\exp\{(\nu^\ddagger(X) - \nu(X)\}\{\underbrace{ E[\mathbbm1(Y^0 = 2)|S=1,V=1,X] - \xi^*(X)}_{=0}\} | S=1, V = 1\Bigg] \\
+      &\qquad\qquad+ E\left[\xi^*(X)|S=1, V=1\right]\bigg|S=1\Bigg] \\
+        &= E\left[\dfrac{V}{\Pr(V=1|S=1)}\xi^*(X)\bigg|S=1\right]
+\end{align*}
+
+%     For the first expression we have,
+%         \begin{align*}
+%         \Psi_{om} &= \dfrac{\Pr(Y=2|V=1)}{E\left\{ \Pr(Y=2 | V = 0, X)\dfrac{\Pr(Y=1 | V = 1, X)}{\Pr(Y=1 | V = 0, X)} \mid  V = 1\right\}} \\
+%         &= \dfrac{\Pr(Y=2 | V = 1)}{\int \Pr(Y=2 | V = 0, x) \dfrac{\Pr(Y=1 | V = 1, x)}{\Pr(Y=1 | V = 0, x)}f(x | V = 1) dx} \\
+%         &= \dfrac{\Pr(I = 2 | T = 1, V = 1)\Pr(T = 1 | V = 1)}{\int  \Pr(I = 2 | T = 1, V = 0, x) \dfrac{\Pr(I = 1 | T = 1, V = 1, x)}{\Pr(I = 1 | T = 1, V = 0, x)} \Pr(T = 1 | V = 1, x) f(x | V = 1) dx} \\
+%         &= \dfrac{\Pr(I = 2 | T = 1, V = 1)\Pr(T = 1 | V = 1)}{\int \Pr(I = 2 | T = 1, V = 0, x) \dfrac{\Pr(I = 1 | T = 1, V = 1, x)}{\Pr(I = 1 | T = 1, V = 0, x)} \Pr(T = 1 | V = 1) f(x | T =1, V = 1) dx} \\
+%         &= \dfrac{\Pr(I = 2 | T = 1, V = 1)}{\int  \Pr(I = 2 | T = 1, V = 0, x) \dfrac{\Pr(I = 1 | T = 1, V = 1, x)}{\Pr(I = 1 | T = 1, V = 0, x)} f(x | T =1, V = 1) dx} \\
+%         &= \dfrac{\Pr(I = 2 | T = 1, V = 1)}{E\left\{  \Pr(I = 2 | T = 1, V = 0, X) \dfrac{\Pr(I = 1 | T = 1, V = 1, X)}{\Pr(I = 1 | T = 1, V = 0, X)} \bigg| T = 1, V = 1\right\}} \\
+%         &= \dfrac{\Pr(I = 2 | S = 1, V = 1)}{E\left\{  \Pr(I = 2 | S = 1, V = 0, X) \dfrac{\Pr(I = 1 | S = 1, V = 1, X)}{\Pr(I = 1 | S = 1, V = 0, X)} \bigg| S = 1, V = 1\right\}} \\
+%         &=  \dfrac{\Pr(Y = 2 | S = 1, V = 1)}{E\left\{  \Pr(Y = 2 | S = 1, V = 0, X) \dfrac{\Pr(Y = 1 | S = 1, V = 1, X)}{\Pr(Y = 1 | S = 1, V = 0, X)} \bigg| S = 1, V = 1\right\}}.
+%     \end{align*}
+%     The first line restates the definition of $\Psi_{om}$. The second applies the definition of conditional expectation. The third applies the definition of $Y$ in terms of $I$ and $T$ and factors the joint probabilities. The fourth applies Bayes theorem, i.e. 
+%     \begin{equation*}
+%         f(x | V = 1) = \dfrac{f(x | T = 1, V = 1)\Pr(T = 1 | V = 1)}{\Pr(T = 1 | V = 1, x)}.
+%     \end{equation*}
+%     The fifth cancels the $\Pr(T = 1 |V = 1)$ terms in the numerator and denominator. The sixth applies the definition of conditional expectation. The seventh applies the sampling design $S = \mathbbm 1 (T = 1, I \neq 0)$ and the last line notes that in the tested sample $Y = I$ when $S = 1$ and assumes a perfect test.
+
+%     For the second expression we have,
+%     \begin{align*}
+%         \Psi_{ipw} &= \dfrac{E\{V \mathbbm 1 (Y=2)\}}{E\left\{ (1 - V) \mathbbm 1(Y=2) \dfrac{\pi_1(X)}{1 - \pi_1(X)}\right\}} \\
+%         &= \dfrac{E\{V \mathbbm 1 (I = 2) | T = 1\} \Pr(T = 1)}{E\left\{ (1 - V) \mathbbm 1(I = 2) \dfrac{\pi_1(X)}{1 - \pi_1(X)} \bigg| T = 1\right\} \Pr(T = 1)} \\
+%         &= \dfrac{E\{V \mathbbm 1 (I = 2) | T = 1\}}{E\left\{ (1 - V) \mathbbm 1(I = 2) \dfrac{\pi_1(X)}{1 - \pi_1(X)} \bigg| T = 1\right\}} \\
+%         &= \dfrac{E\{V1 (Y=2)|S =1\}}{E\left\{ (1 - V) 1 (Y=2) \dfrac{\pi^*_0(X)}{1 - \pi^*_0(X)} \bigg| S = 1\right\}}.
+%     \end{align*}
+%     The first line restates the definition of $\Psi_{ipw}$. The second applies the law of iterated expectations. The third cancels the $\Pr(T = 1)$ terms in the numerator and denominator. The fourth applies the sampling design $S = \mathbbm 1 (T = 1, I \neq 0)$ and the perfect test $Y^* = \mathbbm 1(I = 2, T=1)$.
+% Under 
+% \[\log \dfrac{\Pr(Y^0 = 1 | V, X)}{\Pr(Y^0 = 0 | V, X)} = \eta_1(X) + \beta_1(X)V\]
+% \[\log \dfrac{\Pr(Y^0 = 2 | V, X)}{\Pr(Y^0 = 0 | V, X)} = \eta_2(X) + \beta_2(X)V\]
+% where $\eta_y(X) = \log \dfrac{\Pr(Y^0=y|V=0, X)}{\Pr(Y^0=0|V = 0, X)}$ and $\beta(Y,X) = \log\dfrac{\Pr(Y^0=y|V=1,X)\Pr(Y^0=0|V=0,X)}{\Pr(Y^0=0|V=1,X)\Pr(Y^0=y|V=0, X)}$. Under odds ratio equi-confounding we have 
+% \[\beta_1(X) = \beta_2(X)\]
+% implying that 
+% \[\alpha_1(X) = \alpha_2(X)\]
+% where $\alpha_y(X) = \log\dfrac{\Pr(Y^0=1|V=1,X)}{\Pr(Y^0=1|V=0, X)}$
+
+% \[\Pr(Y^{0}=2| V = 1) \]
+
+
+% \begin{align*}
+%     \Psi_{om} &\equiv \dfrac{\Pr(Y = 2 | V = 1)}{E\left[\dfrac{\Pr(Y = 1 | V = 1, X)}{\Pr(Y = 1 | V = 0, X)}\Pr(Y = 2 | V = 0, X)| V = 1 \right]} \\
+%     &= \dfrac{E[VI(Y = 2)]}{E\left[V\exp\{\alpha(X)\}\mu_0(X) \right]}
+% \end{align*}
+% where $\alpha(X) = \dfrac{\Pr(Y = 1 | V = 1, X)}{\Pr(Y = 1 | V = 0, X)}$ and $\mu_0(X) = \Pr(Y = 2 | V = 0, X)$
+
+% \begin{align*}
+%     \Psi_{om} &\equiv \dfrac{E[VI(Y = 2)]}{E\left[(1-V)\dfrac{\Pr(V = 1 | Y = 1, X)}{\Pr(V = 0 | Y = 1, X)}I(Y = 2) \right]} \\
+%     &=  \dfrac{E[VI(Y = 2)]}{E\left[(1-V)\dfrac{\Pr(V = 1 | X)\Pr(Y=1 | V = 1, X)}{\Pr(V = 0 | X)\Pr(Y = 1|V=0, X)}I(Y = 2) \right]} \\
+%      &=  \dfrac{E[VI(Y = 2)]}{E\left[(1-V)\exp\{\nu(X) + \alpha(X)\}I(Y = 2) \right]}
+% \end{align*}
+% where $\alpha(X) = \dfrac{\Pr(Y = 1 | V = 1, X)}{\Pr(Y = 1 | V = 0, X)}$ and $\mu_0(X) = \Pr(Y = 2 | V = 0, X)$
+\end{appendix}
+% \[\Psi_{ipw} \equiv \dfrac{E[VI(Y = 2)]}{E\left[(1-V)\exp{\eta(X) + \alpha(X)\}| V = 1 \right]}\]
+\end{document}
